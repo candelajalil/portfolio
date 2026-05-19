@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editorial Tipo — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#2a2622;--ink-soft:#4a423a;--cream:#f5f1ea;--cream-deep:#ede5d6;
+  --ivory:#faf7f0;--sand:#e8dfcc;--line:rgba(42,38,34,.12);--line-soft:rgba(42,38,34,.06);
+  --accent:#8a8769;--accent-warm:#b9a584;
+  --serif:'DM Serif Display',serif;--mono:'Space Mono',monospace;--display:'Bebas Neue',sans-serif;
+  --proj:#c4396e;--proj-light:#fce8f0;--proj-pale:#fdf4f8;
+}
+html{scroll-behavior:smooth;background:var(--cream)}
+body{background:var(--cream);color:var(--ink);font-family:var(--mono);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+::selection{background:var(--proj);color:var(--ivory)}
+#cursor{position:fixed;width:10px;height:10px;background:var(--ink);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .35s ease,height .35s ease,background .35s ease}
+#cursor.hover{width:52px;height:52px;background:var(--proj);opacity:.45}
+#cursor-trail{position:fixed;width:36px;height:36px;border:0.5px solid rgba(42,38,34,.25);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .5s ease,top .5s ease}
+#grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.03;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:28px 56px;transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:0.5px solid transparent}
+.nav-logo{font-family:var(--display);font-size:18px;letter-spacing:.14em;color:var(--ink);text-decoration:none}
+.nav-back{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);text-decoration:none;opacity:.65;transition:opacity .3s}
+.nav-back:hover{opacity:1}
+.nav-count{font-size:10px;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+
+/* ─── HERO: TYPOGRAPHY AS LANDSCAPE ─── */
+#hero{
+  min-height:100vh;background:var(--proj-pale);
+  display:grid;grid-template-rows:1fr auto;
+  position:relative;overflow:hidden;padding-top:100px;
+}
+/* stacked overlapping type */
+.hero-type-stack{
+  position:relative;display:flex;flex-direction:column;
+  justify-content:center;padding:0 56px;
+}
+.type-layer{
+  font-family:var(--display);line-height:.85;letter-spacing:-.01em;
+  position:relative;
+}
+.tl1{font-size:clamp(100px,18vw,300px);color:transparent;-webkit-text-stroke:1px rgba(196,57,110,.12);z-index:1;margin-left:-4px}
+.tl2{font-size:clamp(80px,14vw,240px);color:var(--ink);z-index:2;margin-top:-clamp(40px,6vw,100px);margin-left:clamp(20px,4vw,72px)}
+.tl3{font-family:var(--serif);font-style:italic;font-size:clamp(48px,9vw,160px);color:var(--proj);z-index:3;margin-top:-clamp(20px,3vw,56px);margin-left:clamp(40px,8vw,144px)}
+.hero-meta{padding:40px 56px;display:flex;justify-content:space-between;align-items:flex-end;border-top:0.5px solid var(--line);opacity:0;animation:slideUp .9s 1s forwards}
+.hero-eyebrow{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--proj)}
+.hero-tags{display:flex;gap:10px}
+.hero-tag{font-size:9px;letter-spacing:.2em;text-transform:uppercase;border:0.5px solid var(--line);padding:5px 14px;border-radius:100px;background:rgba(255,255,255,.5)}
+
+/* ─── INFO BAND ─── */
+.info-band{background:var(--ink);color:var(--ivory);padding:20px 56px;display:flex;justify-content:space-between;align-items:center}
+.info-item .i-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-warm);margin-bottom:4px}
+.info-item .i-val{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+
+/* ─── CONCEPT: TEXT-HEAVY EDITORIAL ─── */
+#concept{padding:120px 56px;background:var(--ivory);display:grid;grid-template-columns:3fr 9fr;gap:80px}
+.section-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:56px}
+.section-label::before{content:'';width:40px;height:1px;background:var(--accent);display:block}
+.concept-aside{padding-top:6px}
+.aside-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--proj);margin-bottom:12px}
+.aside-note{font-size:11px;line-height:1.75;color:var(--ink-soft);margin-bottom:32px;padding-bottom:32px;border-bottom:0.5px solid var(--line)}
+.concept-main h2{font-family:var(--display);font-size:clamp(56px,8vw,132px);line-height:.88;color:var(--ink);margin-bottom:48px;letter-spacing:-.005em}
+.concept-main h2 em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.concept-body{font-size:13.5px;line-height:2;color:var(--ink-soft);margin-bottom:24px;max-width:640px}
+.concept-body strong{color:var(--ink);font-weight:700}
+/* pull quote */
+.pull-quote{border-left:2px solid var(--proj);padding:24px 32px;margin:48px 0;font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.5vw,28px);line-height:1.35;color:var(--ink)}
+
+/* ─── SPREADS: FULL-WIDTH SEQUENCE ─── */
+#spreads{background:var(--cream-deep)}
+.spread{width:100%;position:relative;overflow:hidden}
+.spread-full{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:var(--sand);transition:transform 1.4s cubic-bezier(.16,1,.3,1)}
+.spread:hover .spread-full{transform:scale(1.02)}
+.spread-ph{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.spread-ph-text{font-family:var(--display);font-size:clamp(60px,12vw,200px);color:transparent;-webkit-text-stroke:1px rgba(42,38,34,.06);white-space:nowrap;position:absolute}
+.spread-ph-content{position:relative;z-index:1;text-align:center}
+.spread-ph-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:16px}
+.spread-ph-title{font-family:var(--display);font-size:clamp(36px,6vw,96px);line-height:.9}
+.spread-caption{padding:20px 56px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);border-bottom:0.5px solid var(--line-soft)}
+/* alternating spread colors */
+.sp-a{background:var(--proj-pale)}
+.sp-a .spread-ph-text{color:transparent;-webkit-text-stroke:1px rgba(196,57,110,.06)}
+.sp-a .spread-ph-label{color:var(--proj)}
+.sp-a .spread-ph-title{color:var(--ink)}
+.sp-b{background:var(--ink)}
+.sp-b .spread-ph-text{-webkit-text-stroke:1px rgba(245,241,234,.04)}
+.sp-b .spread-ph-label{color:var(--accent-warm)}
+.sp-b .spread-ph-title{color:var(--ivory)}
+.sp-b .spread-caption{color:var(--accent-warm);border-color:rgba(245,241,234,.06)}
+.sp-c{background:var(--proj)}
+.sp-c .spread-ph-text{-webkit-text-stroke:1px rgba(255,255,255,.1)}
+.sp-c .spread-ph-label{color:rgba(255,255,255,.5)}
+.sp-c .spread-ph-title{color:var(--ivory)}
+.sp-c .spread-caption{color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.12)}
+
+/* ─── TYPE SPECIMEN ─── */
+#specimen{padding:120px 56px;background:var(--cream)}
+.spec-row{display:flex;align-items:baseline;justify-content:space-between;border-bottom:0.5px solid var(--line);padding:24px 0;gap:20px}
+.spec-row:first-of-type{border-top:0.5px solid var(--line)}
+.spec-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);flex-shrink:0;width:120px}
+.spec-glyph{font-family:var(--display);font-size:clamp(40px,7vw,120px);color:var(--ink);line-height:.9;flex:1;text-align:center}
+.spec-detail{font-size:10px;letter-spacing:.15em;color:var(--ink-soft);opacity:.6;text-align:right;flex-shrink:0}
+
+/* ─── MANIFESTO: FULL SCREEN ─── */
+#manifesto{
+  min-height:70vh;background:var(--proj);
+  display:flex;align-items:center;justify-content:center;
+  padding:96px 56px;text-align:center;position:relative;overflow:hidden;
+}
+.manifesto-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(160px,28vw,480px);color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.07);white-space:nowrap;pointer-events:none}
+.manifesto-text{font-family:var(--serif);font-style:italic;font-size:clamp(24px,4vw,56px);line-height:1.3;color:var(--ivory);max-width:900px;position:relative;z-index:1}
+.manifesto-attr{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:32px;position:relative;z-index:1}
+
+/* ─── NEXT ─── */
+.next-wrap{display:flex;text-decoration:none;background:var(--ink);color:var(--cream);padding:96px 56px;justify-content:space-between;align-items:center;position:relative;overflow:hidden;transition:background .4s}
+.next-wrap:hover{background:#1a1208}
+.next-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-warm);margin-bottom:16px}
+.next-title{font-family:var(--display);font-size:clamp(44px,8vw,124px);line-height:.88;letter-spacing:-.005em}
+.next-title em{font-family:var(--serif);font-style:italic;color:var(--accent-warm)}
+.next-arrow{font-size:clamp(56px,9vw,140px);color:var(--cream);opacity:.25;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .3s;flex-shrink:0}
+.next-wrap:hover .next-arrow{transform:translateX(18px);opacity:.6}
+.next-bg{position:absolute;bottom:-60px;right:0;font-family:var(--display);font-size:clamp(100px,20vw,340px);color:transparent;-webkit-text-stroke:1px rgba(245,241,234,.04);line-height:1;pointer-events:none}
+footer{background:var(--cream);padding:40px 56px;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid var(--line-soft)}
+.foot-logo{font-family:var(--display);font-size:20px;color:var(--ink);letter-spacing:.14em;text-decoration:none}
+.foot-copy{font-size:9.5px;letter-spacing:.18em;color:var(--ink-soft);opacity:.6;text-transform:uppercase}
+.foot-link{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:10px;transition:color .3s}
+.foot-link:hover{color:var(--ink)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+@media(max-width:900px){
+  body{cursor:auto}#cursor,#cursor-trail{display:none}
+  nav{padding:20px 24px}
+  .hero-type-stack{padding:0 24px}
+  .hero-meta{padding:32px 24px}
+  .info-band{flex-wrap:wrap;gap:20px;padding:24px;justify-content:center}
+  #concept{grid-template-columns:1fr;gap:40px;padding:80px 24px}
+  .spread-caption{padding:16px 24px}
+  #specimen{padding:80px 24px}
+  .spec-glyph{font-size:clamp(28px,8vw,72px)}
+  #manifesto{padding:72px 24px;min-height:50vh}
+  .next-wrap{padding:64px 24px;flex-direction:column;align-items:flex-start;gap:28px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 24px}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-trail"></div><div id="grain"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">CJ</a>
+  <a class="nav-back" href="../index.html">← Back to Work</a>
+  <span class="nav-count">06 / 08</span>
+</nav>
+
+<!-- HERO: TYPE AS LANDSCAPE -->
+<section id="hero">
+  <div class="hero-type-stack">
+    <div class="type-layer tl1" style="opacity:0;animation:slideUp .9s .3s forwards">EDITORIAL</div>
+    <div class="type-layer tl2" style="opacity:0;animation:slideUp .9s .5s forwards">TIPO</div>
+    <div class="type-layer tl3" style="opacity:0;animation:slideUp .9s .7s forwards">graphy</div>
+  </div>
+  <div class="hero-meta">
+    <span class="hero-eyebrow">Editorial · Typography · 2024</span>
+    <div class="hero-tags">
+      <span class="hero-tag">Editorial</span>
+      <span class="hero-tag">Typography</span>
+      <span class="hero-tag">Print</span>
+    </div>
+  </div>
+</section>
+
+<!-- INFO BAND -->
+<div class="info-band">
+  <div class="info-item"><div class="i-label">Year</div><div class="i-val">2024</div></div>
+  <div class="info-item"><div class="i-label">Type</div><div class="i-val">EDITORIAL</div></div>
+  <div class="info-item"><div class="i-label">Medium</div><div class="i-val">PRINT</div></div>
+  <div class="info-item"><div class="i-label">Pages</div><div class="i-val">32</div></div>
+  <div class="info-item"><div class="i-label">Role</div><div class="i-val">DESIGNER</div></div>
+</div>
+
+<!-- CONCEPT -->
+<section id="concept">
+  <div class="concept-aside reveal">
+    <div class="aside-label">Context</div>
+    <div class="aside-note">Academic project exploring typographic experimentation as a design discipline.</div>
+    <div class="aside-label">Year</div>
+    <div class="aside-note">2024</div>
+    <div class="aside-label">Format</div>
+    <div class="aside-note">32pp · A4 · Offset</div>
+  </div>
+  <div class="concept-main">
+    <div class="section-label reveal">Concept</div>
+    <h2 class="reveal d1">TYPE AS<br><em>Space</em></h2>
+    <p class="concept-body reveal d2">This editorial piece explores what happens when <strong>typography stops being a vehicle</strong> and becomes the destination. Letters as architecture. Letterforms as landscape. White space as silence.</p>
+    <p class="concept-body reveal d2">The publication experiments with scale, rhythm, and tension — pushing type until it breaks its own rules, then finding what remains when the rules are gone.</p>
+    <blockquote class="pull-quote reveal d3">
+      "When the word dissolves, the letter remains. When the letter dissolves, the shape remains. What remains after the shape — that is the design."
+    </blockquote>
+  </div>
+</section>
+
+<!-- SPREADS -->
+<section id="spreads">
+  <div class="spread sp-a reveal">
+    <img src="../assets/06-editorial-tipo/03-Maria%20Candela%20Jalil.jpg" alt="Editorial Tipo — Spread 01" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="spread-ph" style="display:none">
+      <div class="spread-ph-text">ABCDEFG</div>
+      <div class="spread-ph-content">
+        <div class="spread-ph-label" style="color:var(--proj)">Spread 01</div>
+        <div class="spread-ph-title" style="color:var(--ink)">LETTERFORM<br>AS IMAGE</div>
+      </div>
+    </div>
+    <div class="spread-caption">01 — Scale & Weight · pp. 04–05</div>
+  </div>
+  <div class="spread sp-b reveal">
+    <img src="../assets/06-editorial-tipo/04-Jalil%20Maria%20Candela.jpg" alt="Editorial Tipo — Spread 02" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="spread-ph" style="display:none">
+      <div class="spread-ph-text">TYPESET</div>
+      <div class="spread-ph-content">
+        <div class="spread-ph-label">Spread 02</div>
+        <div class="spread-ph-title">DENSITY<br>& VOID</div>
+      </div>
+    </div>
+    <div class="spread-caption">02 — Density & Void · pp. 12–13</div>
+  </div>
+  <div class="spread sp-c reveal">
+    <img src="../assets/06-editorial-tipo/05-Jalil%20Maria%20Candela.jpg" alt="Editorial Tipo — Spread 03" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="spread-ph" style="display:none">
+      <div class="spread-ph-text">AAAAAAA</div>
+      <div class="spread-ph-content">
+        <div class="spread-ph-label">Spread 03</div>
+        <div class="spread-ph-title">REPETITION<br>& RHYTHM</div>
+      </div>
+    </div>
+    <div class="spread-caption">03 — Repetition & Rhythm · pp. 22–23</div>
+  </div>
+  <div class="spread sp-a reveal">
+    <img src="../assets/06-editorial-tipo/06-%20Jalil%20Maria%20Candela.jpg" alt="Editorial Tipo — Spread 04" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="spread-ph" style="display:none">
+      <div class="spread-ph-text">EDITORIAL</div>
+      <div class="spread-ph-content">
+        <div class="spread-ph-label" style="color:var(--proj)">Spread 04</div>
+        <div class="spread-ph-title" style="color:var(--ink)">THE FINAL<br>COMPOSITION</div>
+      </div>
+    </div>
+    <div class="spread-caption">04 — Final Composition · pp. 30–31</div>
+  </div>
+</section>
+
+<!-- TYPE SPECIMEN -->
+<section id="specimen">
+  <div class="section-label reveal">Type Specimen</div>
+  <div class="spec-row reveal">
+    <span class="spec-label">Display</span>
+    <span class="spec-glyph">Aa Bb Cc</span>
+    <span class="spec-detail">Bebas Neue · 300pt</span>
+  </div>
+  <div class="spec-row reveal d1">
+    <span class="spec-label">Serif Italic</span>
+    <span class="spec-glyph" style="font-family:var(--serif);font-style:italic;color:var(--proj)">Aa Bb Cc</span>
+    <span class="spec-detail">DM Serif Display · 240pt</span>
+  </div>
+  <div class="spec-row reveal d2">
+    <span class="spec-label">Mono Body</span>
+    <span class="spec-glyph" style="font-family:var(--mono);font-size:clamp(18px,3vw,48px);color:var(--ink-soft)">Aa Bb Cc Dd Ee</span>
+    <span class="spec-detail">Space Mono · 48pt</span>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="manifesto-bg">TYPE</div>
+  <p class="manifesto-text reveal">
+    "Typography is not the dress of language — it is language itself made visible, given weight, given breath."
+  </p>
+  <div class="manifesto-attr reveal d1">Editorial Tipo — 2024</div>
+</section>
+
+<!-- NEXT -->
+<a class="next-wrap" href="07-oakley.html">
+  <div>
+    <div class="next-lbl">Next Project — 07 / 08</div>
+    <div class="next-title">OAKLEY<br><em>Poster</em></div>
+  </div>
+  <div class="next-arrow">↗</div>
+  <div class="next-bg">OAK</div>
+</a>
+
+<footer>
+  <a class="foot-logo" href="../index.html">CJ</a>
+  <div class="foot-copy">© 2026 Candela Jalil</div>
+  <a class="foot-link" href="../index.html">← All Projects</a>
+</footer>
+
+<script>
+const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function anim(){tx+=(mx-tx)*.08;ty+=(my-ty)*.08;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.spread,.spec-row').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
+});
+const nav=document.querySelector('nav');
+window.addEventListener('scroll',()=>{
+  const s=window.scrollY>80;
+  nav.style.background=s?'rgba(245,241,234,.88)':'transparent';
+  nav.style.backdropFilter=s?'blur(16px)':'none';
+  nav.style.borderColor=s?'rgba(42,38,34,.08)':'transparent';
+},{passive:true});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

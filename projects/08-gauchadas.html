@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gauchadas Web — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#2a2622;--ink-soft:#4a423a;--cream:#f5f1ea;--cream-deep:#ede5d6;
+  --ivory:#faf7f0;--sand:#e8dfcc;--line:rgba(42,38,34,.12);--line-soft:rgba(42,38,34,.06);
+  --accent:#8a8769;--accent-warm:#b9a584;
+  --serif:'DM Serif Display',serif;--mono:'Space Mono',monospace;--display:'Bebas Neue',sans-serif;
+  --proj:#6b3a2a;--proj-gold:#c9a84c;--proj-warm:#f2e8d5;--proj-light:#faf3e8;
+}
+html{scroll-behavior:smooth;background:var(--proj-light)}
+body{background:var(--proj-light);color:var(--ink);font-family:var(--mono);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+::selection{background:var(--proj-gold);color:var(--ivory)}
+#cursor{position:fixed;width:10px;height:10px;background:var(--ink);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .35s,height .35s,background .35s}
+#cursor.hover{width:52px;height:52px;background:var(--proj-gold);opacity:.5}
+#cursor-trail{position:fixed;width:36px;height:36px;border:0.5px solid rgba(42,38,34,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .5s,top .5s}
+#grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.03;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:28px 56px;transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:0.5px solid transparent}
+.nav-logo{font-family:var(--display);font-size:18px;letter-spacing:.14em;color:var(--ink);text-decoration:none}
+.nav-back{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);text-decoration:none;opacity:.65;transition:opacity .3s}
+.nav-back:hover{opacity:1}
+.nav-count{font-size:10px;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+
+/* ─── HERO: EDITORIAL FOOD SPLIT ─── */
+#hero{height:100vh;display:grid;grid-template-columns:1fr;position:relative;overflow:hidden}
+.hero-left{
+  background:var(--proj);display:flex;flex-direction:column;
+  justify-content:flex-end;padding:56px;padding-top:120px;
+  position:relative;overflow:hidden;
+}
+.hero-bg-word{position:absolute;top:50%;left:0;transform:translateY(-50%);font-family:var(--display);font-size:clamp(120px,18vw,280px);color:transparent;-webkit-text-stroke:1px rgba(245,241,234,.05);pointer-events:none;white-space:nowrap;line-height:.9;padding-left:40px}
+.hero-eyebrow{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--proj-gold);margin-bottom:20px;opacity:0;animation:slideUp .9s .7s forwards;position:relative;z-index:1}
+.hero-title{font-family:var(--display);font-size:clamp(64px,10vw,160px);line-height:.88;color:var(--ivory);letter-spacing:-.005em;opacity:0;animation:slideUp .9s .4s forwards;position:relative;z-index:1}
+.hero-title em{font-family:var(--serif);font-style:italic;color:var(--proj-gold);font-weight:400;font-size:.62em}
+.hero-desc{font-size:13px;line-height:1.8;color:rgba(245,241,234,.55);margin-top:28px;max-width:380px;opacity:0;animation:slideUp .8s .9s forwards;position:relative;z-index:1}
+.hero-right{position:relative;overflow:hidden;background:var(--proj)}
+.hero-img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;filter:saturate(.88)}
+.hero-ph{width:100%;height:100%;background:linear-gradient(160deg,var(--cream-deep),var(--sand));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(40px,7vw,108px);color:rgba(42,38,34,.08);letter-spacing:.04em}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(107,58,42,.15),transparent);z-index:1;pointer-events:none}
+
+/* ─── INFO BAND ─── */
+.info-band{background:var(--proj-gold);color:var(--proj);padding:20px 56px;display:flex;justify-content:space-between;align-items:center}
+.i-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(42,38,34,.5);margin-bottom:4px}
+.i-val{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+
+/* ─── TWO SITES INTRO ─── */
+#two-sites{padding:120px 56px;background:var(--proj-light)}
+.section-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:56px}
+.section-label::before{content:'';width:40px;height:1px;background:var(--accent);display:block}
+.sites-heading{font-family:var(--display);font-size:clamp(52px,8vw,128px);line-height:.88;color:var(--ink);margin-bottom:64px;letter-spacing:-.005em}
+.sites-heading em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.sites-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:0.5px solid var(--line)}
+.site-card{background:var(--proj-light);padding:56px 48px;position:relative;overflow:hidden;cursor:none;transition:background .4s}
+.site-card:hover{background:var(--proj-warm)}
+.site-card-num{font-family:var(--display);font-size:96px;color:transparent;-webkit-text-stroke:1px rgba(42,38,34,.07);line-height:1;margin-bottom:20px}
+.site-card-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--proj-gold);margin-bottom:16px}
+.site-card-title{font-family:var(--display);font-size:clamp(32px,4.5vw,64px);color:var(--ink);margin-bottom:20px;line-height:.9;letter-spacing:-.005em}
+.site-card-desc{font-size:12px;line-height:1.85;color:var(--ink-soft);max-width:360px}
+.site-card-bar{position:absolute;bottom:0;left:0;height:2px;background:var(--proj-gold);width:0;transition:width .5s cubic-bezier(.77,0,.18,1)}
+.site-card:hover .site-card-bar{width:100%}
+
+/* ─── SITE 1: GRAN GAUCHO ─── */
+#gran-gaucho{padding:0;background:var(--proj);position:relative;overflow:hidden}
+.gaucho-inner{display:grid;grid-template-columns:1fr 1fr;min-height:640px}
+.gaucho-text{padding:80px 56px;display:flex;flex-direction:column;justify-content:center;color:var(--ivory)}
+.gaucho-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--proj-gold);display:flex;align-items:center;gap:14px;margin-bottom:48px}
+.gaucho-lbl::before{content:'';width:40px;height:1px;background:var(--proj-gold);display:block}
+.gaucho-h{font-family:var(--display);font-size:clamp(52px,7vw,108px);line-height:.88;letter-spacing:-.005em;margin-bottom:32px}
+.gaucho-h em{font-family:var(--serif);font-style:italic;color:var(--proj-gold)}
+.gaucho-body{font-size:13px;line-height:1.85;color:rgba(245,241,234,.6);max-width:400px;margin-bottom:40px}
+.gaucho-modules{border-top:0.5px solid rgba(245,241,234,.12);margin-top:4px}
+.gaucho-mod{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:0.5px solid rgba(245,241,234,.08);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,241,234,.45)}
+.gaucho-mod span:last-child{color:var(--proj-gold);opacity:.7}
+.gaucho-media{position:relative;overflow:hidden;background:var(--cream-deep)}
+.gaucho-img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.85)}
+.gaucho-ph{width:100%;height:100%;min-height:480px;background:linear-gradient(160deg,var(--cream-deep),var(--sand));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(40px,6vw,96px);color:rgba(42,38,34,.1);letter-spacing:.04em}
+
+/* ─── SITE 2: GAUCHADAS ─── */
+#gauchadas-site{padding:120px 56px;background:var(--ivory)}
+.gs-grid{display:grid;grid-template-columns:5fr 7fr;gap:80px;align-items:start}
+.gs-heading{font-family:var(--display);font-size:clamp(52px,7vw,108px);line-height:.88;color:var(--ink);margin-bottom:36px;letter-spacing:-.005em}
+.gs-heading em{font-family:var(--serif);font-style:italic;color:var(--proj-gold)}
+.gs-body{font-size:13px;line-height:1.9;color:var(--ink-soft);margin-bottom:20px;max-width:440px}
+.gs-features{margin-top:48px;border-top:0.5px solid var(--line)}
+.gs-feat{display:flex;gap:24px;padding:18px 0;border-bottom:0.5px solid var(--line);align-items:start}
+.gs-feat-icon{font-family:var(--display);font-size:32px;color:var(--proj-gold);line-height:1;flex-shrink:0;width:40px}
+.gs-feat-text{font-size:12px;line-height:1.75;color:var(--ink-soft)}
+.gs-feat-text strong{color:var(--ink);display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+.gs-screens{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gs-screen{background:var(--sand);aspect-ratio:9/16;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(16px,2.5vw,36px);color:rgba(42,38,34,.1);letter-spacing:.04em;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.gs-screen:hover{transform:scale(1.02)}
+.gs-screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.gs-screen-tall{aspect-ratio:9/19;grid-row:span 2;align-self:start;background:var(--proj-warm)}
+
+/* ─── DESIGN DECISIONS ─── */
+#design{padding:120px 56px;background:var(--cream-deep)}
+.dd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:0.5px solid var(--line);margin-top:72px}
+.dd-card{background:var(--cream-deep);padding:48px 36px;position:relative;overflow:hidden;transition:background .4s}
+.dd-card:hover{background:var(--ivory)}
+.dd-num{font-family:var(--display);font-size:72px;color:transparent;-webkit-text-stroke:1px rgba(42,38,34,.07);line-height:1;margin-bottom:16px}
+.dd-title{font-family:var(--display);font-size:clamp(22px,3vw,36px);color:var(--ink);margin-bottom:14px;letter-spacing:.02em}
+.dd-body{font-size:12px;line-height:1.8;color:var(--ink-soft)}
+.dd-accent{position:absolute;bottom:0;left:0;height:1.5px;background:var(--proj-gold);width:0;transition:width .5s cubic-bezier(.77,0,.18,1)}
+.dd-card:hover .dd-accent{width:100%}
+
+/* ─── NEXT ─── */
+.next-wrap{display:flex;text-decoration:none;background:var(--ink);color:var(--cream);padding:96px 56px;justify-content:space-between;align-items:center;position:relative;overflow:hidden;transition:background .4s}
+.next-wrap:hover{background:#1a1208}
+.next-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-warm);margin-bottom:16px}
+.next-title{font-family:var(--display);font-size:clamp(44px,8vw,124px);line-height:.88;letter-spacing:-.005em}
+.next-title em{font-family:var(--serif);font-style:italic;color:var(--accent-warm)}
+.next-arrow{font-size:clamp(56px,9vw,140px);color:var(--cream);opacity:.25;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .3s;flex-shrink:0}
+.next-wrap:hover .next-arrow{transform:translateX(18px);opacity:.6}
+.next-bg{position:absolute;bottom:-60px;right:0;font-family:var(--display);font-size:clamp(100px,20vw,340px);color:transparent;-webkit-text-stroke:1px rgba(245,241,234,.04);line-height:1;pointer-events:none}
+footer{background:var(--cream);padding:40px 56px;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid var(--line-soft)}
+.foot-logo{font-family:var(--display);font-size:20px;color:var(--ink);letter-spacing:.14em;text-decoration:none}
+.foot-copy{font-size:9.5px;letter-spacing:.18em;color:var(--ink-soft);opacity:.6;text-transform:uppercase}
+.foot-link{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:10px;transition:color .3s}
+.foot-link:hover{color:var(--ink)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+@media(max-width:900px){
+  body{cursor:auto}#cursor,#cursor-trail{display:none}
+  nav{padding:20px 24px}
+  #hero{grid-template-columns:1fr;height:auto}
+  .hero-left{padding:120px 24px 56px}.hero-right{height:65vw}
+  .info-band{flex-wrap:wrap;gap:20px;padding:24px;justify-content:center}
+  #two-sites{padding:80px 24px}
+  .sites-grid{grid-template-columns:1fr}
+  .gaucho-inner{grid-template-columns:1fr}
+  .gaucho-text{padding:56px 24px}.gaucho-ph{min-height:280px}
+  #gauchadas-site{padding:80px 24px}
+  .gs-grid{grid-template-columns:1fr;gap:48px}
+  .gs-screens{grid-template-columns:1fr}.gs-screen-tall{aspect-ratio:9/16;grid-row:span 1}
+  #design{padding:80px 24px}
+  .dd-grid{grid-template-columns:1fr}
+  .next-wrap{padding:64px 24px;flex-direction:column;align-items:flex-start;gap:28px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 24px}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-trail"></div><div id="grain"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">CJ</a>
+  <a class="nav-back" href="../index.html">← Back to Work</a>
+  <span class="nav-count">08 / 08</span>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-bg-word">GAUCHO</div>
+    <div class="hero-eyebrow">Web Design · UX/UI · 2025</div>
+    <h1 class="hero-title">GAUCHADAS<br><em>Web</em></h1>
+    <p class="hero-desc">Two editorial web experiences for the Gauchadas ecosystem — where Argentine terroir becomes digital design language.</p>
+  </div>
+</section>
+
+<!-- INFO BAND -->
+<div class="info-band">
+  <div><div class="i-label">Year</div><div class="i-val">2025</div></div>
+  <div><div class="i-label">Type</div><div class="i-val">WEB DESIGN</div></div>
+  <div><div class="i-label">Sites</div><div class="i-val">2 WEB</div></div>
+  <div><div class="i-label">Scope</div><div class="i-val">UX/UI</div></div>
+  <div><div class="i-label">Role</div><div class="i-val">DESIGNER</div></div>
+</div>
+
+<!-- TWO SITES -->
+<section id="two-sites">
+  <div class="section-label reveal">The Project</div>
+  <h2 class="sites-heading reveal d1">TWO SITES,<br>ONE <em>Territory</em></h2>
+  <div class="sites-grid">
+    <div class="site-card reveal">
+      <div class="site-card-num">01</div>
+      <div class="site-card-label">Site One</div>
+      <div class="site-card-title">GAUCHADAS<br>PROVEEDORES</div>
+      <p class="site-card-desc">Premium ingredient supplier platform connecting Argentina's finest artisan producers with restaurants and chefs across the country.</p>
+      <div class="site-card-bar"></div>
+    </div>
+    <div class="site-card reveal d1">
+      <div class="site-card-num">02</div>
+      <div class="site-card-label">Site Two</div>
+      <div class="site-card-title">TALLER GRAN<br>GAUCHO</div>
+      <p class="site-card-desc">Landing page for a regional gastronomy course — 10 modules exploring traditional Argentine cooking techniques, autochthonous ingredients and culinary heritage.</p>
+      <div class="site-card-bar"></div>
+    </div>
+  </div>
+</section>
+
+<!-- GRAN GAUCHO SITE -->
+<section id="gran-gaucho">
+  <div class="gaucho-inner">
+    <div class="gaucho-text">
+      <div class="gaucho-lbl reveal">Site 01 — Gauchadas Proveedores</div>
+      <h2 class="gaucho-h reveal d1">CALIDAD<br>EN CADA <em>Selección</em></h2>
+      <p class="gaucho-body reveal d2">Premium ingredient supplier platform connecting Argentina's finest artisan producers with restaurants and chefs. The site needed to communicate provenance, trust and the quality that professional kitchens demand.</p>
+      <div class="gaucho-modules reveal d3">
+        <div class="gaucho-mod"><span>Quesos Artesanales</span><span>Categoría 01</span></div>
+        <div class="gaucho-mod"><span>Aceitunas & Olivas</span><span>Categoría 02</span></div>
+        <div class="gaucho-mod"><span>Vinos de Origen</span><span>Categoría 03</span></div>
+        <div class="gaucho-mod"><span>Charcutería</span><span>Categoría 04</span></div>
+      </div>
+    </div>
+    <div class="gaucho-media reveal d1">
+      <img class="gaucho-img" src="../assets/09-gauchadas/site1.png" alt="Gauchadas Proveedores web" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="gaucho-ph" style="display:none">GAUCHO</div>
+    </div>
+  </div>
+</section>
+
+<!-- GAUCHADAS SITE -->
+<section id="gauchadas-site">
+  <div class="section-label reveal">Site 02 — Taller Gran Gaucho</div>
+  <div class="gs-grid">
+    <div>
+      <h2 class="gs-heading reveal d1">LA COCINA<br>COMO<br><em>Territorio</em></h2>
+      <p class="gs-body reveal d2">A presential gastronomy course immersed in regional cooking. 12 weeks, 10 modules, four master chefs. The website needed to communicate warmth, authority and the unmistakable soul of Argentine culinary tradition.</p>
+      <div class="gs-features reveal d3">
+        <div class="gs-feat">
+          <div class="gs-feat-icon">10</div>
+          <div class="gs-feat-text"><strong>10 Modules</strong>A full immersion into regional Argentine gastronomy across 12 weeks of presential classes.</div>
+        </div>
+        <div class="gs-feat">
+          <div class="gs-feat-icon">4</div>
+          <div class="gs-feat-text"><strong>4 Master Chefs</strong>Leading voices in Argentine culinary tradition guide each stage of the program.</div>
+        </div>
+        <div class="gs-feat">
+          <div class="gs-feat-icon">★</div>
+          <div class="gs-feat-text"><strong>Editorial Language</strong>The site translates the course's warmth and authority into a rich, food-first web experience.</div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal d1" style="overflow:hidden">
+      <img src="../assets/09-gauchadas/site2.png" alt="Taller Gran Gaucho web" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block">
+    </div>
+  </div>
+</section>
+
+<!-- DESIGN DECISIONS -->
+<section id="design">
+  <div class="section-label reveal">Design Decisions</div>
+  <div class="dd-grid">
+    <div class="dd-card reveal">
+      <div class="dd-num">01</div>
+      <div class="dd-title">TERROIR<br>PALETTE</div>
+      <p class="dd-body">Warm earth tones derived from Argentine landscape — terracotta, wheat, olive and aged leather. A palette that evokes provenance before a single word is read.</p>
+      <div class="dd-accent"></div>
+    </div>
+    <div class="dd-card reveal d1">
+      <div class="dd-num">02</div>
+      <div class="dd-title">FOOD-FIRST<br>HIERARCHY</div>
+      <p class="dd-body">Photography leads. Every layout decision subordinates text to image. The product is the hero — the interface steps aside to let it speak.</p>
+      <div class="dd-accent"></div>
+    </div>
+    <div class="dd-card reveal d2">
+      <div class="dd-num">03</div>
+      <div class="dd-title">EDITORIAL<br>TRUST</div>
+      <p class="dd-body">The typographic system communicates authority without coldness. Serif headlines carry warmth; mono body text signals precision. A balance between artisan and professional.</p>
+      <div class="dd-accent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEXT -->
+<a class="next-wrap" href="01-paquex.html">
+  <div>
+    <div class="next-lbl">Back to Start — 01 / 08</div>
+    <div class="next-title">PAQUEX<br><em>Identity</em></div>
+  </div>
+  <div class="next-arrow">↗</div>
+  <div class="next-bg">PQX</div>
+</a>
+
+<footer>
+  <a class="foot-logo" href="../index.html">CJ</a>
+  <div class="foot-copy">© 2026 Candela Jalil</div>
+  <a class="foot-link" href="../index.html">← All Projects</a>
+</footer>
+
+<script>
+const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function anim(){tx+=(mx-tx)*.08;ty+=(my-ty)*.08;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.site-card,.dd-card,.gs-screen').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
+});
+const nav=document.querySelector('nav');
+window.addEventListener('scroll',()=>{
+  const s=window.scrollY>80;
+  nav.style.background=s?'rgba(250,243,232,.92)':'transparent';
+  nav.style.backdropFilter=s?'blur(16px)':'none';
+  nav.style.borderColor=s?'rgba(42,38,34,.08)':'transparent';
+},{passive:true});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

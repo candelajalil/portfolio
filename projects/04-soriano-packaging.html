@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soriano Packaging — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#2a2622;--ink-soft:#4a423a;--cream:#f5f1ea;--cream-deep:#ede5d6;
+  --ivory:#faf7f0;--sand:#e8dfcc;--line:rgba(42,38,34,.12);--line-soft:rgba(42,38,34,.06);
+  --accent:#8a8769;--accent-warm:#b9a584;
+  --serif:'DM Serif Display',serif;--mono:'Space Mono',monospace;--display:'Bebas Neue',sans-serif;
+  --proj:#c41e3a;--proj-warm:#b85c38;--proj-light:#f5e8d6;
+}
+html{scroll-behavior:smooth;background:var(--cream)}
+body{background:var(--cream);color:var(--ink);font-family:var(--mono);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+::selection{background:var(--proj-warm);color:var(--ivory)}
+#cursor{position:fixed;width:10px;height:10px;background:var(--ink);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .35s ease,height .35s ease,background .35s ease}
+#cursor.hover{width:52px;height:52px;background:var(--proj-warm);opacity:.55}
+#cursor-trail{position:fixed;width:36px;height:36px;border:0.5px solid rgba(42,38,34,.25);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .5s ease,top .5s ease}
+#grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.025;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:28px 56px;transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:0.5px solid transparent}
+.nav-logo{font-family:var(--display);font-size:18px;letter-spacing:.14em;color:var(--ink);text-decoration:none}
+.nav-back{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);text-decoration:none;opacity:.65;transition:opacity .3s}
+.nav-back:hover{opacity:1}
+.nav-count{font-size:10px;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+
+/* ─── HERO: PRODUCT ARRAY ─── */
+#hero{
+  min-height:100vh;background:var(--proj-light);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:140px 56px 80px;position:relative;overflow:hidden;
+}
+.hero-bg-word{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--display);font-size:clamp(140px,26vw,420px);color:transparent;-webkit-text-stroke:1px rgba(184,92,56,.07);white-space:nowrap;pointer-events:none;letter-spacing:-.02em;line-height:.9}
+.hero-eyebrow{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--proj-warm);margin-bottom:20px;opacity:0;animation:slideUp .9s .7s forwards;position:relative;z-index:2}
+.hero-title{font-family:var(--display);font-size:clamp(72px,12vw,200px);line-height:.88;color:var(--ink);letter-spacing:-.005em;opacity:0;animation:slideUp .9s .4s forwards;position:relative;z-index:2}
+.hero-title em{font-family:var(--serif);font-style:italic;color:var(--proj-warm);font-weight:400;font-size:.65em}
+.prod-ph{width:100%;height:320px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(16px,2.5vw,36px);color:rgba(42,38,34,.15);letter-spacing:.04em;text-align:center;padding:16px}
+.prod-label{position:absolute;bottom:0;left:0;right:0;padding:16px;background:linear-gradient(transparent,rgba(42,38,34,.3));font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ivory);opacity:0;transition:opacity .3s}
+.prod-item:hover .prod-label{opacity:1}
+
+/* ─── INFO BAND ─── */
+.info-band{background:var(--proj-warm);color:var(--ivory);padding:20px 56px;display:flex;justify-content:space-between;align-items:center}
+.info-item .i-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px}
+.info-item .i-val{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+
+/* ─── BRIEF ─── */
+#brief{padding:120px 56px;background:var(--ivory);display:grid;grid-template-columns:5fr 7fr;gap:80px;align-items:start}
+.section-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:56px}
+.section-label::before{content:'';width:40px;height:1px;background:var(--accent);display:block}
+.brief-heading{font-family:var(--display);font-size:clamp(44px,6vw,92px);line-height:.9;color:var(--ink);margin-bottom:36px;letter-spacing:-.005em}
+.brief-heading em{font-family:var(--serif);font-style:italic;color:var(--proj-warm)}
+.brief-body{font-size:13px;line-height:1.9;color:var(--ink-soft);margin-bottom:20px;max-width:460px}
+.brief-stat-row{display:flex;gap:48px;margin-top:48px;padding-top:48px;border-top:0.5px solid var(--line)}
+.brief-stat .s-num{font-family:var(--display);font-size:clamp(40px,6vw,80px);color:var(--ink);line-height:1}
+.brief-stat .s-lbl{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-top:6px}
+.brief-right-img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:var(--sand)}
+.brief-right-ph{width:100%;aspect-ratio:3/4;background:linear-gradient(160deg,var(--proj-light),var(--sand));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(40px,7vw,120px);color:rgba(184,92,56,.15);letter-spacing:.04em}
+.brief-caption{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-top:14px}
+
+/* ─── COMPARISON ─── */
+#comparison{padding:0;background:var(--cream-deep);overflow:hidden}
+.comp-header{padding:80px 56px 0}
+.comp-cols{display:grid;grid-template-columns:1fr 1fr;border-top:0.5px solid var(--line);margin-top:56px}
+.comp-col{padding:56px;position:relative}
+.comp-col:first-child{border-right:0.5px solid var(--line)}
+.comp-col-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:40px;display:flex;align-items:center;gap:10px}
+.comp-col-label.old{color:var(--ink-soft);opacity:.5}
+.comp-col-label.new{color:var(--proj-warm)}
+.comp-col-label::before{content:'';width:24px;height:1px;background:currentColor;display:block}
+.comp-img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;background:var(--sand)}
+.comp-ph{width:100%;aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(28px,4vw,64px);letter-spacing:.04em}
+.comp-ph.old-ph{background:var(--sand);color:rgba(42,38,34,.12)}
+.comp-ph.new-ph{background:var(--proj-light);color:rgba(184,92,56,.18)}
+.comp-desc{font-size:12px;line-height:1.8;color:var(--ink-soft);margin-top:24px;max-width:380px}
+
+/* ─── DETAILS ─── */
+#details{padding:120px 56px;background:var(--cream)}
+.details-sub{margin-top:64px}
+.details-sub+.details-sub{margin-top:80px}
+.details-sub-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.details-sub-label::before{content:'';width:24px;height:1px;background:var(--accent);display:block}
+.details-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.detail-cell{background:var(--sand);aspect-ratio:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:transform .4s cubic-bezier(.16,1,.3,1);flex-direction:column;gap:0}
+.detail-cell:hover{transform:scale(1.02)}
+.detail-cell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s cubic-bezier(.16,1,.3,1)}
+.detail-cell:hover img{transform:scale(1.05)}
+.detail-label{position:absolute;bottom:0;left:0;right:0;padding:12px 14px;background:linear-gradient(transparent,rgba(42,38,34,.55));font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ivory);opacity:0;transition:opacity .3s}
+.detail-cell:hover .detail-label{opacity:1}
+
+/* ─── NEXT ─── */
+.next-wrap{display:flex;text-decoration:none;background:var(--ink);color:var(--cream);padding:96px 56px;justify-content:space-between;align-items:center;position:relative;overflow:hidden;transition:background .4s}
+.next-wrap:hover{background:#1a1208}
+.next-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-warm);margin-bottom:16px}
+.next-title{font-family:var(--display);font-size:clamp(44px,8vw,124px);line-height:.88;letter-spacing:-.005em}
+.next-title em{font-family:var(--serif);font-style:italic;color:var(--accent-warm)}
+.next-arrow{font-size:clamp(56px,9vw,140px);color:var(--cream);opacity:.25;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .3s;flex-shrink:0}
+.next-wrap:hover .next-arrow{transform:translateX(18px);opacity:.6}
+.next-bg{position:absolute;bottom:-60px;right:0;font-family:var(--display);font-size:clamp(100px,20vw,340px);color:transparent;-webkit-text-stroke:1px rgba(245,241,234,.04);line-height:1;pointer-events:none}
+footer{background:var(--cream);padding:40px 56px;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid var(--line-soft)}
+.foot-logo{font-family:var(--display);font-size:20px;color:var(--ink);letter-spacing:.14em;text-decoration:none}
+.foot-copy{font-size:9.5px;letter-spacing:.18em;color:var(--ink-soft);opacity:.6;text-transform:uppercase}
+.foot-link{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:10px;transition:color .3s}
+.foot-link:hover{color:var(--ink)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+@media(max-width:900px){
+  body{cursor:auto}#cursor,#cursor-trail{display:none}
+  nav{padding:20px 24px}
+  #hero{padding:120px 24px 64px}
+  .hero-products{gap:8px}
+  .prod-item img,.prod-ph{height:200px}
+  .info-band{flex-wrap:wrap;gap:20px;padding:24px;justify-content:center}
+  #brief{grid-template-columns:1fr;gap:40px;padding:80px 24px}
+  .brief-stat-row{gap:24px}
+  #comparison .comp-header{padding:64px 24px 0}
+  .comp-cols{grid-template-columns:1fr}
+  .comp-col{padding:40px 24px}
+  .comp-col:first-child{border-right:none;border-bottom:0.5px solid var(--line)}
+  #details{padding:80px 24px}
+  .details-grid{grid-template-columns:1fr 1fr}
+  .next-wrap{padding:64px 24px;flex-direction:column;align-items:flex-start;gap:28px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 24px}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-trail"></div><div id="grain"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">CJ</a>
+  <a class="nav-back" href="../index.html">← Back to Work</a>
+  <span class="nav-count">04 / 08</span>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-word">SORIANO</div>
+  <div class="hero-eyebrow">Packaging · Rebrand · 2024</div>
+  <h1 class="hero-title">SORIANO<br><em>Packaging</em></h1>
+</section>
+
+<!-- INFO BAND -->
+<div class="info-band">
+  <div class="info-item"><div class="i-label">Year</div><div class="i-val">2024</div></div>
+  <div class="info-item"><div class="i-label">Type</div><div class="i-val">PACKAGING</div></div>
+  <div class="info-item"><div class="i-label">Client</div><div class="i-val">SORIANO</div></div>
+  <div class="info-item"><div class="i-label">Scope</div><div class="i-val">REBRAND</div></div>
+  <div class="info-item"><div class="i-label">Role</div><div class="i-val">DESIGNER</div></div>
+</div>
+
+<!-- BRIEF -->
+<section id="brief">
+  <div>
+    <div class="section-label reveal">Brief</div>
+    <h2 class="brief-heading reveal d1">EVOLUTION<br><em>Without Erasure</em></h2>
+    <p class="brief-body reveal d2">Soriano Biscuits had decades of shelf presence and consumer recognition. The task was to modernize without abandoning — to make the brand feel current without making loyal customers feel lost.</p>
+    <p class="brief-body reveal d2">The rebrand introduced a cleaner hierarchy, a more refined color palette, and improved legibility — while maintaining the essential brand equity built over years on Argentine supermarket shelves.</p>
+    <div class="brief-stat-row reveal d3">
+      <div class="brief-stat"><div class="s-num">4</div><div class="s-lbl">SKUs Redesigned</div></div>
+      <div class="brief-stat"><div class="s-num">3+</div><div class="s-lbl">Retail Chains</div></div>
+    </div>
+  </div>
+  <div>
+    <div class="reveal d1" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:end">
+      <img src="../assets/04-soriano-packaging/mockups%20125g.png" alt="125g" style="width:100%;aspect-ratio:2/3;object-fit:cover;display:block">
+      <img src="../assets/04-soriano-packaging/mockups%20250g.png" alt="250g" style="width:100%;aspect-ratio:2/3;object-fit:cover;display:block">
+      <img src="../assets/04-soriano-packaging/2unidades.png" alt="2 unidades" style="width:100%;aspect-ratio:2/3;object-fit:cover;display:block">
+    </div>
+    <div class="brief-caption reveal d2">Packaging Redesign — Soriano Biscuits, Argentina 2024</div>
+  </div>
+</section>
+
+<!-- BRAND MARK -->
+<div style="background:var(--proj-light);padding:80px 56px;display:flex;flex-direction:column;align-items:center;gap:20px">
+  <div class="section-label reveal" style="margin-bottom:0">Brand Mark</div>
+  <img src="../assets/04-soriano-packaging/logo%20curvo.png" alt="Soriano logo"
+    style="max-width:560px;width:70%;display:block;object-fit:contain"
+    onerror="this.style.display='none'">
+</div>
+
+<!-- COMPARISON -->
+<section id="comparison">
+  <div class="comp-header">
+    <div class="section-label reveal">Before / After</div>
+    <h2 class="reveal d1" style="font-family:var(--display);font-size:clamp(44px,7vw,112px);line-height:.9;color:var(--ink)">OLD VS<br><span style="font-family:var(--serif);font-style:italic;color:var(--proj-warm)">New</span></h2>
+  </div>
+  <div class="comp-cols">
+    <div class="comp-col reveal">
+      <div class="comp-col-label old">Before — 2022</div>
+      <img class="comp-img" src="../assets/04-soriano-packaging/previus%20packagings.png" alt="Previous packaging" style="object-fit:contain;background:var(--sand)" onerror="this.style.display='none'">
+      <p class="comp-desc">Dated color palette, inconsistent hierarchy, competing visual elements. The brand was present but not purposeful.</p>
+    </div>
+    <div class="comp-col reveal d1">
+      <div class="comp-col-label new">After — 2024</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;background:var(--proj-light);aspect-ratio:3/2;gap:0">
+        <img src="../assets/04-soriano-packaging/mockups%20250g.png" alt="Clásico" style="width:100%;height:100%;object-fit:contain;display:block">
+        <img src="../assets/04-soriano-packaging/mockups%20chips%20200g.png" alt="Chips" style="width:100%;height:100%;object-fit:contain;display:block">
+      </div>
+      <p class="comp-desc">Refined palette, clear hierarchy, confident typography. Same brand equity — sharper expression.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DETAILS -->
+<section id="details">
+  <div class="section-label reveal">Craft Details</div>
+
+  <div class="details-sub reveal">
+    <div class="details-sub-label">Clásico</div>
+    <div class="details-grid">
+      <div class="detail-cell">
+        <img src="../assets/04-soriano-packaging/biscuits%20new%20image.png" alt="Biscuit new logo">
+        <div class="detail-label">New Image</div>
+      </div>
+      <div class="detail-cell">
+        <img src="../assets/04-soriano-packaging/argentinian%20flag.png" alt="Argentinian flag">
+        <div class="detail-label">Argentinian Flag</div>
+      </div>
+      <div class="detail-cell">
+        <img src="../assets/04-soriano-packaging/new%20color%20and%20patron.png" alt="New color and pattern">
+        <div class="detail-label">New Color &amp; Pattern</div>
+      </div>
+      <div class="detail-cell">
+        <img src="../assets/04-soriano-packaging/red%20lines.png" alt="Red lines">
+        <div class="detail-label">Red Lines</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="details-sub reveal d1">
+    <div class="details-sub-label">Chips</div>
+    <div class="details-grid">
+      <div class="detail-cell">
+        <img src="../assets/04-soriano-packaging/new%20product%20name.png" alt="New product name">
+        <div class="detail-label">New Product Name</div>
+      </div>
+      <div class="detail-cell">
+        <img src="../assets/04-soriano-packaging/argen%20flag.png" alt="Argen flag">
+        <div class="detail-label">Argentinian Flag</div>
+      </div>
+      <div class="detail-cell">
+        <img src="../assets/04-soriano-packaging/brown%20lines.png" alt="Brown lines">
+        <div class="detail-label">Brown Lines</div>
+      </div>
+      <div class="detail-cell">
+        <img src="../assets/04-soriano-packaging/new%20image.png" alt="New image">
+        <div class="detail-label">New Image</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEXT -->
+<a class="next-wrap" href="05-green-eat.html">
+  <div>
+    <div class="next-lbl">Next Project — 05 / 08</div>
+    <div class="next-title">GREEN EAT<br><em>App</em></div>
+  </div>
+  <div class="next-arrow">↗</div>
+  <div class="next-bg">GREEN</div>
+</a>
+
+<footer>
+  <a class="foot-logo" href="../index.html">CJ</a>
+  <div class="foot-copy">© 2026 Candela Jalil</div>
+  <a class="foot-link" href="../index.html">← All Projects</a>
+</footer>
+
+<script>
+const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function anim(){tx+=(mx-tx)*.08;ty+=(my-ty)*.08;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.prod-item,.detail-cell').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
+});
+const nav=document.querySelector('nav');
+window.addEventListener('scroll',()=>{
+  const s=window.scrollY>80;
+  nav.style.background=s?'rgba(245,241,234,.88)':'transparent';
+  nav.style.backdropFilter=s?'blur(16px)':'none';
+  nav.style.borderColor=s?'rgba(42,38,34,.08)':'transparent';
+},{passive:true});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

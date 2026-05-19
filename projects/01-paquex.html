@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paquex Identity — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#2a2622;--ink-soft:#4a423a;--cream:#f5f1ea;--cream-deep:#ede5d6;
+  --ivory:#faf7f0;--sand:#e8dfcc;--line:rgba(42,38,34,.12);--line-soft:rgba(42,38,34,.06);
+  --accent:#8a8769;--accent-warm:#b9a584;
+  --serif:'DM Serif Display',serif;--mono:'Space Mono',monospace;--display:'Bebas Neue',sans-serif;
+  --proj:#ed4723;--proj-dark:#9e3518;
+}
+html{scroll-behavior:smooth;background:var(--cream)}
+body{background:var(--cream);color:var(--ink);font-family:var(--mono);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+::selection{background:var(--proj);color:var(--ivory)}
+
+#cursor{position:fixed;width:10px;height:10px;background:var(--ink);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .35s ease,height .35s ease,background .35s ease}
+#cursor.hover{width:52px;height:52px;background:var(--proj);opacity:.55}
+#cursor-trail{position:fixed;width:36px;height:36px;border:0.5px solid rgba(42,38,34,.25);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .5s ease,top .5s ease}
+#grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.025;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:28px 56px;transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:0.5px solid transparent}
+.nav-logo{font-family:var(--display);font-size:18px;letter-spacing:.14em;color:var(--ink);text-decoration:none}
+.nav-back{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);text-decoration:none;opacity:.65;transition:opacity .3s;display:flex;align-items:center;gap:10px}
+.nav-back:hover{opacity:1}
+.nav-count{font-size:10px;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+
+/* ─── HERO: FULL SPLIT ─── */
+#hero{height:100vh;display:grid;grid-template-columns:45% 55%;position:relative;overflow:hidden}
+.hero-left{background:var(--cream);display:flex;flex-direction:column;justify-content:flex-end;padding:56px;padding-top:120px;position:relative;z-index:2}
+.hero-ghost{position:absolute;top:50%;left:0;transform:translateY(-50%);font-family:var(--display);font-size:clamp(100px,16vw,240px);color:transparent;-webkit-text-stroke:1px rgba(42,38,34,.06);line-height:.9;pointer-events:none;white-space:nowrap;padding-left:56px}
+.hero-eyebrow{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--proj);margin-bottom:20px;opacity:0;animation:slideUp .9s .7s forwards}
+.hero-title{font-family:var(--display);font-size:clamp(72px,10vw,160px);line-height:.88;color:var(--ink);letter-spacing:-.005em;opacity:0;animation:slideUp .9s .4s forwards}
+.hero-title em{font-family:var(--serif);font-style:italic;color:var(--proj);font-weight:400;font-size:.68em}
+.hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:32px;opacity:0;animation:slideUp .8s .9s forwards}
+.hero-tag{font-size:9px;letter-spacing:.2em;text-transform:uppercase;border:0.5px solid var(--line);padding:5px 14px;border-radius:100px;background:rgba(255,255,255,.5)}
+.hero-right{position:relative;overflow:hidden;background:var(--proj)}
+.hero-img{width:100%;height:100%;object-fit:contain;display:block;transition:transform 8s ease;padding:40px}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(270deg,rgba(230,60,47,.35),transparent 55%);z-index:1;pointer-events:none}
+
+/* ─── INFO BAND ─── */
+.info-band{background:var(--ink);color:var(--cream);padding:20px 56px;display:flex;justify-content:space-between;align-items:center}
+.info-item .i-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-warm);margin-bottom:4px}
+.info-item .i-val{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+
+/* ─── BRIEF ─── */
+#brief{padding:120px 56px;background:var(--ivory);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.section-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:56px}
+.section-label::before{content:'';width:40px;height:1px;background:var(--accent);display:block}
+.brief-heading{font-family:var(--display);font-size:clamp(44px,6vw,92px);line-height:.9;color:var(--ink);margin-bottom:40px;letter-spacing:-.005em}
+.brief-heading em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.brief-body{font-size:13px;line-height:1.9;color:var(--ink-soft);margin-bottom:20px;max-width:500px}
+.brief-img{width:100%;aspect-ratio:16/9;object-fit:contain;display:block;background:var(--proj);padding:40px}
+.brief-img-fallback{width:100%;aspect-ratio:3/4;background:var(--proj);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(48px,7vw,108px);color:rgba(255,255,255,.12);letter-spacing:.04em}
+.brief-caption{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-top:14px}
+
+/* ─── BRAND MARK: CINEMATIC CENTER ─── */
+#brand-mark{padding:160px 56px;background:var(--cream);text-align:center;position:relative;overflow:hidden}
+.mark-ghost{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--display);font-size:clamp(180px,30vw,480px);color:transparent;-webkit-text-stroke:1px rgba(42,38,34,.04);white-space:nowrap;pointer-events:none;letter-spacing:-.02em;line-height:1}
+.mark-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:80px;position:relative;z-index:1}
+.mark-label::before,.mark-label::after{content:'';width:40px;height:1px;background:var(--accent);display:block}
+.mark-logotype{font-family:var(--display);font-size:clamp(80px,15vw,240px);color:var(--ink);letter-spacing:-.01em;position:relative;z-index:1;line-height:.9}
+.mark-logo-img{max-width:560px;width:80%;display:block;margin:0 auto;position:relative;z-index:1}
+.mark-sub{font-family:var(--serif);font-style:italic;font-size:clamp(16px,2.2vw,28px);color:var(--accent-warm);margin-top:28px;position:relative;z-index:1}
+
+/* ─── COLOR SYSTEM: 3 BLOCKS ─── */
+#color-system{display:grid;grid-template-columns:repeat(3,1fr);height:360px}
+.color-block{display:flex;flex-direction:column;justify-content:flex-end;padding:32px 28px;cursor:none;transition:flex .55s cubic-bezier(.77,0,.18,1),padding .3s}
+.color-block:hover{flex:2}
+.c-name{font-family:var(--display);font-size:clamp(20px,2.5vw,34px);letter-spacing:.04em;margin-bottom:6px}
+.c-hex{font-size:9px;letter-spacing:.22em;text-transform:uppercase;opacity:.65}
+.cb-red{background:var(--proj);color:var(--ivory)}
+.cb-paper{background:var(--cream);color:var(--ink);border:0.5px solid var(--line)}
+.cb-ink{background:var(--ink);color:var(--cream)}
+.cb-warm{background:var(--accent-warm);color:var(--ink)}
+
+/* ─── MOTION: FULL WIDTH ─── */
+#motion{background:var(--ink);overflow:hidden}
+.motion-text{padding:96px 56px 72px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end;color:var(--cream)}
+.motion-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-warm);display:flex;align-items:center;gap:14px;margin-bottom:44px;grid-column:1/-1}
+.motion-lbl::before{content:'';width:40px;height:1px;background:var(--accent-warm);display:block}
+.motion-h{font-family:var(--display);font-size:clamp(52px,7vw,112px);line-height:.88;letter-spacing:-.005em}
+.motion-h em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.motion-p{font-size:13px;line-height:1.85;color:rgba(245,241,234,.65);max-width:380px;align-self:end}
+.motion-strip{width:100%;overflow:hidden;line-height:0}
+.motion-strip img{width:100%;display:block}
+
+/* ─── APPLICATIONS: ASYMMETRIC GRID ─── */
+#applications{padding:120px 56px;background:var(--cream-deep)}
+.app-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:64px}
+.app-lbl::before{content:'';width:40px;height:1px;background:var(--accent);display:block}
+.app-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.app-cell{overflow:hidden;position:relative;background:var(--sand)}
+.app-cell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.3s cubic-bezier(.16,1,.3,1)}
+.app-cell:hover img{transform:scale(1.04)}
+.app-cell-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--display);color:rgba(42,38,34,.1);font-size:clamp(32px,5vw,80px);letter-spacing:.04em}
+.a1{grid-column:span 12;aspect-ratio:2/1}
+.a2{grid-column:span 6;aspect-ratio:16/9}
+.a3{grid-column:span 6;aspect-ratio:16/9}
+.a4{grid-column:span 12;aspect-ratio:4/1}
+.a5{grid-column:span 12;aspect-ratio:16/9}
+
+/* ─── DIGITAL ─── */
+#digital{background:var(--ink);color:var(--cream);overflow:hidden}
+.dig-header{padding:96px 56px 64px;display:flex;justify-content:space-between;align-items:flex-end}
+.dig-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-warm);display:flex;align-items:center;gap:14px}
+.dig-label::before{content:'';width:40px;height:1px;background:var(--accent-warm);display:block}
+.dig-heading{font-family:var(--display);font-size:clamp(40px,6vw,88px);line-height:.9;color:var(--cream);letter-spacing:-.005em}
+.dig-heading em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.dig-ig-wrap{width:100%;overflow:hidden;line-height:0}
+.dig-ig-wrap img{width:100%;display:block;transition:transform 1.4s cubic-bezier(.16,1,.3,1)}
+.dig-ig-wrap:hover img{transform:scale(1.02)}
+.dig-web-row{padding:16px 56px 96px;display:grid;grid-template-columns:1fr 2fr;gap:16px;align-items:center}
+.dig-web-caption{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,241,234,.35);line-height:1.8}
+.dig-web-img{overflow:hidden;background:#111}
+.dig-web-img img{width:100%;display:block;transition:transform 1.2s cubic-bezier(.16,1,.3,1)}
+.dig-web-img:hover img{transform:scale(1.03)}
+
+/* ─── COLOR APPLICATION ─── */
+#color-application{padding:120px 56px;background:var(--cream);color:var(--ink)}
+.col-app-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:64px}
+.col-app-label::before{content:'';width:40px;height:1px;background:var(--accent);display:block}
+.col-app-img{width:100%;overflow:hidden}
+.col-app-img img{width:100%;display:block;object-fit:cover;transition:transform 1.2s cubic-bezier(.16,1,.3,1)}
+.col-app-img:hover img{transform:scale(1.02)}
+
+@media(max-width:900px){
+  #digital{padding:80px 24px}.dig-grid{grid-template-columns:1fr}
+  #color-application{padding:80px 24px}
+}
+
+/* ─── NEXT PROJECT ─── */
+.next-wrap{display:block;text-decoration:none;background:var(--ink);color:var(--cream);padding:96px 56px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;transition:background .4s}
+.next-wrap:hover{background:#1a1208}
+.next-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-warm);margin-bottom:16px}
+.next-title{font-family:var(--display);font-size:clamp(44px,8vw,124px);line-height:.88;letter-spacing:-.005em}
+.next-title em{font-family:var(--serif);font-style:italic;color:var(--accent-warm)}
+.next-arrow{font-size:clamp(56px,9vw,140px);color:var(--cream);opacity:.25;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .3s;flex-shrink:0}
+.next-wrap:hover .next-arrow{transform:translateX(18px);opacity:.6}
+.next-bg{position:absolute;bottom:-60px;right:0;font-family:var(--display);font-size:clamp(100px,20vw,340px);color:transparent;-webkit-text-stroke:1px rgba(245,241,234,.04);line-height:1;pointer-events:none}
+
+footer{background:var(--cream);padding:40px 56px;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid var(--line-soft)}
+.foot-logo{font-family:var(--display);font-size:20px;color:var(--ink);letter-spacing:.14em;text-decoration:none}
+.foot-copy{font-size:9.5px;letter-spacing:.18em;color:var(--ink-soft);opacity:.6;text-transform:uppercase}
+.foot-link{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:10px;transition:color .3s}
+.foot-link:hover{color:var(--ink)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+@media(max-width:900px){
+  body{cursor:auto}#cursor,#cursor-trail{display:none}
+  nav{padding:20px 24px}
+  #hero{grid-template-columns:1fr;height:auto}
+  .hero-left{padding:120px 24px 56px}.hero-right{height:65vw}
+  .info-band{flex-wrap:wrap;gap:20px;padding:24px;justify-content:center}
+  #brief{grid-template-columns:1fr;gap:40px;padding:80px 24px}
+  #brand-mark{padding:96px 24px}
+  #color-system{grid-template-columns:1fr 1fr;height:auto}
+  .color-block{min-height:160px}
+  .motion-text{padding:56px 24px 40px;grid-template-columns:1fr}
+  #applications{padding:80px 24px}
+  .app-grid{grid-template-columns:1fr}
+  .a1,.a2,.a3,.a4,.a5{grid-column:span 1;aspect-ratio:16/9}
+  .a4{aspect-ratio:2/1}
+  .next-wrap{padding:64px 24px;flex-direction:column;align-items:flex-start;gap:28px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 24px}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-trail"></div><div id="grain"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">CJ</a>
+  <a class="nav-back" href="../index.html">← Back to Work</a>
+  <span class="nav-count">01 / 08</span>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-ghost">01</div>
+    <div class="hero-eyebrow">Visual Identity · Branding · 2025</div>
+    <h1 class="hero-title">PAQUEX<br><em>Identity</em></h1>
+    <div class="hero-tags">
+      <span class="hero-tag">Visual Identity</span>
+      <span class="hero-tag">Brand System</span>
+      <span class="hero-tag">Motion</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img class="hero-img" src="../assets/01-paquex/motion%20logo.gif" alt="Paquex Identity" onerror="this.style.display='none'">
+    <div class="hero-overlay"></div>
+  </div>
+</section>
+
+<!-- INFO BAND -->
+<div class="info-band">
+  <div class="info-item"><div class="i-label">Year</div><div class="i-val">2025</div></div>
+  <div class="info-item"><div class="i-label">Category</div><div class="i-val">IDENTITY</div></div>
+  <div class="info-item"><div class="i-label">Client</div><div class="i-val">PAQUEX</div></div>
+  <div class="info-item"><div class="i-label">Scope</div><div class="i-val">FULL BRAND</div></div>
+  <div class="info-item"><div class="i-label">Role</div><div class="i-val">DESIGNER</div></div>
+</div>
+
+<!-- BRIEF -->
+<section id="brief">
+  <div>
+    <div class="section-label reveal">Brief</div>
+    <h2 class="brief-heading reveal d1">A BRAND BUILT<br>FOR <em>Motion</em></h2>
+    <p class="brief-body reveal d2">Paquex is a logistics brand operating at the speed of now. The challenge: create a visual identity that communicates precision, reliability, and energy — without falling into the generic language of the industry.</p>
+    <p class="brief-body reveal d2">The solution: a system built around motion. Every element — from the logotype to the brand applications — carries a sense of direction, speed, and arrival.</p>
+  </div>
+  <div>
+    <img class="brief-img reveal d1" src="../assets/01-paquex/logo%20paquex.png" alt="Paquex Identity System" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="brief-img-fallback" style="display:none;background:var(--proj)">PAQUEX</div>
+    <div class="brief-caption reveal d2">Brand in Motion — Primary Identity System</div>
+  </div>
+</section>
+
+<!-- BRAND MARK -->
+<section id="brand-mark">
+  <div class="mark-ghost">PQX</div>
+  <div class="mark-label reveal">Brand Mark</div>
+  <img class="mark-logo-img reveal d1" src="../assets/01-paquex/logo%20naranja%20sin%20fondo.png" alt="Paquex Logo" onerror="this.style.display='none'">
+  <div class="mark-sub reveal d2">Precision in Every Delivery</div>
+</section>
+
+<!-- COLOR SYSTEM -->
+<div id="color-system">
+  <div class="color-block cb-red"><div class="c-name">PAQUEX<br>ORANGE</div><div class="c-hex">#ED4723</div></div>
+  <div class="color-block cb-paper"><div class="c-name">PAPER</div><div class="c-hex">#F5F1EA</div></div>
+  <div class="color-block cb-ink"><div class="c-name">INK</div><div class="c-hex">#2A2622</div></div>
+</div>
+
+<!-- MOTION SECTION -->
+<section id="motion">
+  <div class="motion-text">
+    <div class="motion-lbl reveal">Motion Identity</div>
+    <h2 class="motion-h reveal d1">BRAND<br>IN <em>Motion</em></h2>
+    <p class="motion-p reveal d2">The animated identity brings the brand to life across digital touchpoints. Movement is not decorative — it's structural. The logo carries its own energy, communicating speed and arrival in a single gesture.</p>
+  </div>
+  <div class="motion-strip">
+    <img src="../assets/01-paquex/slogan.gif" alt="Paquex — Slogan in Motion" onerror="this.style.display='none'">
+  </div>
+</section>
+
+<!-- APPLICATIONS -->
+<section id="applications">
+  <div class="app-lbl reveal">Applications</div>
+  <div class="app-grid">
+    <div class="app-cell a1 reveal">
+      <img src="../assets/01-paquex/street%20billboard.png" alt="Paquex — Street billboard" onerror="this.style.display='none'">
+    </div>
+    <div class="app-cell a2 reveal d1">
+      <img src="../assets/01-paquex/billboard.png" alt="Paquex — Billboard" onerror="this.style.display='none'">
+    </div>
+    <div class="app-cell a3 reveal d2">
+      <img src="../assets/01-paquex/van.png" alt="Paquex — Van" onerror="this.style.display='none'">
+    </div>
+    <div class="app-cell a4 reveal">
+      <img src="../assets/01-paquex/different%20packaging.png" alt="Paquex — Packaging" onerror="this.style.display='none'">
+    </div>
+    <div class="app-cell a5 reveal d1">
+      <img src="../assets/01-paquex/box%20in%20action.png" alt="Paquex — Box" onerror="this.style.display='none'">
+    </div>
+  </div>
+</section>
+
+<!-- DIGITAL -->
+<section id="digital">
+  <div class="dig-header">
+    <div class="dig-label reveal">Digital</div>
+    <h2 class="dig-heading reveal d1">SOCIAL<br><em>Media</em></h2>
+  </div>
+  <div class="dig-ig-wrap reveal">
+    <img src="../assets/01-paquex/instagram%20posts.gif" alt="Paquex — Instagram Posts" onerror="this.style.display='none'">
+  </div>
+  <div class="dig-web-row">
+    <div class="dig-web-caption reveal">Sitio web<br>institucional</div>
+    <div class="dig-web-img reveal d1">
+      <img src="../assets/01-paquex/website.png" alt="Paquex — Web" onerror="this.style.display='none'">
+    </div>
+  </div>
+</section>
+
+<!-- COLOR APPLICATION -->
+<section id="color-application">
+  <div class="col-app-label reveal">Color Application</div>
+  <div class="col-app-img reveal d1">
+    <img src="../assets/01-paquex/color%20aplicattion.png" alt="Paquex — Color Application" onerror="this.style.display='none'">
+  </div>
+</section>
+
+<!-- NEXT PROJECT -->
+<a class="next-wrap" href="02-lo-camp.html">
+  <div>
+    <div class="next-lbl">Next Project — 02 / 08</div>
+    <div class="next-title">LO CAMP<br><em>Editorial</em></div>
+  </div>
+  <div class="next-arrow">↗</div>
+  <div class="next-bg">CAMP</div>
+</a>
+
+<footer>
+  <a class="foot-logo" href="../index.html">CJ</a>
+  <div class="foot-copy">© 2026 Candela Jalil</div>
+  <a class="foot-link" href="../index.html">← All Projects</a>
+</footer>
+
+<script>
+const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function anim(){tx+=(mx-tx)*.08;ty+=(my-ty)*.08;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.color-block,.app-cell').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
+});
+const nav=document.querySelector('nav');
+window.addEventListener('scroll',()=>{
+  const s=window.scrollY>80;
+  nav.style.background=s?'rgba(245,241,234,.88)':'transparent';
+  nav.style.backdropFilter=s?'blur(16px)':'none';
+  nav.style.borderColor=s?'rgba(42,38,34,.08)':'transparent';
+},{passive:true});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const hi=document.querySelector('.hero-img');
+window.addEventListener('scroll',()=>{if(hi&&window.scrollY<window.innerHeight)hi.style.transform=`scale(1.06) translateY(${window.scrollY*.07}px)`},{passive:true});
+</script>
+</body>
+</html>

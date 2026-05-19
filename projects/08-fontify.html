@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fontify App — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#2a2622;--ink-soft:#4a423a;--cream:#f5f1ea;--cream-deep:#ede5d6;
+  --ivory:#faf7f0;--sand:#e8dfcc;--line:rgba(42,38,34,.12);--line-soft:rgba(42,38,34,.06);
+  --accent:#8a8769;--accent-warm:#b9a584;
+  --serif:'DM Serif Display',serif;--mono:'Space Mono',monospace;--display:'Bebas Neue',sans-serif;
+  --proj:#5c4bbb;--proj-light:#ece9f8;--proj-pale:#f6f4fd;--proj-dark:#2d2260;
+}
+html{scroll-behavior:smooth;background:var(--cream)}
+body{background:var(--cream);color:var(--ink);font-family:var(--mono);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+::selection{background:var(--proj);color:var(--ivory)}
+#cursor{position:fixed;width:10px;height:10px;background:var(--ink);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .35s ease,height .35s ease,background .35s ease}
+#cursor.hover{width:52px;height:52px;background:var(--proj);opacity:.45}
+#cursor-trail{position:fixed;width:36px;height:36px;border:0.5px solid rgba(42,38,34,.25);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .5s ease,top .5s ease}
+#grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.025;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:28px 56px;transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:0.5px solid transparent}
+.nav-logo{font-family:var(--display);font-size:18px;letter-spacing:.14em;color:var(--ink);text-decoration:none}
+.nav-back{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);text-decoration:none;opacity:.65;transition:opacity .3s}
+.nav-back:hover{opacity:1}
+.nav-count{font-size:10px;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+
+/* ─── HERO: TYPE SPECIMEN + FLOATING APP ─── */
+#hero{
+  min-height:100vh;background:var(--proj-pale);
+  display:grid;grid-template-columns:1fr 1fr;
+  position:relative;overflow:hidden;padding-top:100px;
+}
+.hero-left{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:56px 48px 80px 56px;position:relative;z-index:2;
+}
+.hero-specimen{overflow:hidden;margin-bottom:40px}
+.spec-line{
+  font-family:var(--display);line-height:.85;letter-spacing:-.01em;
+  display:block;opacity:0;
+}
+.sl1{font-size:clamp(60px,9vw,148px);color:var(--proj);animation:slideUp .9s .3s forwards}
+.sl2{font-size:clamp(48px,7.5vw,124px);color:var(--ink);animation:slideUp .9s .45s forwards}
+.sl3{font-family:var(--serif);font-style:italic;font-size:clamp(36px,6vw,96px);color:var(--proj-dark);animation:slideUp .9s .6s forwards}
+.sl4{font-size:clamp(24px,4vw,64px);color:rgba(42,38,34,.25);animation:slideUp .9s .75s forwards}
+.hero-eyebrow{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--proj);margin-bottom:12px;opacity:0;animation:slideUp .8s .9s forwards}
+.hero-desc{font-size:13px;line-height:1.85;color:var(--ink-soft);max-width:380px;opacity:0;animation:slideUp .8s 1s forwards}
+.hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px;opacity:0;animation:slideUp .8s 1.1s forwards}
+.hero-tag{font-size:9px;letter-spacing:.2em;text-transform:uppercase;border:0.5px solid rgba(92,75,187,.2);padding:5px 14px;border-radius:100px;background:rgba(92,75,187,.06);color:var(--proj)}
+/* right: floating phone on type bg */
+.hero-right{
+  position:relative;overflow:hidden;
+  background:var(--proj-light);
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-type-bg{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  justify-content:center;padding:32px;gap:4px;overflow:hidden;
+}
+.hero-type-row{
+  font-family:var(--display);white-space:nowrap;
+  color:transparent;letter-spacing:-.01em;line-height:.9;
+  animation:marquee var(--dur,30s) linear infinite;
+}
+.hero-type-row:nth-child(odd){-webkit-text-stroke:1px rgba(92,75,187,.08);font-size:clamp(40px,7vw,112px);animation-direction:normal}
+.hero-type-row:nth-child(even){-webkit-text-stroke:1px rgba(92,75,187,.05);font-size:clamp(28px,5vw,80px);animation-direction:reverse;--dur:40s}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.hero-phone{
+  position:relative;z-index:2;
+  width:clamp(180px,22vw,280px);
+  background:var(--ivory);border-radius:32px;
+  box-shadow:0 40px 80px -20px rgba(45,34,96,.25),0 8px 24px -8px rgba(45,34,96,.15);
+  overflow:hidden;
+  animation:phoneFloat 7s ease-in-out infinite;
+}
+@keyframes phoneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.hero-phone img{width:100%;display:block}
+.hero-phone-ph{padding:32px 24px;font-family:var(--display);font-size:clamp(18px,2.5vw,32px);color:var(--proj);letter-spacing:.04em;min-height:420px;display:flex;flex-direction:column;justify-content:center;gap:16px;background:var(--proj-pale)}
+.phone-ui-bar{height:2px;background:var(--proj);width:60%;border-radius:2px;opacity:.3}
+.phone-ui-text{width:80%;height:10px;background:rgba(92,75,187,.1);border-radius:4px}
+.phone-ui-text.sm{width:55%;opacity:.6}
+
+/* ─── INFO BAND ─── */
+.info-band{background:var(--proj);color:var(--ivory);padding:20px 56px;display:flex;justify-content:space-between;align-items:center}
+.info-item .i-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px}
+.info-item .i-val{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+
+/* ─── PROBLEM ─── */
+#problem{padding:120px 56px;background:var(--ivory);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.section-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:56px}
+.section-label::before{content:'';width:40px;height:1px;background:var(--accent);display:block}
+.prob-h{font-family:var(--display);font-size:clamp(52px,7vw,112px);line-height:.88;color:var(--ink);margin-bottom:36px;letter-spacing:-.005em}
+.prob-h em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.prob-body{font-size:13px;line-height:1.9;color:var(--ink-soft);margin-bottom:20px;max-width:460px}
+.insight-list{margin-top:48px;border-top:0.5px solid var(--line)}
+.insight-row{display:flex;gap:24px;padding:20px 0;border-bottom:0.5px solid var(--line);align-items:flex-start}
+.insight-num{font-family:var(--display);font-size:40px;color:transparent;-webkit-text-stroke:1px var(--proj);line-height:1;flex-shrink:0;opacity:.4}
+.insight-text{font-size:12px;line-height:1.75;color:var(--ink-soft)}
+.insight-text strong{color:var(--ink);display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+/* big type column */
+.prob-type-col{display:flex;flex-direction:column;gap:0}
+.pt-row{font-family:var(--display);line-height:.88;letter-spacing:-.01em;padding:16px 0;border-bottom:0.5px solid var(--line);cursor:none;transition:color .3s,padding .3s}
+.pt-row:first-child{border-top:0.5px solid var(--line)}
+.pt-row:hover{color:var(--proj);padding-left:12px}
+.pt-sm{font-size:clamp(20px,3vw,44px);color:var(--ink-soft);opacity:.4}
+.pt-md{font-size:clamp(32px,5vw,72px);color:var(--ink)}
+.pt-lg{font-size:clamp(48px,7.5vw,116px);color:var(--ink)}
+.pt-xl{font-family:var(--serif);font-style:italic;font-size:clamp(36px,5.5vw,84px);color:var(--proj)}
+
+/* ─── APP FLOW: HORIZONTAL CARDS ─── */
+#app-flow{background:var(--cream-deep);padding:120px 0}
+.flow-header{padding:0 56px;margin-bottom:56px}
+.flow-track-wrap{overflow-x:auto;padding:0 56px 32px;scrollbar-width:none;scroll-snap-type:x mandatory}
+.flow-track-wrap::-webkit-scrollbar{display:none}
+.flow-track{display:flex;gap:20px;width:max-content}
+.flow-card{
+  width:260px;flex-shrink:0;scroll-snap-align:start;
+  border:0.5px solid var(--line);background:var(--ivory);
+  transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s;
+}
+.flow-card:hover{transform:translateY(-8px);box-shadow:0 20px 48px -12px rgba(92,75,187,.12)}
+.flow-card-screen{width:100%;aspect-ratio:9/16;background:var(--proj-pale);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.flow-card-screen img{width:100%;height:100%;object-fit:cover;display:block}
+.screen-ui{padding:16px;width:100%;display:flex;flex-direction:column;gap:8px}
+.ui-bar{height:3px;border-radius:3px;background:var(--proj);opacity:.2}
+.ui-title{font-family:var(--display);font-size:clamp(16px,2.5vw,28px);color:var(--proj);opacity:.6;line-height:.9}
+.ui-row{height:8px;border-radius:4px;background:rgba(92,75,187,.08)}
+.flow-card-info{padding:24px}
+.flow-card-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--proj);margin-bottom:8px}
+.flow-card-title{font-family:var(--display);font-size:22px;color:var(--ink);margin-bottom:8px;letter-spacing:.01em}
+.flow-card-desc{font-size:11px;line-height:1.7;color:var(--ink-soft)}
+
+/* ─── FEATURES: 2-COL ─── */
+#features{padding:120px 56px;background:var(--cream)}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:0.5px solid var(--line);margin-top:72px}
+.feat-card{background:var(--cream);padding:56px 48px;position:relative;overflow:hidden;transition:background .4s}
+.feat-card:hover{background:var(--ivory)}
+.feat-card:hover .feat-accent{width:100%}
+.feat-num{font-family:var(--display);font-size:80px;color:transparent;-webkit-text-stroke:1px rgba(92,75,187,.08);line-height:1;margin-bottom:16px;transition:color .4s,-webkit-text-stroke-color .4s}
+.feat-card:hover .feat-num{-webkit-text-stroke-color:rgba(92,75,187,.14)}
+.feat-title{font-family:var(--display);font-size:clamp(24px,3vw,40px);color:var(--ink);margin-bottom:16px;letter-spacing:.02em}
+.feat-body{font-size:12px;line-height:1.85;color:var(--ink-soft);max-width:360px}
+.feat-accent{position:absolute;bottom:0;left:0;height:1.5px;background:var(--proj);width:0;transition:width .5s cubic-bezier(.77,0,.18,1)}
+
+/* ─── DESIGN DECISIONS ─── */
+#decisions{padding:120px 56px;background:var(--proj-pale);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.dec-heading{font-family:var(--display);font-size:clamp(52px,8vw,128px);line-height:.88;color:var(--ink);letter-spacing:-.005em;margin-bottom:36px}
+.dec-heading em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.dec-body{font-size:13px;line-height:1.9;color:var(--ink-soft);margin-bottom:20px;max-width:460px}
+/* type scale visual */
+.dec-scale{display:flex;flex-direction:column;gap:12px}
+.scale-row{display:flex;align-items:baseline;gap:20px;padding:16px;border-left:2px solid transparent;transition:border-color .3s,background .3s}
+.scale-row:hover{border-color:var(--proj);background:rgba(92,75,187,.04)}
+.scale-size{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);flex-shrink:0;width:48px}
+.scale-sample{font-family:var(--display);color:var(--ink);line-height:.9}
+.ss1{font-size:clamp(36px,6vw,96px)}
+.ss2{font-size:clamp(24px,4vw,64px)}
+.ss3{font-size:clamp(18px,3vw,44px);color:var(--ink-soft)}
+.ss4{font-size:clamp(12px,2vw,24px);font-family:var(--serif);font-style:italic;color:var(--proj)}
+.ss5{font-size:clamp(10px,1.5vw,16px);font-family:var(--mono);color:var(--ink-soft);letter-spacing:.08em}
+
+/* ─── CLOSE: FULL TYPE MOMENT ─── */
+#closing{
+  padding:160px 56px;background:var(--proj);
+  text-align:center;position:relative;overflow:hidden;
+}
+.closing-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(160px,30vw,500px);color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.06);white-space:nowrap;pointer-events:none}
+.closing-title{font-family:var(--display);font-size:clamp(64px,12vw,200px);color:var(--ivory);line-height:.88;letter-spacing:-.01em;position:relative;z-index:1}
+.closing-sub{font-family:var(--serif);font-style:italic;font-size:clamp(16px,2.2vw,28px);color:rgba(255,255,255,.45);margin-top:28px;position:relative;z-index:1}
+
+/* ─── BACK TO HOME (last project) ─── */
+.back-home{display:flex;text-decoration:none;background:var(--ink);color:var(--cream);padding:96px 56px;justify-content:space-between;align-items:center;position:relative;overflow:hidden;transition:background .4s}
+.back-home:hover{background:#1a1208}
+.bh-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-warm);margin-bottom:16px}
+.bh-title{font-family:var(--display);font-size:clamp(44px,8vw,124px);line-height:.88;letter-spacing:-.005em}
+.bh-title em{font-family:var(--serif);font-style:italic;color:var(--accent-warm)}
+.bh-arrow{font-size:clamp(56px,9vw,140px);color:var(--cream);opacity:.25;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .3s;flex-shrink:0}
+.back-home:hover .bh-arrow{transform:translateX(-18px);opacity:.6}
+.bh-bg{position:absolute;bottom:-60px;left:0;font-family:var(--display);font-size:clamp(100px,20vw,340px);color:transparent;-webkit-text-stroke:1px rgba(245,241,234,.04);line-height:1;pointer-events:none}
+
+footer{background:var(--cream);padding:40px 56px;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid var(--line-soft)}
+.foot-logo{font-family:var(--display);font-size:20px;color:var(--ink);letter-spacing:.14em;text-decoration:none}
+.foot-copy{font-size:9.5px;letter-spacing:.18em;color:var(--ink-soft);opacity:.6;text-transform:uppercase}
+.foot-link{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:10px;transition:color .3s}
+.foot-link:hover{color:var(--ink)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+@media(max-width:900px){
+  body{cursor:auto}#cursor,#cursor-trail{display:none}
+  nav{padding:20px 24px}
+  #hero{grid-template-columns:1fr;padding-top:100px}
+  .hero-left{padding:40px 24px 48px}
+  .hero-right{height:60vw}
+  .hero-phone{width:clamp(140px,40vw,200px)}
+  .info-band{flex-wrap:wrap;gap:20px;padding:24px;justify-content:center}
+  #problem{grid-template-columns:1fr;gap:48px;padding:80px 24px}
+  #app-flow{padding:80px 0}
+  .flow-header{padding:0 24px}
+  .flow-track-wrap{padding:0 24px 24px}
+  .flow-card{width:220px}
+  #features{padding:80px 24px}
+  .feat-grid{grid-template-columns:1fr}
+  #decisions{grid-template-columns:1fr;gap:48px;padding:80px 24px}
+  #closing{padding:100px 24px}
+  .back-home{padding:64px 24px;flex-direction:column;align-items:flex-start;gap:28px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 24px}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-trail"></div><div id="grain"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">CJ</a>
+  <a class="nav-back" href="../index.html">← Back to Work</a>
+  <span class="nav-count">08 / 08</span>
+</nav>
+
+<!-- HERO: TYPE SPECIMEN + FLOATING APP -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-specimen">
+      <span class="spec-line sl1">Aa</span>
+      <span class="spec-line sl2">FONTIFY</span>
+      <span class="spec-line sl3">Typography</span>
+      <span class="spec-line sl4">Rr Gg Bb</span>
+    </div>
+    <div class="hero-eyebrow">App Design · UX/UI · 2024</div>
+    <p class="hero-desc">A tool to test, compare and download fonts — where type is both the medium and the message.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">App Design</span>
+      <span class="hero-tag">UX/UI</span>
+      <span class="hero-tag">Typography</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-type-bg">
+      <div class="hero-type-row">ABCDEFGHIJKLMNOPABCDEFGHIJKLMNOP</div>
+      <div class="hero-type-row">QRSTUVWXYZ0123QRSTUVWXYZ0123</div>
+      <div class="hero-type-row">TYPOGRAPHY TYPOGRAPHYTYPOGRAPHY</div>
+      <div class="hero-type-row">FONTIFYFONTIFYFONTIFYFONTIFY</div>
+      <div class="hero-type-row">ABCDEFGHIJKLMNOPABCDEFGHIJKLMNOP</div>
+    </div>
+    <div class="hero-phone">
+      <img src="../assets/08-fontify/Mockups/cande%20mockup1.png" alt="Fontify App" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="hero-phone-ph" style="display:none">
+        <div class="phone-ui-bar"></div>
+        <div class="ui-title">Aa</div>
+        <div class="phone-ui-text"></div>
+        <div class="phone-ui-text sm"></div>
+        <div class="phone-ui-text"></div>
+        <div class="phone-ui-text sm"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INFO BAND -->
+<div class="info-band">
+  <div class="info-item"><div class="i-label">Year</div><div class="i-val">2024</div></div>
+  <div class="info-item"><div class="i-label">Type</div><div class="i-val">APP DESIGN</div></div>
+  <div class="info-item"><div class="i-label">Platform</div><div class="i-val">iOS</div></div>
+  <div class="info-item"><div class="i-label">Focus</div><div class="i-val">TYPOGRAPHY</div></div>
+  <div class="info-item"><div class="i-label">Role</div><div class="i-val">DESIGNER</div></div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div>
+    <div class="section-label reveal">The Brief</div>
+    <h2 class="prob-h reveal d1">WHERE<br><em>Type Lives</em></h2>
+    <p class="prob-body reveal d2">Designers spend hours hunting for the right typeface across fragmented platforms — downloading, installing, testing, comparing. Fontify was designed to collapse that workflow into a single, elegant mobile experience.</p>
+    <p class="prob-body reveal d2">The design challenge: an app about type must itself be typographically exceptional. Every interaction had to feel intentional, every screen had to demonstrate what the app celebrates.</p>
+    <div class="insight-list reveal d3">
+      <div class="insight-row">
+        <div class="insight-num">01</div>
+        <div class="insight-text"><strong>Discover</strong>Browse curated font collections with live previews in your own text.</div>
+      </div>
+      <div class="insight-row">
+        <div class="insight-num">02</div>
+        <div class="insight-text"><strong>Compare</strong>Side-by-side type comparison with adjustable size, weight, and spacing.</div>
+      </div>
+      <div class="insight-row">
+        <div class="insight-num">03</div>
+        <div class="insight-text"><strong>Download</strong>One-tap install. Fonts available system-wide, instantly.</div>
+      </div>
+    </div>
+  </div>
+  <div class="prob-type-col reveal d1">
+    <div class="pt-row pt-xl">Aa</div>
+    <div class="pt-row pt-lg">BOLD</div>
+    <div class="pt-row pt-md">Regular</div>
+    <div class="pt-row pt-sm">Light · 300</div>
+  </div>
+</section>
+
+<!-- APP FLOW -->
+<section id="app-flow">
+  <div class="flow-header">
+    <div class="section-label reveal">App Flow</div>
+    <h2 class="reveal d1" style="font-family:var(--display);font-size:clamp(44px,7vw,112px);color:var(--ink);line-height:.9">SCREEN<br><span style="font-family:var(--serif);font-style:italic;color:var(--proj)">by Screen</span></h2>
+  </div>
+  <div class="flow-track-wrap">
+    <div class="flow-track">
+      <div class="flow-card">
+        <div class="flow-card-screen">
+          <img src="../assets/08-fontify/JPG/00_tp2_Jalil.jpg" alt="Fontify — Discover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="screen-ui" style="display:none">
+            <div class="ui-bar" style="width:40%;opacity:.15"></div>
+            <div class="ui-title" style="font-size:clamp(28px,4vw,56px)">Aa</div>
+            <div class="ui-row" style="width:70%"></div>
+            <div class="ui-row" style="width:50%"></div>
+          </div>
+        </div>
+        <div class="flow-card-info">
+          <div class="flow-card-label">01 — Entry</div>
+          <div class="flow-card-title">DISCOVER</div>
+          <div class="flow-card-desc">Curated feed of trending typefaces. Live preview with user's own text.</div>
+        </div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-card-screen">
+          <img src="../assets/08-fontify/JPG/01_tp2_Jalil.jpg" alt="Fontify — Inspect" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="screen-ui" style="display:none">
+            <div class="ui-title">Ff</div>
+            <div class="ui-row"></div>
+            <div class="ui-row" style="width:60%"></div>
+            <div class="ui-bar" style="width:30%;margin-top:8px"></div>
+          </div>
+        </div>
+        <div class="flow-card-info">
+          <div class="flow-card-label">02 — Detail</div>
+          <div class="flow-card-title">INSPECT</div>
+          <div class="flow-card-desc">Full specimen view: all weights, glyphs, language support, and licensing.</div>
+        </div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-card-screen" style="background:var(--proj-light)">
+          <img src="../assets/08-fontify/JPG/02_tp2_Jalil.jpg" alt="Fontify — Compare" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="screen-ui" style="display:none">
+            <div class="ui-title" style="color:var(--proj-dark)">Aa vs Bb</div>
+            <div class="ui-row" style="background:rgba(92,75,187,.15)"></div>
+            <div class="ui-row" style="background:rgba(92,75,187,.08);width:70%"></div>
+          </div>
+        </div>
+        <div class="flow-card-info">
+          <div class="flow-card-label">03 — Compare</div>
+          <div class="flow-card-title">TEST</div>
+          <div class="flow-card-desc">Side-by-side comparison with adjustable size, weight, tracking, and leading.</div>
+        </div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-card-screen">
+          <img src="../assets/08-fontify/JPG/03_tp2_Jalil.jpg" alt="Fontify — Save" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="screen-ui" style="display:none">
+            <div class="ui-title">★</div>
+            <div class="ui-row"></div>
+            <div class="ui-row" style="width:80%"></div>
+            <div class="ui-bar" style="width:100%;opacity:.3"></div>
+          </div>
+        </div>
+        <div class="flow-card-info">
+          <div class="flow-card-label">04 — Collection</div>
+          <div class="flow-card-title">SAVE</div>
+          <div class="flow-card-desc">Curate personal font libraries. Share collections with collaborators.</div>
+        </div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-card-screen" style="background:var(--proj)">
+          <img src="../assets/08-fontify/JPG/04_tp2_Jalil.jpg" alt="Fontify — Download" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div style="display:none;font-family:var(--display);font-size:clamp(32px,5vw,80px);color:rgba(255,255,255,.2);letter-spacing:.04em">DONE</div>
+        </div>
+        <div class="flow-card-info">
+          <div class="flow-card-label">05 — Install</div>
+          <div class="flow-card-title">DOWNLOAD</div>
+          <div class="flow-card-desc">One-tap install. Fonts available system-wide in every app, instantly.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-label reveal">Key Features</div>
+  <div class="feat-grid">
+    <div class="feat-card reveal">
+      <div class="feat-num">01</div>
+      <div class="feat-title">LIVE PREVIEW</div>
+      <p class="feat-body">Type your own text and see it rendered in any font, at any size, in real time. No more mental leaps between specimen and reality.</p>
+      <div class="feat-accent"></div>
+    </div>
+    <div class="feat-card reveal d1">
+      <div class="feat-num">02</div>
+      <div class="feat-title">PAIR SUGGEST</div>
+      <p class="feat-body">AI-assisted pairing recommendations based on visual rhythm, contrast, and historical typographic convention.</p>
+      <div class="feat-accent"></div>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-num">03</div>
+      <div class="feat-title">FULL SPECIMEN</div>
+      <p class="feat-body">Every weight, every glyph, every language character. Detailed metrics including x-height, cap height, and optical size.</p>
+      <div class="feat-accent"></div>
+    </div>
+    <div class="feat-card reveal d1">
+      <div class="feat-num">04</div>
+      <div class="feat-title">INSTANT INSTALL</div>
+      <p class="feat-body">One tap to install fonts system-wide on iOS. Available immediately in every app — Figma, Notes, Pages, anywhere.</p>
+      <div class="feat-accent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MOCKUPS GALLERY -->
+<section id="mockups" style="padding:80px 56px;background:var(--cream-deep)">
+  <div class="section-label reveal">App Mockups</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px">
+    <div class="reveal" style="border-radius:8px;overflow:hidden;box-shadow:0 20px 40px -10px rgba(42,38,34,.15)">
+      <img src="../assets/08-fontify/Mockups/cande%20mockup2.png" alt="Fontify mockup 2" style="width:100%;display:block" onerror="this.parentNode.style.background='var(--proj-light)';this.style.display='none'">
+    </div>
+    <div class="reveal d1" style="border-radius:8px;overflow:hidden;box-shadow:0 20px 40px -10px rgba(42,38,34,.15)">
+      <img src="../assets/08-fontify/Mockups/cande%20mockup3.png" alt="Fontify mockup 3" style="width:100%;display:block" onerror="this.parentNode.style.background='var(--proj-light)';this.style.display='none'">
+    </div>
+    <div class="reveal d2" style="border-radius:8px;overflow:hidden;box-shadow:0 20px 40px -10px rgba(42,38,34,.15)">
+      <img src="../assets/08-fontify/Mockups/cande%20mockup4.png" alt="Fontify mockup 4" style="width:100%;display:block" onerror="this.parentNode.style.background='var(--proj-light)';this.style.display='none'">
+    </div>
+    <div class="reveal d3" style="border-radius:8px;overflow:hidden;box-shadow:0 20px 40px -10px rgba(42,38,34,.15)">
+      <img src="../assets/08-fontify/Mockups/cande%20mockup5.png" alt="Fontify mockup 5" style="width:100%;display:block" onerror="this.parentNode.style.background='var(--proj-light)';this.style.display='none'">
+    </div>
+    <div class="reveal" style="border-radius:8px;overflow:hidden;box-shadow:0 20px 40px -10px rgba(42,38,34,.15)">
+      <img src="../assets/08-fontify/Mockups/cande%20mockup6.png" alt="Fontify mockup 6" style="width:100%;display:block" onerror="this.parentNode.style.background='var(--proj-light)';this.style.display='none'">
+    </div>
+    <div class="reveal d1" style="border-radius:8px;overflow:hidden;box-shadow:0 20px 40px -10px rgba(42,38,34,.15)">
+      <img src="../assets/08-fontify/Mockups/cande%20mockup7.png" alt="Fontify mockup 7" style="width:100%;display:block" onerror="this.parentNode.style.background='var(--proj-light)';this.style.display='none'">
+    </div>
+    <div class="reveal d2" style="border-radius:8px;overflow:hidden;box-shadow:0 20px 40px -10px rgba(42,38,34,.15)">
+      <img src="../assets/08-fontify/Mockups/cande%20mockup8.png" alt="Fontify mockup 8" style="width:100%;display:block" onerror="this.parentNode.style.background='var(--proj-light)';this.style.display='none'">
+    </div>
+    <div class="reveal d3" style="border-radius:8px;overflow:hidden;box-shadow:0 20px 40px -10px rgba(42,38,34,.15);background:var(--proj);display:flex;align-items:center;justify-content:center;padding:2rem">
+      <div style="font-family:var(--display);font-size:3rem;color:rgba(255,255,255,.2);letter-spacing:.04em;text-align:center">FONTIFY</div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGN DECISIONS -->
+<section id="decisions">
+  <div>
+    <div class="section-label reveal">Design System</div>
+    <h2 class="dec-heading reveal d1">TYPE<br>TEACHING<br><em>Itself</em></h2>
+    <p class="dec-body reveal d2">The Fontify design system is built on a single principle: the interface must demonstrate what it teaches. Every type choice in the UI is intentional and documented — the app is its own specimen.</p>
+    <p class="dec-body reveal d3">Scale moves from display to micro with clear purpose. Spacing follows a base-8 grid. Color defers entirely to the typefaces being shown.</p>
+  </div>
+  <div class="dec-scale reveal d1">
+    <div class="scale-row"><span class="scale-size">96pt</span><span class="scale-sample ss1">Aa</span></div>
+    <div class="scale-row"><span class="scale-size">64pt</span><span class="scale-sample ss2">Display</span></div>
+    <div class="scale-row"><span class="scale-size">44pt</span><span class="scale-sample ss3">Heading</span></div>
+    <div class="scale-row"><span class="scale-size">28pt</span><span class="scale-sample ss4">Subheading</span></div>
+    <div class="scale-row"><span class="scale-size">13pt</span><span class="scale-sample ss5">BODY TEXT · REGULAR</span></div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section id="closing">
+  <div class="closing-bg">TYPE</div>
+  <div class="closing-title reveal">WHERE<br>TYPE<br>LIVES</div>
+  <div class="closing-sub reveal d1">Fontify — iOS App Design · 2024</div>
+</section>
+
+<!-- NEXT PROJECT -->
+<a class="back-home" href="09-gauchadas.html" style="text-decoration:none">
+  <div class="bh-bg">GAUCHO</div>
+  <div>
+    <div class="bh-label">Next Project — 09 / 13</div>
+    <div class="bh-title">GAUCHADAS<br><em>Web</em></div>
+  </div>
+  <div class="bh-arrow" style="transform:none">↗</div>
+</a>
+
+<footer>
+  <a class="foot-logo" href="../index.html">CJ</a>
+  <div class="foot-copy">© 2026 Candela Jalil</div>
+  <a class="foot-link" href="../index.html">← All Projects</a>
+</footer>
+
+<script>
+const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function anim(){tx+=(mx-tx)*.08;ty+=(my-ty)*.08;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.flow-card,.feat-card,.pt-row,.scale-row,.detail-cell').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
+});
+const nav=document.querySelector('nav');
+window.addEventListener('scroll',()=>{
+  const s=window.scrollY>80;
+  nav.style.background=s?'rgba(245,241,234,.88)':'transparent';
+  nav.style.backdropFilter=s?'blur(16px)':'none';
+  nav.style.borderColor=s?'rgba(42,38,34,.08)':'transparent';
+},{passive:true});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

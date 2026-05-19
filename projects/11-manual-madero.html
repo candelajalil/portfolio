@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Manual Madero — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a1a;
+  --cream:#f5f0e8;
+  --ivory:#faf8f3;
+  --sand:#e8e2d4;
+  --accent:#c9a84c;
+  --accent-warm:#b85c38;
+  --proj:#1e3a5f;
+  --proj-light:#2e5482;
+  --proj-gold:#c9a84c;
+  --proj-steel:#8ba7c7;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  background:var(--ivory);
+  color:var(--ink);
+  font-family:'Space Mono',monospace;
+  cursor:none;
+  overflow-x:hidden;
+}
+
+/* CURSOR */
+#cursor{position:fixed;width:12px;height:12px;background:var(--proj);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s var(--ease),background .3s;mix-blend-mode:difference}
+#cursor-trail{position:fixed;width:36px;height:36px;border:1.5px solid var(--proj);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .45s var(--ease),opacity .3s;opacity:.5;mix-blend-mode:difference}
+body:hover #cursor{transform:translate(-50%,-50%) scale(1)}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.5rem 3rem;
+  transition:background .4s,backdrop-filter .4s;
+}
+nav.scrolled{background:rgba(245,240,232,.92);backdrop-filter:blur(16px)}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.12em;color:var(--ink);text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--ink);opacity:.6;transition:opacity .3s}
+.nav-links a:hover{opacity:1}
+
+/* GRAIN */
+.grain{position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.025;mix-blend-mode:multiply}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(48px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.visible{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.22s}.d3{transition-delay:.36s}.d4{transition-delay:.52s}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  position:relative;
+  overflow:hidden;
+}
+.hero-left{
+  background:var(--proj);
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:8rem 4rem 5rem;
+  position:relative;
+  overflow:hidden;
+}
+.hero-left::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255,255,255,.06) 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255,255,255,.06) 60px);
+}
+.hero-district-label{
+  font-family:'Space Mono',monospace;
+  font-size:.65rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--proj-gold);
+  margin-bottom:1.5rem;
+}
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(5rem,10vw,9rem);
+  line-height:.92;
+  color:#fff;
+  letter-spacing:-.01em;
+}
+.hero-title span{
+  display:block;
+  color:var(--proj-gold);
+}
+.hero-meta{
+  margin-top:3rem;
+  display:flex;
+  gap:3rem;
+}
+.hero-meta-item{
+  display:flex;
+  flex-direction:column;
+  gap:.4rem;
+}
+.meta-label{
+  font-size:.6rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.45);
+}
+.meta-value{
+  font-size:.75rem;
+  color:rgba(255,255,255,.85);
+}
+
+/* Hero right: architectural visual */
+.hero-right{
+  background:var(--cream);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+.hero-arch-bg{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.arch-wordmark{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(6rem,15vw,14rem);
+  color:var(--sand);
+  letter-spacing:-.03em;
+  line-height:1;
+  text-align:center;
+  line-height:.9;
+}
+.hero-logo-preview{
+  position:relative;
+  z-index:2;
+  text-align:center;
+}
+.logo-mark{
+  width:180px;
+  height:180px;
+  margin:0 auto 2rem;
+  position:relative;
+}
+.logo-mark-inner{
+  width:100%;
+  height:100%;
+  border:3px solid var(--proj);
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.logo-mark-inner::before{
+  content:'';
+  position:absolute;
+  inset:12px;
+  border:1px solid var(--proj-gold);
+}
+.logo-mark-letter{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:5rem;
+  color:var(--proj);
+  letter-spacing:-.05em;
+  line-height:1;
+}
+.logo-mark-letter span{color:var(--proj-gold)}
+.hero-tagline{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:1rem;
+  color:var(--proj);
+  opacity:.7;
+}
+
+/* INTRO */
+.intro-section{
+  padding:10rem 3rem;
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:6rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.intro-label{
+  font-size:.65rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--proj);
+  padding-top:.5rem;
+}
+.intro-body h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  line-height:1;
+  margin-bottom:2rem;
+  letter-spacing:-.01em;
+}
+.intro-body p{
+  font-size:.85rem;
+  line-height:1.9;
+  color:#444;
+  max-width:600px;
+}
+.intro-body p+p{margin-top:1.2rem}
+
+/* CONTEXT STRIP */
+.context-strip{
+  background:var(--proj);
+  color:#fff;
+  padding:5rem 3rem;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:3rem;
+  max-width:1400px;
+  margin:0 auto 10rem;
+}
+.context-item{}
+.context-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:3.5rem;
+  color:var(--proj-gold);
+  line-height:1;
+  display:block;
+  margin-bottom:.5rem;
+}
+.context-desc{
+  font-size:.75rem;
+  line-height:1.7;
+  color:rgba(255,255,255,.75);
+}
+
+/* LOGO SYSTEM */
+.logo-system{
+  padding:0 3rem 10rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.section-header{
+  display:flex;
+  align-items:baseline;
+  gap:2rem;
+  margin-bottom:5rem;
+  padding-bottom:1.5rem;
+  border-bottom:1px solid var(--sand);
+}
+.section-num{
+  font-family:'Space Mono',monospace;
+  font-size:.65rem;
+  color:var(--proj-gold);
+  letter-spacing:.15em;
+}
+.section-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2rem,4vw,3.5rem);
+  letter-spacing:-.01em;
+}
+
+.logo-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:2px;
+}
+.logo-cell{
+  aspect-ratio:4/3;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:1.5rem;
+  position:relative;
+  overflow:hidden;
+}
+.logo-cell.light{background:var(--ivory)}
+.logo-cell.dark{background:var(--proj)}
+.logo-cell.gold{background:var(--proj-gold)}
+.logo-cell.sand{background:var(--sand)}
+.logo-cell.steel{background:var(--proj-steel)}
+
+.logo-version{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.5rem;
+}
+.lv-mark{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.5rem;
+  letter-spacing:.05em;
+  line-height:1;
+  border:2px solid currentColor;
+  padding:.4rem .8rem;
+}
+.lv-name{
+  font-family:'Space Mono',monospace;
+  font-size:.55rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  opacity:.6;
+}
+.logo-cell.light .lv-mark,.logo-cell.light .lv-name,.logo-cell.sand .lv-mark,.logo-cell.sand .lv-name{color:var(--proj)}
+.logo-cell.dark .lv-mark,.logo-cell.dark .lv-name{color:#fff}
+.logo-cell.dark .lv-mark{border-color:var(--proj-gold);color:var(--proj-gold)}
+.logo-cell.gold .lv-mark,.logo-cell.gold .lv-name{color:#fff}
+.logo-cell.steel .lv-mark,.logo-cell.steel .lv-name{color:#fff}
+
+.logo-cell-label{
+  position:absolute;
+  bottom:1rem;
+  right:1rem;
+  font-size:.55rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  opacity:.4;
+}
+.logo-cell.light .logo-cell-label{color:var(--ink)}
+.logo-cell.dark .logo-cell-label,.logo-cell.gold .logo-cell-label,.logo-cell.steel .logo-cell-label{color:#fff}
+
+/* COLOR PALETTE */
+.color-section{
+  padding:0 3rem 10rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.color-row{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:2px;
+  margin-bottom:2px;
+}
+.color-swatch{
+  height:200px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:1.2rem;
+  position:relative;
+}
+.swatch-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;
+  letter-spacing:.05em;
+}
+.swatch-hex{
+  font-family:'Space Mono',monospace;
+  font-size:.6rem;
+  opacity:.6;
+  margin-top:.2rem;
+}
+.swatch-desc{
+  font-size:.6rem;
+  opacity:.5;
+  margin-top:.15rem;
+  line-height:1.4;
+}
+
+/* TYPOGRAPHY */
+.type-section{
+  padding:0 3rem 10rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.type-pair{
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:5rem;
+  padding:4rem 0;
+  border-bottom:1px solid var(--sand);
+  align-items:center;
+}
+.type-info{}
+.type-role{
+  font-size:.6rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--proj-gold);
+  margin-bottom:.8rem;
+}
+.type-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.4rem;
+  margin-bottom:.6rem;
+}
+.type-notes{
+  font-size:.7rem;
+  line-height:1.7;
+  color:#666;
+}
+.type-specimen-display{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,7vw,6rem);
+  line-height:.92;
+  letter-spacing:-.01em;
+  color:var(--proj);
+}
+.type-specimen-serif{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:clamp(2rem,5vw,4rem);
+  color:var(--proj);
+  line-height:1.1;
+}
+.type-specimen-mono{
+  font-family:'Space Mono',monospace;
+  font-size:clamp(.8rem,2vw,1.1rem);
+  line-height:2;
+  color:var(--proj);
+  letter-spacing:.05em;
+}
+
+/* MANUAL SPREADS */
+.manual-spreads{
+  padding:0 3rem 10rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.spread{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2px;
+  margin-bottom:2px;
+}
+.spread-page{
+  min-height:60vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:3rem;
+  position:relative;
+  overflow:hidden;
+}
+.spread-page.proj-bg{background:var(--proj);color:#fff}
+.spread-page.cream-bg{background:var(--cream);color:var(--ink)}
+.spread-page.sand-bg{background:var(--sand);color:var(--ink)}
+.spread-page.gold-bg{background:var(--proj-gold);color:#fff}
+.spread-page.ivory-bg{background:var(--ivory);color:var(--ink)}
+.spread-page.steel-bg{background:var(--proj-steel);color:#fff}
+
+.spread-ghost{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(5rem,12vw,11rem);
+  opacity:.07;
+  pointer-events:none;
+  white-space:nowrap;
+  letter-spacing:-.03em;
+}
+.spread-content{position:relative;z-index:1}
+.spread-heading{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2rem,4vw,3.5rem);
+  line-height:1;
+  margin-bottom:1rem;
+}
+.spread-body{
+  font-size:.75rem;
+  line-height:1.9;
+  max-width:400px;
+  opacity:.8;
+}
+.spread-rule-label{
+  position:absolute;
+  top:2rem;
+  right:2rem;
+  font-size:.6rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  opacity:.4;
+  font-family:'Space Mono',monospace;
+}
+.spread-number{
+  position:absolute;
+  top:2rem;
+  left:2rem;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:4rem;
+  opacity:.12;
+  line-height:1;
+}
+
+/* BRAND RULES */
+.rules-section{
+  background:var(--proj);
+  color:#fff;
+  padding:10rem 3rem;
+  margin-bottom:10rem;
+}
+.rules-inner{
+  max-width:1400px;
+  margin:0 auto;
+}
+.rules-header{
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:6rem;
+  margin-bottom:6rem;
+}
+.rules-label{
+  font-size:.65rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--proj-gold);
+  padding-top:.5rem;
+}
+.rules-headline{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,6vw,5rem);
+  line-height:.95;
+  letter-spacing:-.01em;
+}
+.rules-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:3rem;
+}
+.rule-card{
+  padding-top:1.5rem;
+  border-top:1px solid rgba(255,255,255,.2);
+}
+.rule-icon{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2rem;
+  color:var(--proj-gold);
+  margin-bottom:.8rem;
+}
+.rule-title{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:1.1rem;
+  margin-bottom:.8rem;
+}
+.rule-body{
+  font-size:.7rem;
+  line-height:1.8;
+  opacity:.7;
+}
+
+/* APPLICATIONS */
+.applications{
+  padding:0 3rem 10rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.app-row{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:2px;
+  margin-bottom:2px;
+}
+.app-row.flip{grid-template-columns:1fr 2fr}
+.app-block{
+  min-height:55vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+  overflow:hidden;
+  padding:3rem;
+}
+.app-block.proj{background:var(--proj)}
+.app-block.cream{background:var(--cream)}
+.app-block.gold{background:var(--proj-gold)}
+.app-block.sand{background:var(--sand)}
+.app-block.ivory{background:var(--ivory)}
+
+.app-mockup{
+  width:100%;
+  max-width:320px;
+  border-radius:4px;
+  overflow:hidden;
+  box-shadow:0 40px 80px rgba(0,0,0,.25);
+}
+.app-mockup img{width:100%;display:block}
+.app-mockup.placeholder-sign{
+  aspect-ratio:3/4;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:1rem;
+  padding:2rem;
+}
+.sign-inner{
+  width:100%;
+  border:2px solid var(--proj);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:2rem;
+  gap:.8rem;
+}
+.sign-inner::before{
+  content:'';
+  width:60px;
+  height:60px;
+  border:2px solid var(--proj-gold);
+  display:block;
+}
+.sign-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.8rem;
+  color:var(--proj);
+  letter-spacing:.05em;
+  text-align:center;
+}
+.sign-sub{
+  font-size:.55rem;
+  letter-spacing:.15em;
+  color:var(--proj);
+  opacity:.5;
+}
+
+.app-text{
+  max-width:300px;
+}
+.app-label{
+  font-size:.6rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  margin-bottom:1rem;
+}
+.app-block.proj .app-label{color:var(--proj-gold)}
+.app-block.cream .app-label,.app-block.sand .app-label,.app-block.ivory .app-label{color:var(--proj)}
+.app-heading{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.2rem;
+  line-height:1;
+  margin-bottom:1rem;
+}
+.app-block.proj .app-heading{color:#fff}
+.app-block.cream .app-heading,.app-block.sand .app-heading,.app-block.ivory .app-heading{color:var(--proj)}
+.app-desc{
+  font-size:.72rem;
+  line-height:1.8;
+}
+.app-block.proj .app-desc{color:rgba(255,255,255,.7)}
+.app-block.cream .app-desc,.app-block.sand .app-desc,.app-block.ivory .app-desc{color:#555}
+
+/* CLOSING */
+.closing-section{
+  background:var(--proj-gold);
+  min-height:60vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:8rem 3rem;
+  position:relative;
+  overflow:hidden;
+}
+.closing-bg{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(8rem,20vw,18rem);
+  color:rgba(255,255,255,.12);
+  letter-spacing:-.05em;
+  line-height:.85;
+  pointer-events:none;
+}
+.closing-inner{position:relative;z-index:1}
+.closing-quote{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:clamp(1.5rem,4vw,2.8rem);
+  color:#fff;
+  max-width:700px;
+  line-height:1.35;
+  margin-bottom:2rem;
+}
+.closing-attr{
+  font-size:.7rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.65);
+}
+
+/* NEXT */
+.next-project{
+  background:var(--ink);
+  color:#fff;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  min-height:50vh;
+  text-decoration:none;
+  transition:opacity .3s;
+  position:relative;
+  overflow:hidden;
+}
+.next-project:hover .next-arrow{transform:translateX(12px)}
+.next-left{
+  padding:5rem;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  border-right:1px solid rgba(255,255,255,.1);
+}
+.next-label{
+  font-size:.65rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.4);
+  margin-bottom:1.5rem;
+}
+.next-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  line-height:.95;
+  letter-spacing:-.01em;
+}
+.next-right{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.next-arrow{
+  font-size:5rem;
+  transition:transform .5s var(--ease);
+}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .intro-section,.rules-header{grid-template-columns:1fr}
+  .logo-grid{grid-template-columns:repeat(2,1fr)}
+  .color-row{grid-template-columns:repeat(2,1fr)}
+  .type-pair{grid-template-columns:1fr}
+  .spread{grid-template-columns:1fr}
+  .rules-grid{grid-template-columns:repeat(2,1fr)}
+  .app-row,.app-row.flip{grid-template-columns:1fr}
+  nav{padding:1.2rem 1.5rem}
+  .next-project{grid-template-columns:1fr}
+  .next-right{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<!-- GRAIN -->
+<svg class="grain" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
+  <filter id="gr"><feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="4" stitchTiles="stitch"/></filter>
+  <rect width="300" height="300" filter="url(#gr)" opacity="1"/>
+</svg>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="../index.html" class="nav-logo">CJ</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Index</a></li>
+    <li><a href="../index.html#work">Work</a></li>
+    <li><a href="../index.html#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-district-label reveal">11 / 13 — Identidad de Distrito · Buenos Aires · 2024</div>
+    <h1 class="hero-title reveal d1">
+      Manual<br>
+      <span>Madero</span>
+    </h1>
+    <div class="hero-meta reveal d2">
+      <div class="hero-meta-item">
+        <span class="meta-label">Tipo</span>
+        <span class="meta-value">Identidad + Manual de marca</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="meta-label">Herramientas</span>
+        <span class="meta-value">Illustrator · InDesign · Photoshop</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="meta-label">Contexto</span>
+        <span class="meta-value">Puerto Madero, Buenos Aires</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-arch-bg">
+      <div class="arch-wordmark">PM<br>BA</div>
+    </div>
+    <div class="hero-logo-preview reveal d2">
+      <div class="logo-mark">
+        <div class="logo-mark-inner">
+          <div class="logo-mark-letter">P<span>M</span></div>
+        </div>
+      </div>
+      <div class="hero-tagline">Identidad del Distrito</div>
+    </div>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="intro-section">
+  <div class="intro-label reveal">Contexto del proyecto</div>
+  <div class="intro-body">
+    <h2 class="reveal d1">Un distrito que<br>necesitaba identidad</h2>
+    <p class="reveal d2">Puerto Madero es el barrio más nuevo y moderno de Buenos Aires: un antiguo puerto reconvertido en polo gastronómico, residencial y cultural. Sin embargo, carecía de una identidad visual coherente que representara su carácter único — la fusión entre el patrimonio industrial del Río de la Plata y la arquitectura contemporánea que lo define hoy.</p>
+    <p class="reveal d3">El proyecto implicó el diseño de un logotipo desde cero y la construcción completa de un manual de marca: sistema tipográfico, paleta cromática, versiones del logo, aplicaciones y normas de uso. El resultado es una identidad institucional robusta, elegante y escalable.</p>
+  </div>
+</section>
+
+<!-- CONTEXT STRIP -->
+<div class="context-strip reveal">
+  <div class="context-item">
+    <span class="context-num">1887</span>
+    <p class="context-desc">Año de construcción de los diques originales del Puerto de Buenos Aires. Historia e industria como punto de partida conceptual.</p>
+  </div>
+  <div class="context-item">
+    <span class="context-num">170 Ha</span>
+    <p class="context-desc">Superficie total del barrio Puerto Madero. El distrito más joven de CABA, con identidad propia pero sin sistema visual cohesivo.</p>
+  </div>
+  <div class="context-item">
+    <span class="context-num">02</span>
+    <p class="context-desc">Mundos visuales fusionados: la arquitectura industrial portuaria y la modernidad cosmopolita contemporánea de Buenos Aires.</p>
+  </div>
+</div>
+
+<!-- LOGO SYSTEM -->
+<section class="logo-system">
+  <div class="section-header reveal">
+    <span class="section-num">01 —</span>
+    <h2 class="section-title">Sistema de Logo</h2>
+  </div>
+  <div class="logo-grid reveal d1">
+    <div class="logo-cell light">
+      <div class="logo-version">
+        <div class="lv-mark">PM</div>
+        <div class="lv-name">Versión principal</div>
+      </div>
+      <div class="logo-cell-label">Fondo claro</div>
+    </div>
+    <div class="logo-cell dark">
+      <div class="logo-version">
+        <div class="lv-mark">PM</div>
+        <div class="lv-name">Versión invertida</div>
+      </div>
+      <div class="logo-cell-label">Fondo oscuro</div>
+    </div>
+    <div class="logo-cell gold">
+      <div class="logo-version">
+        <div class="lv-mark">PM</div>
+        <div class="lv-name">Versión dorada</div>
+      </div>
+      <div class="logo-cell-label">Ocasiones especiales</div>
+    </div>
+    <div class="logo-cell sand">
+      <div class="logo-version">
+        <div class="lv-mark">MADERO</div>
+        <div class="lv-name">Versión horizontal</div>
+      </div>
+      <div class="logo-cell-label">Aplicaciones lineales</div>
+    </div>
+    <div class="logo-cell steel">
+      <div class="logo-version">
+        <div class="lv-mark">PM</div>
+        <div class="lv-name">Versión acero</div>
+      </div>
+      <div class="logo-cell-label">Señalética exterior</div>
+    </div>
+    <div class="logo-cell ivory">
+      <div class="logo-version">
+        <div class="lv-mark" style="border-color:var(--proj-gold);color:var(--proj-gold)">PM</div>
+        <div class="lv-name" style="color:var(--ink)">Versión premium</div>
+      </div>
+      <div class="logo-cell-label" style="color:var(--ink)">Materiales impresos</div>
+    </div>
+  </div>
+</section>
+
+<!-- COLOR PALETTE -->
+<section class="color-section">
+  <div class="section-header reveal">
+    <span class="section-num">02 —</span>
+    <h2 class="section-title">Paleta Cromática</h2>
+  </div>
+  <div class="color-row reveal">
+    <div class="color-swatch" style="background:#1e3a5f;color:#fff">
+      <span class="swatch-name">Azul Dique</span>
+      <span class="swatch-hex">#1E3A5F</span>
+      <span class="swatch-desc">Color primario. Profundidad del Río de la Plata.</span>
+    </div>
+    <div class="color-swatch" style="background:#c9a84c;color:#fff">
+      <span class="swatch-name">Oro Porteño</span>
+      <span class="swatch-hex">#C9A84C</span>
+      <span class="swatch-desc">Acento. Cúpulas y detalles arquitectónicos BA.</span>
+    </div>
+    <div class="color-swatch" style="background:#8ba7c7;color:#fff">
+      <span class="swatch-name">Acero Frío</span>
+      <span class="swatch-hex">#8BA7C7</span>
+      <span class="swatch-desc">Secundario. Grúas, silos, estructura industrial.</span>
+    </div>
+    <div class="color-swatch" style="background:#e8e2d4;color:#333">
+      <span class="swatch-name">Arena Costanera</span>
+      <span class="swatch-hex">#E8E2D4</span>
+      <span class="swatch-desc">Neutro cálido. Fondos y espacios en blanco.</span>
+    </div>
+    <div class="color-swatch" style="background:#1a1a1a;color:#fff">
+      <span class="swatch-name">Carbón</span>
+      <span class="swatch-hex">#1A1A1A</span>
+      <span class="swatch-desc">Tipografía principal. Máximo contraste.</span>
+    </div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="type-section">
+  <div class="section-header reveal">
+    <span class="section-num">03 —</span>
+    <h2 class="section-title">Sistema Tipográfico</h2>
+  </div>
+  <div class="type-pair reveal d1">
+    <div class="type-info">
+      <div class="type-role">Display / Titulares</div>
+      <div class="type-name">Bebas Neue</div>
+      <div class="type-notes">Condensed sans-serif de alto impacto. Evoca los carteles industriales del puerto histórico. Uso exclusivo para títulos, secciones grandes y marcas numéricas.</div>
+    </div>
+    <div class="type-specimen-display">PUERTO<br>MADERO</div>
+  </div>
+  <div class="type-pair reveal d2">
+    <div class="type-info">
+      <div class="type-role">Acento editorial</div>
+      <div class="type-name">DM Serif Display</div>
+      <div class="type-notes">Serif con personalidad italiana. Aporta calidez y distinción. Se usa en subtítulos, citas institucionales y piezas premium del barrio.</div>
+    </div>
+    <div class="type-specimen-serif">El barrio donde<br>la ciudad se renovó</div>
+  </div>
+  <div class="type-pair reveal d3">
+    <div class="type-info">
+      <div class="type-role">Cuerpo / Información</div>
+      <div class="type-name">Space Mono</div>
+      <div class="type-notes">Monospace técnica. Referencia al plano urbano y al lenguaje arquitectónico. Ideal para datos, etiquetas, notas al pie y textos informativos.</div>
+    </div>
+    <div class="type-specimen-mono">MADERO — BARRIO 48<br>BUENOS AIRES / ARGENTINA<br>34°36'30"S · 58°21'50"O<br>SUPERFICIE: 170 HECTÁREAS</div>
+  </div>
+</section>
+
+<!-- MANUAL SPREADS -->
+<section class="manual-spreads">
+  <div class="section-header reveal">
+    <span class="section-num">04 —</span>
+    <h2 class="section-title">Manual de Marca — Spreads</h2>
+  </div>
+
+  <div class="spread reveal">
+    <div class="spread-page proj-bg">
+      <div class="spread-ghost">PM</div>
+      <div class="spread-number">01</div>
+      <div class="spread-rule-label" style="color:rgba(255,255,255,.3)">Intro</div>
+      <div class="spread-content">
+        <div class="spread-heading">Sobre la<br>identidad</div>
+        <p class="spread-body">Puerto Madero tiene una identidad única en el contexto latinoamericano. Un pasado portuario reinterpretado en clave contemporánea. Esta marca nace de ese diálogo entre historia y futuro.</p>
+      </div>
+    </div>
+    <div class="spread-page cream-bg">
+      <div class="spread-ghost" style="color:var(--proj)">BARRIO</div>
+      <div class="spread-number" style="color:var(--proj)">02</div>
+      <div class="spread-rule-label">Marca</div>
+      <div class="spread-content">
+        <div class="spread-heading" style="color:var(--proj)">Construcción<br>del logo</div>
+        <p class="spread-body" style="color:#555">El logotipo está construido sobre una retícula modular. Las iniciales PM contienen en su geometría la referencia al plano del Puerto: líneas ortogonales, proporción áurea, espacio negativo activo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="spread reveal">
+    <div class="spread-page sand-bg">
+      <div class="spread-ghost" style="color:var(--proj)">COLOR</div>
+      <div class="spread-rule-label">Cromática</div>
+      <div class="spread-content">
+        <div class="spread-heading" style="color:var(--proj)">El color<br>del distrito</div>
+        <p class="spread-body" style="color:#555">Cada color de la paleta tiene un referente geográfico o histórico concreto. El azul es el río. El oro son las cúpulas. El acero son las grúas. El proceso de selección fue riguroso y basado en field research.</p>
+      </div>
+    </div>
+    <div class="spread-page gold-bg">
+      <div class="spread-ghost">GOLD</div>
+      <div class="spread-rule-label" style="color:rgba(255,255,255,.4)">Premium</div>
+      <div class="spread-content">
+        <div class="spread-heading">Versión<br>premium</div>
+        <p class="spread-body">La versión dorada de la marca está reservada para eventos institucionales, materiales de lujo y señalética monumental. Se aplica sobre fondos oscuros o en stamping metálico.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="spread reveal">
+    <div class="spread-page ivory-bg">
+      <div class="spread-ghost" style="color:var(--proj)">TIPO</div>
+      <div class="spread-rule-label">Tipografía</div>
+      <div class="spread-content">
+        <div class="spread-heading" style="color:var(--proj)">Jerarquía<br>tipográfica</div>
+        <p class="spread-body" style="color:#555">El sistema tipográfico establece tres niveles: display (Bebas Neue), editorial (DM Serif Display) e informativo (Space Mono). Cada nivel tiene tamaños, pesos y contextos de uso predefinidos.</p>
+      </div>
+    </div>
+    <div class="spread-page steel-bg">
+      <div class="spread-ghost">TYPE</div>
+      <div class="spread-rule-label" style="color:rgba(255,255,255,.35)">Escala</div>
+      <div class="spread-content">
+        <div class="spread-heading">Escala<br>modular</div>
+        <p class="spread-body">La escala tipográfica está basada en una razón de 1.25 (Major Third). Todos los tamaños —desde la etiqueta más pequeña hasta el titular más grande— son múltiplos armónicos entre sí.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAND RULES -->
+<section class="rules-section">
+  <div class="rules-inner">
+    <div class="rules-header reveal">
+      <div class="rules-label">Normas de marca</div>
+      <h2 class="rules-headline reveal d1">Qué se puede y<br>qué no se puede<br>con la marca</h2>
+    </div>
+    <div class="rules-grid reveal d2">
+      <div class="rule-card">
+        <div class="rule-icon">✓</div>
+        <div class="rule-title">Espacio de respeto</div>
+        <p class="rule-body">La marca siempre tiene un área de protección equivalente a la altura de la letra "M" del logotipo en todas sus versiones y soportes.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">✓</div>
+        <div class="rule-title">Tamaño mínimo</div>
+        <p class="rule-body">El logo nunca debe reproducirse por debajo de 20mm en impresión o 60px en pantalla, para garantizar legibilidad en todos los soportes.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">✕</div>
+        <div class="rule-title">Usos incorrectos</div>
+        <p class="rule-body">Está prohibido distorsionar, rotar, recolorizar fuera de la paleta oficial, usar sobre fondos de bajo contraste o aplicar efectos (sombra, bisel, degradé).</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">✕</div>
+        <div class="rule-title">Combinaciones no permitidas</div>
+        <p class="rule-body">El oro sobre arena o el acero sobre crema no tienen suficiente contraste. Estas combinaciones están explícitamente excluidas del sistema de aplicaciones.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLICATIONS -->
+<section class="applications">
+  <div class="section-header reveal">
+    <span class="section-num">05 —</span>
+    <h2 class="section-title">Aplicaciones</h2>
+  </div>
+
+  <div class="app-row reveal">
+    <div class="app-block proj">
+      <div class="app-mockup placeholder-sign">
+        <div class="sign-inner" style="border-color:var(--proj-gold)">
+          <div style="width:50px;height:50px;border:2px solid var(--proj-gold)"></div>
+          <div class="sign-name" style="color:var(--proj-gold)">PUERTO<br>MADERO</div>
+          <div class="sign-sub" style="color:rgba(255,255,255,.5)">BUENOS AIRES</div>
+        </div>
+      </div>
+    </div>
+    <div class="app-block cream">
+      <div class="app-text">
+        <div class="app-label">Señalética exterior</div>
+        <div class="app-heading">En el espacio<br>público</div>
+        <p class="app-desc">El sistema se aplica sobre señalética urbana: postes, placas de calle, cartelería de accesos al barrio. El color principal en exteriores es el azul dique sobre fondo blanco o el gold en soporte negro.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-row flip reveal">
+    <div class="app-block ivory">
+      <div class="app-text">
+        <div class="app-label">Material institucional</div>
+        <div class="app-heading">Papelería<br>oficial</div>
+        <p class="app-desc">Tarjetas, membretes, sobres y credenciales institucionales siguen la retícula definida en el manual. La versión de logo en azul sobre marfil es la preferida para material formal.</p>
+      </div>
+    </div>
+    <div class="app-block proj">
+      <div class="app-mockup">
+        <img src="../assets/madero-app-1.png" alt="Madero aplicación"
+          onerror="this.parentNode.innerHTML='<div style=\'aspect-ratio:3/4;background:linear-gradient(135deg,var(--proj-light),var(--proj));display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:1rem\'><div style=\'font-family:Bebas Neue,sans-serif;font-size:3rem;color:var(--proj-gold);border:2px solid var(--proj-gold);padding:.5rem 1.5rem;letter-spacing:.1em\'>PM</div><div style=\'font-size:.6rem;letter-spacing:.15em;color:rgba(255,255,255,.5);text-transform:uppercase\'>Tarjeta institucional</div></div>'">
+      </div>
+    </div>
+  </div>
+
+  <div class="app-row reveal">
+    <div class="app-block gold">
+      <div class="app-mockup">
+        <img src="../assets/madero-app-2.png" alt="Madero digital"
+          onerror="this.parentNode.innerHTML='<div style=\'aspect-ratio:16/9;background:rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:1.5rem\'><div style=\'font-family:Bebas Neue,sans-serif;font-size:2rem;color:#fff;letter-spacing:.1em\'>MADERO DISTRICT</div><div style=\'width:60px;height:2px;background:rgba(255,255,255,.5)\'></div><div style=\'font-size:.6rem;letter-spacing:.15em;color:rgba(255,255,255,.6);text-transform:uppercase\'>Pantalla informativa</div></div>'">
+      </div>
+    </div>
+    <div class="app-block sand">
+      <div class="app-text">
+        <div class="app-label">Pantallas digitales</div>
+        <div class="app-heading">Presencia<br>digital</div>
+        <p class="app-desc">El sistema incluye pantallas de información pública, redes sociales y materiales digitales del barrio. La versión dorada se reserva para contenido de alta jerarquía institucional.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing-section">
+  <div class="closing-bg">PM<br>BA</div>
+  <div class="closing-inner reveal">
+    <p class="closing-quote">"Un barrio sin identidad es un barrio sin memoria. Madero tiene historia: esta marca la hace visible."</p>
+    <div class="closing-attr">Concepto de proyecto · Manual Madero · 2024</div>
+  </div>
+</section>
+
+<!-- NEXT PROJECT -->
+<a href="12-lo-camp.html" class="next-project">
+  <div class="next-left">
+    <div class="next-label">Siguiente proyecto · 12 / 13</div>
+    <div class="next-title">Lo Camp —<br>Editorial</div>
+  </div>
+  <div class="next-right">
+    <div class="next-arrow">→</div>
+  </div>
+</a>
+
+<script>
+// cursor
+const cur=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){tx+=(mx-tx)*.12;ty+=(my-ty)*.12;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2.5)';trail.style.opacity='0'});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';trail.style.opacity='.5'});
+});
+
+// nav
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>80));
+
+// reveal
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Libro Banksy — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#2a2622;--ink-soft:#4a423a;--cream:#f5f1ea;--cream-deep:#ede5d6;
+  --ivory:#faf7f0;--sand:#e8dfcc;--line:rgba(42,38,34,.12);--line-soft:rgba(42,38,34,.06);
+  --accent:#8a8769;--accent-warm:#b9a584;
+  --serif:'DM Serif Display',serif;--mono:'Space Mono',monospace;--display:'Bebas Neue',sans-serif;
+  --proj:#cc0000;--proj-dark:#0d0d0d;--proj-mid:#1a1a1a;
+}
+html{scroll-behavior:smooth;background:var(--proj-dark)}
+body{background:var(--proj-dark);color:var(--ivory);font-family:var(--mono);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+::selection{background:var(--proj);color:var(--ivory)}
+#cursor{position:fixed;width:10px;height:10px;background:var(--proj);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .35s,height .35s}
+#cursor.hover{width:52px;height:52px;opacity:.35}
+#cursor-trail{position:fixed;width:36px;height:36px;border:0.5px solid rgba(204,0,0,.25);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .5s,top .5s}
+#grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.05;mix-blend-mode:screen;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:28px 56px;transition:background .4s,border-color .4s;border-bottom:0.5px solid transparent}
+.nav-logo{font-family:var(--display);font-size:18px;letter-spacing:.14em;color:var(--ivory);text-decoration:none}
+.nav-back{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ivory);text-decoration:none;opacity:.5;transition:opacity .3s}
+.nav-back:hover{opacity:1}
+.nav-count{font-size:10px;letter-spacing:.2em;color:var(--proj);text-transform:uppercase}
+
+/* ─── HERO: WALL / STENCIL ENERGY ─── */
+#hero{
+  min-height:100vh;background:var(--proj-dark);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 56px 72px;position:relative;overflow:hidden;
+}
+/* stencil texture grid */
+.hero-texture{position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0,rgba(255,255,255,.015) 1px,transparent 1px,transparent 60px),repeating-linear-gradient(90deg,rgba(255,255,255,.015) 0,rgba(255,255,255,.015) 1px,transparent 1px,transparent 60px)}
+.hero-red-bar{position:absolute;top:0;left:0;width:6px;height:100%;background:var(--proj)}
+.hero-eyebrow{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--proj);margin-bottom:20px;opacity:0;animation:slideUp .9s .7s forwards;position:relative;z-index:2}
+.hero-title{font-family:var(--display);font-size:clamp(80px,16vw,280px);line-height:.82;letter-spacing:-.02em;position:relative;z-index:2;opacity:0;animation:slideUp .9s .3s forwards}
+.hero-title .b-red{color:var(--proj)}
+.hero-sub{display:flex;justify-content:space-between;align-items:flex-end;margin-top:48px;position:relative;z-index:2;opacity:0;animation:slideUp .8s .9s forwards}
+.hero-desc{font-size:13px;line-height:1.8;color:rgba(245,241,234,.5);max-width:400px}
+.hero-tags{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.hero-tag{font-size:9px;letter-spacing:.2em;text-transform:uppercase;border:0.5px solid rgba(204,0,0,.3);padding:5px 14px;border-radius:100px;color:rgba(204,0,0,.7)}
+/* big ghost text */
+.hero-ghost{position:absolute;bottom:-20px;right:-20px;font-family:var(--display);font-size:clamp(160px,28vw,480px);color:transparent;-webkit-text-stroke:1px rgba(204,0,0,.06);line-height:.85;pointer-events:none;letter-spacing:-.03em;z-index:1}
+
+/* ─── INFO BAND ─── */
+.info-band{background:var(--proj);color:var(--ivory);padding:20px 56px;display:flex;justify-content:space-between;align-items:center}
+.i-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px}
+.i-val{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+
+/* ─── CONCEPT: RAW EDITORIAL ─── */
+#concept{padding:120px 56px;background:var(--proj-mid);color:var(--ivory)}
+.section-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(204,0,0,.7);display:flex;align-items:center;gap:14px;margin-bottom:56px}
+.section-label::before{content:'';width:40px;height:1px;background:var(--proj);display:block}
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.concept-h{font-family:var(--display);font-size:clamp(52px,7vw,108px);line-height:.88;color:var(--ivory);margin-bottom:36px;letter-spacing:-.005em}
+.concept-h em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.concept-body{font-size:13px;line-height:1.9;color:rgba(245,241,234,.55);margin-bottom:20px;max-width:460px}
+.concept-quote{border-left:2px solid var(--proj);padding:20px 28px;margin:40px 0;font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.4vw,28px);line-height:1.35;color:var(--ivory)}
+/* right side: cover mockup */
+.cover-mock{width:100%;aspect-ratio:2/3;background:var(--proj-dark);border:1px solid rgba(204,0,0,.2);display:flex;flex-direction:column;justify-content:flex-end;padding:32px;position:relative;overflow:hidden}
+.cover-mock-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(60px,12vw,200px);color:transparent;-webkit-text-stroke:1px rgba(204,0,0,.08);letter-spacing:-.03em;line-height:.85}
+.cover-mock-title{font-family:var(--display);font-size:clamp(36px,5vw,80px);color:var(--ivory);line-height:.88;position:relative;z-index:1}
+.cover-mock-title span{color:var(--proj)}
+.cover-mock-sub{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,241,234,.35);margin-top:16px;position:relative;z-index:1}
+.cover-mock-bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--proj)}
+
+/* ─── SPREADS ─── */
+#spreads{background:var(--proj-dark)}
+.spread-row{display:grid;position:relative;overflow:hidden;border-bottom:0.5px solid rgba(255,255,255,.04)}
+.spread-row.s-split{grid-template-columns:1fr 1fr}
+.spread-row.s-full{grid-template-columns:1fr}
+.spread-cell{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:400px}
+.spread-cell img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(0) contrast(1.15);transition:filter .6s}
+.spread-cell:hover img{filter:saturate(.2) contrast(1.2)}
+.spread-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(40px,7vw,120px);letter-spacing:-.02em;line-height:.85}
+.sp-dark{background:var(--proj-dark);color:rgba(255,255,255,.05)}
+.sp-red{background:var(--proj);color:rgba(255,255,255,.15)}
+.sp-mid{background:var(--proj-mid);color:rgba(255,255,255,.06)}
+.spread-caption{padding:16px 56px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2);border-bottom:0.5px solid rgba(255,255,255,.04)}
+.spread-label{position:absolute;top:20px;left:20px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--proj);z-index:2;opacity:.7}
+
+/* ─── TYPOGRAPHY SYSTEM ─── */
+#type-system{padding:120px 56px;background:var(--proj-mid);color:var(--ivory)}
+.type-rows{margin-top:72px}
+.type-specimen-row{display:flex;align-items:baseline;justify-content:space-between;padding:24px 0;border-bottom:0.5px solid rgba(255,255,255,.06);gap:20px}
+.type-specimen-row:first-child{border-top:0.5px solid rgba(255,255,255,.06)}
+.ts-role{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.25);flex-shrink:0;width:120px}
+.ts-sample{line-height:.9;flex:1}
+.ts-meta{font-size:9px;letter-spacing:.15em;color:rgba(255,255,255,.18);text-align:right;flex-shrink:0}
+
+/* ─── MANIFESTO ─── */
+#manifesto{background:var(--proj);padding:120px 56px;text-align:center;position:relative;overflow:hidden}
+.man-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(120px,22vw,400px);color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.07);white-space:nowrap;pointer-events:none}
+.man-text{font-family:var(--serif);font-style:italic;font-size:clamp(22px,3.5vw,48px);line-height:1.3;color:var(--ivory);max-width:800px;margin:0 auto;position:relative;z-index:1}
+.man-attr{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:32px;position:relative;z-index:1}
+
+/* ─── NEXT ─── */
+.next-wrap{display:flex;text-decoration:none;background:var(--proj-dark);color:var(--cream);padding:96px 56px;justify-content:space-between;align-items:center;position:relative;overflow:hidden;transition:background .4s;border-top:0.5px solid rgba(255,255,255,.04)}
+.next-wrap:hover{background:#0a0a0a}
+.next-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(204,0,0,.6);margin-bottom:16px}
+.next-title{font-family:var(--display);font-size:clamp(44px,8vw,124px);line-height:.88;letter-spacing:-.005em;color:var(--ivory)}
+.next-title em{font-family:var(--serif);font-style:italic;color:rgba(204,0,0,.7)}
+.next-arrow{font-size:clamp(56px,9vw,140px);color:var(--ivory);opacity:.2;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .3s;flex-shrink:0}
+.next-wrap:hover .next-arrow{transform:translateX(18px);opacity:.5}
+.next-bg{position:absolute;bottom:-60px;right:0;font-family:var(--display);font-size:clamp(100px,20vw,340px);color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.03);line-height:1;pointer-events:none}
+footer{background:var(--proj-dark);padding:40px 56px;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid rgba(255,255,255,.04)}
+.foot-logo{font-family:var(--display);font-size:20px;color:var(--ivory);letter-spacing:.14em;text-decoration:none}
+.foot-copy{font-size:9.5px;letter-spacing:.18em;color:rgba(245,241,234,.3);text-transform:uppercase}
+.foot-link{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(204,0,0,.6);text-decoration:none;display:flex;align-items:center;gap:10px;transition:color .3s}
+.foot-link:hover{color:var(--proj)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+@media(max-width:900px){
+  body{cursor:auto}#cursor,#cursor-trail{display:none}
+  nav{padding:20px 24px}
+  #hero{padding:0 24px 56px}
+  .hero-sub{flex-direction:column;gap:24px;align-items:flex-start}.hero-tags{align-items:flex-start}
+  .info-band{flex-wrap:wrap;gap:20px;padding:24px;justify-content:center}
+  #concept{padding:80px 24px}
+  .concept-grid{grid-template-columns:1fr;gap:48px}
+  .spread-row.s-split{grid-template-columns:1fr}
+  .spread-cell{min-height:280px}
+  .spread-caption{padding:14px 24px}
+  #type-system{padding:80px 24px}
+  #manifesto{padding:80px 24px}
+  .next-wrap{padding:64px 24px;flex-direction:column;align-items:flex-start;gap:28px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 24px}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-trail"></div><div id="grain"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">CJ</a>
+  <a class="nav-back" href="../index.html">← Back to Work</a>
+  <span class="nav-count">10 / 13</span>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-texture"></div>
+  <div class="hero-red-bar"></div>
+  <div class="hero-ghost">BSY</div>
+  <div class="hero-eyebrow">Editorial · Book Design · 2025</div>
+  <h1 class="hero-title">LIBRO<br><span class="b-red">BANKSY</span></h1>
+  <div class="hero-sub">
+    <p class="hero-desc">An editorial book on the anonymous street artist who turned public space into the world's largest gallery — and the world's most uncomfortable mirror.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Editorial</span>
+      <span class="hero-tag">Book Design</span>
+      <span class="hero-tag">Typography</span>
+    </div>
+  </div>
+</section>
+
+<!-- INFO BAND -->
+<div class="info-band">
+  <div><div class="i-label">Year</div><div class="i-val">2025</div></div>
+  <div><div class="i-label">Type</div><div class="i-val">EDITORIAL</div></div>
+  <div><div class="i-label">Format</div><div class="i-val">BOOK</div></div>
+  <div><div class="i-label">Pages</div><div class="i-val">40pp</div></div>
+  <div><div class="i-label">Role</div><div class="i-val">DESIGNER</div></div>
+</div>
+
+<!-- CONCEPT -->
+<section id="concept">
+  <div class="section-label reveal">Concept</div>
+  <div class="concept-grid">
+    <div>
+      <h2 class="concept-h reveal d1">LA CALLE<br>COMO <em>Galería</em></h2>
+      <p class="concept-body reveal d2">Banksy operates in the space between public and private, legal and illegal, visible and anonymous. A book about him must carry that same tension in its form.</p>
+      <p class="concept-body reveal d2">The design challenge: honor the rawness of street art without turning it into decoration. Use the visual language of the urban environment — stencil, spray, wall texture — within the formal constraints of a printed publication.</p>
+      <blockquote class="concept-quote reveal d3">"I use whatever it takes to communicate a feeling — if it ends up in a gallery, that's a coincidence."</blockquote>
+    </div>
+    <div class="reveal d1">
+      <div class="cover-mock">
+        <div class="cover-mock-bar"></div>
+        <div class="cover-mock-bg">BSY</div>
+        <div class="cover-mock-title">BANKSY<br><span>×</span></div>
+        <div class="cover-mock-sub">Editorial · 2025 · Candela Jalil</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPREADS -->
+<section id="spreads">
+  <div class="spread-row s-split">
+    <div class="spread-cell sp-dark">
+      <div class="spread-label">01 — Intro</div>
+      <div class="spread-ph">WHO IS<br>BANKSY?</div>
+    </div>
+    <div class="spread-cell sp-red">
+      <div class="spread-label">01 — Intro</div>
+      <div class="spread-ph" style="color:rgba(255,255,255,.2)">?</div>
+    </div>
+  </div>
+  <div class="spread-caption">Spread 01 — Opening · pp. 02–03</div>
+
+  <div class="spread-row s-full">
+    <div class="spread-cell sp-mid" style="min-height:500px">
+      <div class="spread-label">02 — The Work</div>
+      <div class="spread-ph" style="font-size:clamp(60px,12vw,200px);color:rgba(204,0,0,.08)">THE WALL</div>
+    </div>
+  </div>
+  <div class="spread-caption">Spread 02 — The Work · pp. 10–11</div>
+
+  <div class="spread-row s-split">
+    <div class="spread-cell sp-mid">
+      <div class="spread-label">03 — Context</div>
+      <div class="spread-ph" style="font-size:clamp(24px,4vw,64px);color:rgba(255,255,255,.06);text-align:center;padding:32px">STREET<br>GALLERY<br>CULTURE</div>
+    </div>
+    <div class="spread-cell" style="background:#111;min-height:400px">
+      <div class="spread-label">03 — Context</div>
+      <div class="spread-ph" style="color:rgba(204,0,0,.12);font-size:clamp(40px,7vw,120px)">ART</div>
+    </div>
+  </div>
+  <div class="spread-caption">Spread 03 — Context · pp. 20–21</div>
+</section>
+
+<!-- TYPE SYSTEM -->
+<section id="type-system">
+  <div class="section-label reveal">Typography</div>
+  <div class="type-rows reveal d1">
+    <div class="type-specimen-row">
+      <span class="ts-role">Display</span>
+      <span class="ts-sample" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,7vw,112px);color:var(--ivory)">BANKSY</span>
+      <span class="ts-meta">Bebas Neue · 96pt</span>
+    </div>
+    <div class="type-specimen-row">
+      <span class="ts-role">Accent</span>
+      <span class="ts-sample" style="font-family:'DM Serif Display',serif;font-style:italic;font-size:clamp(24px,4vw,64px);color:var(--proj)">Anonymous</span>
+      <span class="ts-meta">DM Serif Italic · 48pt</span>
+    </div>
+    <div class="type-specimen-row">
+      <span class="ts-role">Body</span>
+      <span class="ts-sample" style="font-size:clamp(11px,1.5vw,16px);color:rgba(245,241,234,.5);letter-spacing:.04em">The street is the world's largest gallery.</span>
+      <span class="ts-meta">Space Mono · 12pt</span>
+    </div>
+    <div class="type-specimen-row">
+      <span class="ts-role">Caption</span>
+      <span class="ts-sample" style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(204,0,0,.5)">BRISTOL, UK · 1994 — PRESENT</span>
+      <span class="ts-meta">Space Mono · 8pt</span>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="man-bg">WALL</div>
+  <p class="man-text reveal">"Art should comfort the disturbed and disturb the comfortable."</p>
+  <div class="man-attr reveal d1">Libro Banksy — Editorial Design · 2025</div>
+</section>
+
+<!-- NEXT -->
+<a class="next-wrap" href="11-manual-madero.html">
+  <div>
+    <div class="next-lbl">Next Project — 11 / 13</div>
+    <div class="next-title">MANUAL<br><em>Madero</em></div>
+  </div>
+  <div class="next-arrow">↗</div>
+  <div class="next-bg">MDR</div>
+</a>
+
+<footer>
+  <a class="foot-logo" href="../index.html">CJ</a>
+  <div class="foot-copy">© 2026 Candela Jalil</div>
+  <a class="foot-link" href="../index.html">← All Projects</a>
+</footer>
+
+<script>
+const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function anim(){tx+=(mx-tx)*.08;ty+=(my-ty)*.08;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.spread-cell,.type-specimen-row').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
+});
+const nav=document.querySelector('nav');
+window.addEventListener('scroll',()=>{
+  const s=window.scrollY>80;
+  nav.style.background=s?'rgba(13,13,13,.92)':'transparent';
+  nav.style.backdropFilter=s?'blur(16px)':'none';
+  nav.style.borderColor=s?'rgba(255,255,255,.04)':'transparent';
+},{passive:true});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

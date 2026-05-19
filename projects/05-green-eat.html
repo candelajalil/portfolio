@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Eat App — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Roboto:wght@500&family=Inter:wght@600&family=Source+Serif+4:wght@800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#2a2622;--ink-soft:#4a423a;--cream:#f5f1ea;--cream-deep:#ede5d6;
+  --ivory:#faf7f0;--sand:#e8dfcc;--line:rgba(42,38,34,.12);--line-soft:rgba(42,38,34,.06);
+  --accent:#8a8769;--accent-warm:#b9a584;
+  --serif:'DM Serif Display',serif;--mono:'Space Mono',monospace;--display:'Bebas Neue',sans-serif;
+  --proj:#3a6b35;--proj-light:#c8e6c3;--proj-pale:#f0f7ee;
+}
+html{scroll-behavior:smooth;background:var(--cream)}
+body{background:var(--cream);color:var(--ink);font-family:var(--mono);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+::selection{background:var(--proj);color:var(--ivory)}
+#cursor{position:fixed;width:10px;height:10px;background:var(--ink);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .35s ease,height .35s ease,background .35s ease}
+#cursor.hover{width:52px;height:52px;background:var(--proj);opacity:.55}
+#cursor-trail{position:fixed;width:36px;height:36px;border:0.5px solid rgba(42,38,34,.25);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .5s ease,top .5s ease}
+#grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.025;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:28px 56px;transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:0.5px solid transparent}
+.nav-logo{font-family:var(--display);font-size:18px;letter-spacing:.14em;color:var(--ink);text-decoration:none}
+.nav-back{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);text-decoration:none;opacity:.65;transition:opacity .3s;display:flex;align-items:center;gap:10px}
+.nav-back:hover{opacity:1}
+.nav-count{font-size:10px;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+
+/* ─── HERO: CENTERED FLOATING ─── */
+#hero{
+  min-height:100vh;background:var(--proj-pale);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;padding:100px 56px 40px;
+  text-align:center;
+}
+.hero-bg-title{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:var(--display);font-size:clamp(120px,22vw,380px);
+  color:transparent;-webkit-text-stroke:1px rgba(58,107,53,.07);
+  white-space:nowrap;pointer-events:none;letter-spacing:-.01em;line-height:.9;
+  animation:bgFloat 12s ease-in-out infinite;
+}
+@keyframes bgFloat{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.015)}}
+.hero-eyebrow{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--proj);margin-bottom:20px;opacity:0;animation:slideUp .9s .7s forwards;position:relative;z-index:2}
+.hero-title{font-family:var(--display);font-size:clamp(64px,11vw,180px);line-height:.88;color:var(--ink);letter-spacing:-.005em;opacity:0;animation:slideUp .9s .4s forwards;position:relative;z-index:2}
+.hero-title em{font-family:var(--serif);font-style:italic;color:var(--proj);font-weight:400;font-size:.65em}
+.hero-phones{
+  margin-top:64px;display:flex;align-items:flex-end;justify-content:center;gap:20px;
+  position:relative;z-index:2;
+  opacity:0;animation:slideUp 1s 1s forwards;
+}
+.phone{
+  background:transparent;border-radius:28px;overflow:hidden;
+  box-shadow:0 40px 80px -20px rgba(42,38,34,.2),0 8px 24px -8px rgba(42,38,34,.12);
+  position:relative;
+}
+.phone-main{width:220px;height:440px;transform:translateY(0);animation:phoneFloat 6s ease-in-out infinite}
+.phone-side{width:180px;height:360px;opacity:.75}
+.phone-side:first-child{transform:rotate(-4deg) translateY(20px)}
+.phone-side:last-child{transform:rotate(4deg) translateY(20px);animation:phoneFloatR 7s ease-in-out infinite}
+@keyframes phoneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes phoneFloatR{0%,100%{transform:rotate(4deg) translateY(20px)}50%{transform:rotate(4deg) translateY(8px)}}
+.phone img{width:100%;height:100%;object-fit:cover;display:block}
+.phone-placeholder{width:100%;height:100%;background:linear-gradient(160deg,var(--proj-light),var(--proj));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(18px,2.5vw,32px);color:rgba(255,255,255,.25);letter-spacing:.08em;text-align:center;padding:20px}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);opacity:.5}
+.scroll-line{width:1px;height:56px;background:linear-gradient(var(--ink),transparent);animation:scrollPulse 2.4s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.25}50%{opacity:.7}}
+
+/* ─── INFO BAND ─── */
+.info-band{background:var(--proj);color:var(--ivory);padding:20px 56px;display:flex;justify-content:space-between;align-items:center}
+.info-item .i-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:4px}
+.info-item .i-val{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+
+/* ─── CHALLENGE / SOLUTION SPLIT ─── */
+#challenge{padding:64px 56px;background:var(--ivory);display:grid;grid-template-columns:1fr 1fr;gap:1px;background-color:var(--line)}
+.chal-col{background:var(--ivory);padding:48px 40px}
+.chal-col:last-child{background:var(--cream)}
+.section-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:48px}
+.section-label::before{content:'';width:40px;height:1px;background:var(--accent);display:block}
+.chal-num{font-family:var(--display);font-size:120px;color:transparent;-webkit-text-stroke:1px rgba(42,38,34,.07);line-height:1;margin-bottom:24px}
+.chal-title{font-family:var(--display);font-size:clamp(36px,4.5vw,64px);color:var(--ink);margin-bottom:28px;line-height:.92}
+.chal-title em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.chal-body{font-size:13px;line-height:1.9;color:var(--ink-soft);max-width:440px}
+
+/* ─── UX FLOW: HORIZONTAL STICKY ─── */
+#ux-flow{background:var(--cream-deep);padding:32px 0;overflow:hidden}
+.flow-header{padding:0 56px;margin-bottom:16px}
+.flow-track-wrap{overflow-x:auto;padding:0 56px 20px;scrollbar-width:none;scroll-snap-type:x mandatory}
+.flow-track-wrap::-webkit-scrollbar{display:none}
+.flow-track{display:flex;gap:20px;width:max-content}
+.flow-card{
+  width:220px;flex-shrink:0;scroll-snap-align:start;
+  background:transparent;border:none;
+  padding:0;position:relative;
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+}
+.flow-card:hover{transform:translateY(-6px)}
+.flow-card-num{display:none}
+.flow-card-screen{width:100%;margin-bottom:20px;border-radius:4px;overflow:hidden;background:transparent}
+.flow-card-screen img{width:100%;height:auto;display:block}
+.flow-card-screen-ph{width:100%;height:100%;background:linear-gradient(180deg,var(--proj-light),var(--proj-pale));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:32px;color:rgba(58,107,53,.2)}
+.flow-card-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--proj);margin-bottom:8px}
+.flow-card-title{font-family:var(--display);font-size:22px;color:var(--ink);margin-bottom:10px}
+.flow-card-desc{font-size:11px;line-height:1.75;color:var(--ink-soft)}
+
+/* ─── DESIGN SYSTEM ─── */
+#design-system{padding:64px 56px;background:var(--cream)}
+.ds-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-top:40px}
+.ds-col-label{font-family:var(--display);font-size:clamp(40px,5.5vw,84px);color:var(--ink);line-height:.9;margin-bottom:40px}
+.ds-col-label em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.ds-body{font-size:13px;line-height:1.85;color:var(--ink-soft);margin-bottom:40px;max-width:460px}
+.ds-colors{display:flex;gap:8px;margin-bottom:40px}
+.ds-swatch{width:56px;height:56px;border-radius:50%;position:relative}
+.ds-swatch span{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap}
+.ds-type-specimen{border-top:0.5px solid var(--line)}
+.ds-type-row{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;border-bottom:0.5px solid var(--line)}
+.ds-type-name{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.ds-type-example{font-size:clamp(14px,2vw,22px);color:var(--ink)}
+
+/* ─── FULL RESULT ─── */
+#result{background:var(--proj-pale);padding:48px 56px}
+.result-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:var(--proj-light)}
+.result-ph{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,var(--proj-light),var(--proj-pale));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(48px,8vw,140px);color:rgba(58,107,53,.12);letter-spacing:.04em}
+.result-caption{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--proj);margin-top:20px;padding-bottom:40px}
+
+/* ─── PROTOTYPE EMBED ─── */
+#prototype{background:var(--cream-deep);padding:64px 56px}
+.proto-header{margin-bottom:56px}
+.proto-title{font-family:var(--display);font-size:clamp(40px,6vw,96px);color:var(--ink);line-height:.9;margin-top:16px}
+.proto-title em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.proto-desc{font-size:13px;line-height:1.85;color:var(--ink-soft);max-width:540px;margin-top:24px}
+.proto-frame-wrap{
+  position:relative;
+  width:100%;
+  background:var(--ink);
+  border-radius:8px;
+  overflow:hidden;
+  box-shadow:0 40px 80px -20px rgba(42,38,34,.25),0 8px 24px -8px rgba(42,38,34,.15);
+}
+.proto-topbar{
+  background:#2a2622;
+  padding:12px 20px;
+  display:flex;align-items:center;gap:8px;
+}
+.proto-dot{width:12px;height:12px;border-radius:50%}
+.proto-url{
+  flex:1;
+  background:rgba(255,255,255,.06);
+  border-radius:4px;
+  padding:5px 12px;
+  font-size:10px;
+  letter-spacing:.05em;
+  color:rgba(255,255,255,.35);
+  margin-left:12px;
+}
+.proto-frame-wrap iframe{
+  display:block;
+  width:100%;
+  border:none;
+  height:720px;
+}
+.proto-note{
+  margin-top:20px;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  display:flex;align-items:center;gap:12px;
+}
+.proto-note::before{content:'';width:32px;height:1px;background:var(--accent)}
+@media(max-width:900px){
+  #prototype{padding:80px 24px}
+  .proto-frame-wrap iframe{height:500px}
+}
+
+/* ─── NEXT ─── */
+.next-wrap{display:flex;text-decoration:none;background:var(--ink);color:var(--cream);padding:64px 56px;justify-content:space-between;align-items:center;position:relative;overflow:hidden;transition:background .4s}
+.next-wrap:hover{background:#1a1208}
+.next-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-warm);margin-bottom:16px}
+.next-title{font-family:var(--display);font-size:clamp(44px,8vw,124px);line-height:.88;letter-spacing:-.005em}
+.next-title em{font-family:var(--serif);font-style:italic;color:var(--accent-warm)}
+.next-arrow{font-size:clamp(56px,9vw,140px);color:var(--cream);opacity:.25;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .3s;flex-shrink:0}
+.next-wrap:hover .next-arrow{transform:translateX(18px);opacity:.6}
+.next-bg{position:absolute;bottom:-60px;right:0;font-family:var(--display);font-size:clamp(100px,20vw,340px);color:transparent;-webkit-text-stroke:1px rgba(245,241,234,.04);line-height:1;pointer-events:none}
+footer{background:var(--cream);padding:40px 56px;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid var(--line-soft)}
+.foot-logo{font-family:var(--display);font-size:20px;color:var(--ink);letter-spacing:.14em;text-decoration:none}
+.foot-copy{font-size:9.5px;letter-spacing:.18em;color:var(--ink-soft);opacity:.6;text-transform:uppercase}
+.foot-link{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:10px;transition:color .3s}
+.foot-link:hover{color:var(--ink)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+@media(max-width:900px){
+  body{cursor:auto}#cursor,#cursor-trail{display:none}
+  nav{padding:20px 24px}
+  #hero{padding:120px 24px 80px}
+  .phone-main{width:160px;height:320px}.phone-side{width:120px;height:240px}
+  .info-band{flex-wrap:wrap;gap:20px;padding:24px;justify-content:center}
+  #challenge{grid-template-columns:1fr;background:var(--ivory)}
+  .chal-col{padding:48px 24px}.chal-col:last-child{background:var(--ivory)}
+  #ux-flow{padding:80px 0}
+  .flow-header{padding:0 24px}
+  .flow-track-wrap{padding:0 24px 24px}
+  #design-system{padding:80px 24px}
+  .ds-grid{grid-template-columns:1fr;gap:40px}
+  #result{padding:64px 24px}
+  .next-wrap{padding:64px 24px;flex-direction:column;align-items:flex-start;gap:28px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 24px}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-trail"></div><div id="grain"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">CJ</a>
+  <a class="nav-back" href="../index.html">← Back to Work</a>
+  <span class="nav-count">05 / 08</span>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-title">GREEN</div>
+  <div class="hero-eyebrow">UX/UI · App Design · 2024</div>
+  <h1 class="hero-title">GREEN EAT<br><em>App</em></h1>
+  <div class="hero-phones">
+    <div class="phone phone-side">
+      <img src="../assets/02-green-eat/green%20eat_cupon.png" alt="Green Eat Cupon" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="phone-placeholder" style="display:none">CUPON</div>
+    </div>
+    <div class="phone phone-main">
+      <img src="../assets/02-green-eat/green%20eat_home.png" alt="Green Eat Home" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="phone-placeholder" style="display:none">HOME</div>
+    </div>
+    <div class="phone phone-side">
+      <img src="../assets/02-green-eat/green%20eat_cupon%20activo.png" alt="Green Eat Cupon Activo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="phone-placeholder" style="display:none">CUPON ACTIVO</div>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div><span>Scroll</span></div>
+</section>
+
+<!-- INFO BAND -->
+<div class="info-band">
+  <div class="info-item"><div class="i-label">Year</div><div class="i-val">2024</div></div>
+  <div class="info-item"><div class="i-label">Category</div><div class="i-val">APP DESIGN</div></div>
+  <div class="info-item"><div class="i-label">Type</div><div class="i-val">UX/UI</div></div>
+  <div class="info-item"><div class="i-label">Platform</div><div class="i-val">iOS</div></div>
+  <div class="info-item"><div class="i-label">Role</div><div class="i-val">DESIGNER</div></div>
+</div>
+
+<!-- CHALLENGE / SOLUTION -->
+<section id="challenge">
+  <div class="chal-col">
+    <div class="section-label reveal">The Challenge</div>
+    <div class="chal-num">01</div>
+    <h2 class="chal-title reveal">THE<br><em>Problem</em></h2>
+    <p class="chal-body reveal d1">Green Eat's existing app was visually cluttered, structurally confusing, and failed to communicate the brand's core promise — fresh, honest, convenient food. Users dropped off at the menu stage due to a lack of visual hierarchy and trust signals.</p>
+  </div>
+  <div class="chal-col">
+    <div class="section-label reveal">The Solution</div>
+    <div class="chal-num">02</div>
+    <h2 class="chal-title reveal">THE<br><em>Answer</em></h2>
+    <p class="chal-body reveal d1">A research-driven redesign built around speed, clarity, and appetite. Every screen decision was made to reduce friction, increase trust, and put the food — not the interface — at the center of the experience.</p>
+  </div>
+</section>
+
+<!-- UX FLOW -->
+<section id="ux-flow">
+  <div class="flow-header">
+    <div class="section-label reveal">User Flow</div>
+    <h2 class="reveal" style="font-family:var(--display);font-size:clamp(40px,6vw,96px);color:var(--ink);line-height:.9;max-width:700px">SCREEN<br><span style="font-family:var(--serif);font-style:italic;color:var(--proj)">by Screen</span></h2>
+  </div>
+  <div class="flow-track-wrap">
+    <div class="flow-track">
+      <div class="flow-card">
+        <div class="flow-card-num">01</div>
+        <div class="flow-card-screen">
+          <img src="../assets/02-green-eat/green%20eat_onboarding1.png" alt="Onboarding 1" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="flow-card-screen-ph" style="display:none">01</div>
+        </div>
+        <div class="flow-card-label">Onboarding</div>
+        <div class="flow-card-title">WELCOME</div>
+        <div class="flow-card-desc">First impression — brand identity, value proposition and tone of voice established.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-card-num">02</div>
+        <div class="flow-card-screen">
+          <img src="../assets/02-green-eat/green%20eat_onboarding%202.png" alt="Onboarding 2" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="flow-card-screen-ph" style="display:none">02</div>
+        </div>
+        <div class="flow-card-label">Onboarding</div>
+        <div class="flow-card-title">DISCOVER</div>
+        <div class="flow-card-desc">App features introduced progressively. Each screen earns the next swipe.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-card-num">03</div>
+        <div class="flow-card-screen">
+          <img src="../assets/02-green-eat/green%20eat_onboarding3.png" alt="Onboarding 3" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="flow-card-screen-ph" style="display:none">03</div>
+        </div>
+        <div class="flow-card-label">Onboarding</div>
+        <div class="flow-card-title">HOW IT WORKS</div>
+        <div class="flow-card-desc">Core flow explained simply — order, get coupons, save. No friction, no confusion.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-card-num">04</div>
+        <div class="flow-card-screen">
+          <img src="../assets/02-green-eat/green%20eat_onboarding4.png" alt="Onboarding 4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="flow-card-screen-ph" style="display:none">04</div>
+        </div>
+        <div class="flow-card-label">Onboarding</div>
+        <div class="flow-card-title">BENEFITS</div>
+        <div class="flow-card-desc">Value reinforced before sign-up. Users know why to commit before they're asked to.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-card-num">05</div>
+        <div class="flow-card-screen">
+          <img src="../assets/02-green-eat/green%20eat_onboarding5.png" alt="Onboarding 5" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="flow-card-screen-ph" style="display:none">05</div>
+        </div>
+        <div class="flow-card-label">Onboarding</div>
+        <div class="flow-card-title">GET STARTED</div>
+        <div class="flow-card-desc">Clear CTA. Minimal fields. The path from screen to app is as short as possible.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-card-num">06</div>
+        <div class="flow-card-screen">
+          <img src="../assets/02-green-eat/green%20eat_home.png" alt="Home" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="flow-card-screen-ph" style="display:none">HOME</div>
+        </div>
+        <div class="flow-card-label">Main Screen</div>
+        <div class="flow-card-title">HOME</div>
+        <div class="flow-card-desc">Food-first hierarchy. Large images, minimal interface, instant access to coupons.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGN SYSTEM -->
+<section id="design-system">
+  <div class="section-label reveal">Design System</div>
+  <div class="ds-grid">
+    <div>
+      <div class="ds-col-label reveal">COLOR<br>&amp; <em>Type</em></div>
+      <p class="ds-body reveal d1">A system built on appetite psychology — warm greens that signal freshness without feeling clinical. Typography that's legible at speed, readable one-handed.</p>
+      <div class="ds-colors reveal d2">
+        <div class="ds-swatch" style="background:#2F7B4E"><span>Green</span></div>
+        <div class="ds-swatch" style="background:#FF7B04"><span>Orange</span></div>
+        <div class="ds-swatch" style="background:#f5f1ea"><span>Paper</span></div>
+        <div class="ds-swatch" style="background:#2a2622"><span>Ink</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="ds-type-specimen reveal">
+        <div class="ds-type-row"><span class="ds-type-name">Display · Source Serif 4 ExtraBold</span><span class="ds-type-example" style="font-family:'Source Serif 4',serif;font-weight:800;font-size:clamp(28px,4vw,52px);letter-spacing:-.23px">Green Eat</span></div>
+        <div class="ds-type-row"><span class="ds-type-name">UI · Inter Semi Bold</span><span class="ds-type-example" style="font-family:'Inter',sans-serif;font-weight:600;font-size:clamp(20px,2.8vw,32px)">Ver cupones</span></div>
+        <div class="ds-type-row"><span class="ds-type-name">Body · Roboto Medium</span><span class="ds-type-example" style="font-family:'Roboto',sans-serif;font-weight:500;font-size:clamp(16px,2vw,22px);letter-spacing:-.23px">Ensalada vegana, palta y cherrys.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULT -->
+<section id="result">
+  <div class="section-label reveal">Final Result</div>
+  <div class="reveal d1" style="display:grid;grid-template-columns:repeat(6,1fr);gap:16px;padding:40px 0;align-items:start">
+    <img src="../assets/02-green-eat/green%20test.jpg" alt="Green Eat screen 1" style="width:100%;display:block;border-radius:12px;box-shadow:0 20px 40px -10px rgba(42,38,34,.15)" onerror="this.style.display='none'">
+    <img src="../assets/02-green-eat/green%20test2.jpg" alt="Green Eat screen 2" style="width:100%;display:block;border-radius:12px;box-shadow:0 20px 40px -10px rgba(42,38,34,.15);margin-top:32px" onerror="this.style.display='none'">
+    <img src="../assets/02-green-eat/green%20test3.jpg" alt="Green Eat screen 3" style="width:100%;display:block;border-radius:12px;box-shadow:0 20px 40px -10px rgba(42,38,34,.15)" onerror="this.style.display='none'">
+    <img src="../assets/02-green-eat/green%20test4.jpg" alt="Green Eat screen 4" style="width:100%;display:block;border-radius:12px;box-shadow:0 20px 40px -10px rgba(42,38,34,.15);margin-top:32px" onerror="this.style.display='none'">
+    <img src="../assets/02-green-eat/green%20test5.jpg" alt="Green Eat screen 5" style="width:100%;display:block;border-radius:12px;box-shadow:0 20px 40px -10px rgba(42,38,34,.15)" onerror="this.style.display='none'">
+    <img src="../assets/02-green-eat/mis%20puntos%20green.png" alt="Mis puntos" style="width:100%;display:block;border-radius:12px;box-shadow:0 20px 40px -10px rgba(42,38,34,.15);margin-top:32px" onerror="this.style.display='none'">
+  </div>
+  <div class="result-caption reveal">App Screens — iOS · 2024</div>
+</section>
+
+
+<!-- PROTOTYPE -->
+<section id="prototype">
+  <div class="proto-header">
+    <div class="section-label reveal">Interactive Prototype</div>
+    <h2 class="proto-title reveal d1">TRY IT<br><em>yourself</em></h2>
+    <p class="proto-desc reveal d2">The full navigable prototype — explore every screen and interact with the flow exactly as a real user would experience it.</p>
+  </div>
+  <div class="proto-frame-wrap reveal d1">
+    <div class="proto-topbar">
+      <div class="proto-dot" style="background:#ff5f57"></div>
+      <div class="proto-dot" style="background:#febc2e"></div>
+      <div class="proto-dot" style="background:#28c840"></div>
+      <div class="proto-url">figma.com · Green Eat App · Prototipo</div>
+    </div>
+    <iframe
+      src="https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/proto/6spKuwqlC3ipY71Wj2rQtI/redise%C3%B1o-app%3Fcontent-scaling%3Dfixed%26kind%3Dproto%26node-id%3D365-934%26page-id%3D0%3A1%26scaling%3Dcontain%26starting-point-node-id%3D365%3A934"
+      allowfullscreen
+      loading="lazy"
+      title="Green Eat App — Prototipo interactivo"
+    ></iframe>
+  </div>
+  <div class="proto-note reveal d2">Interactivo · Navegación completa · Figma Prototype</div>
+</section>
+
+<!-- NEXT -->
+<a class="next-wrap" href="06-stan-soriano.html">
+  <div>
+    <div class="next-lbl">Next Project — 06 / 08</div>
+    <div class="next-title">STAN<br><em>Soriano</em></div>
+  </div>
+  <div class="next-arrow">↗</div>
+  <div class="next-bg">STAN</div>
+</a>
+
+<footer>
+  <a class="foot-logo" href="../index.html">CJ</a>
+  <div class="foot-copy">© 2026 Candela Jalil</div>
+  <a class="foot-link" href="../index.html">← All Projects</a>
+</footer>
+
+<script>
+const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function anim(){tx+=(mx-tx)*.08;ty+=(my-ty)*.08;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.flow-card,.phone,.ds-swatch').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
+});
+const nav=document.querySelector('nav');
+window.addEventListener('scroll',()=>{
+  const s=window.scrollY>80;
+  nav.style.background=s?'rgba(240,247,238,.92)':'transparent';
+  nav.style.backdropFilter=s?'blur(16px)':'none';
+  nav.style.borderColor=s?'rgba(42,38,34,.08)':'transparent';
+},{passive:true});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

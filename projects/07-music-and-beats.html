@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music & Beats — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#2a2622;--ink-soft:#4a423a;--cream:#f5f1ea;--cream-deep:#ede5d6;
+  --ivory:#faf7f0;--sand:#e8dfcc;--line:rgba(42,38,34,.12);--line-soft:rgba(42,38,34,.06);
+  --accent:#8a8769;--accent-warm:#b9a584;
+  --serif:'DM Serif Display',serif;--mono:'Space Mono',monospace;--display:'Bebas Neue',sans-serif;
+  --proj:#a8d63c;--proj-dark:#0d0d0d;--proj-mid:#1a1a0a;
+}
+html{scroll-behavior:smooth;background:var(--proj-dark)}
+body{background:var(--proj-dark);color:var(--ivory);font-family:var(--mono);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+::selection{background:var(--proj);color:var(--proj-dark)}
+#cursor{position:fixed;width:10px;height:10px;background:var(--proj);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .35s ease,height .35s ease,background .35s ease}
+#cursor.hover{width:52px;height:52px;background:var(--proj);opacity:.4}
+#cursor-trail{position:fixed;width:36px;height:36px;border:0.5px solid rgba(168,214,60,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .5s ease,top .5s ease}
+#grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.04;mix-blend-mode:screen;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:28px 56px;transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:0.5px solid transparent}
+.nav-logo{font-family:var(--display);font-size:18px;letter-spacing:.14em;color:var(--ivory);text-decoration:none}
+.nav-back{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ivory);text-decoration:none;opacity:.5;transition:opacity .3s}
+.nav-back:hover{opacity:1}
+.nav-count{font-size:10px;letter-spacing:.2em;color:var(--proj);text-transform:uppercase}
+
+/* ─── HERO: DARK FULL SCREEN ─── */
+#hero{
+  height:100vh;background:var(--proj-dark);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 56px 72px;position:relative;overflow:hidden;
+}
+/* animated bg grid */
+.hero-grid-bg{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(168,214,60,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(168,214,60,.04) 1px,transparent 1px);
+  background-size:80px 80px;
+  animation:gridShift 20s linear infinite;
+}
+@keyframes gridShift{from{background-position:0 0}to{background-position:80px 80px}}
+.hero-img-bg{position:absolute;inset:0}
+.hero-img-bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:.35;filter:saturate(0) contrast(1.2)}
+.hero-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(13,13,13,.3),rgba(13,13,13,.85));z-index:1}
+.hero-content{position:relative;z-index:2}
+.hero-eyebrow{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--proj);margin-bottom:20px;opacity:0;animation:slideUp .9s .7s forwards}
+.hero-title{
+  font-family:var(--display);
+  font-size:clamp(80px,14vw,240px);
+  line-height:.85;letter-spacing:-.01em;
+  opacity:0;animation:slideUp .9s .4s forwards;
+}
+.hero-title .amp{color:var(--proj)}
+.hero-sub{display:flex;justify-content:space-between;align-items:flex-end;margin-top:40px;opacity:0;animation:slideUp .8s .9s forwards}
+.hero-tagline{font-family:var(--serif);font-style:italic;font-size:clamp(16px,2.2vw,28px);color:rgba(245,241,234,.55)}
+.hero-tags{display:flex;gap:10px}
+.hero-tag{font-size:9px;letter-spacing:.2em;text-transform:uppercase;border:0.5px solid rgba(168,214,60,.3);padding:5px 14px;border-radius:100px;color:var(--proj);background:rgba(168,214,60,.06)}
+/* pulsing dot */
+.pulse-ring{position:absolute;top:48px;right:56px;z-index:2}
+.pulse-dot{width:8px;height:8px;background:var(--proj);border-radius:50%;position:relative}
+.pulse-dot::after{content:'';position:absolute;inset:-6px;border:1px solid var(--proj);border-radius:50%;opacity:.4;animation:pulse 2s ease-out infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:.4}100%{transform:scale(2.5);opacity:0}}
+
+/* ─── INFO BAND ─── */
+.info-band{background:var(--proj);color:var(--proj-dark);padding:20px 56px;display:flex;justify-content:space-between;align-items:center}
+.info-item .i-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(13,13,13,.5);margin-bottom:4px}
+.info-item .i-val{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+
+/* ─── TRANSITION: DARK → CREAM ─── */
+#transition{
+  background:linear-gradient(var(--proj-dark),var(--cream));
+  padding:120px 56px;
+  position:relative;
+}
+.trans-quote{font-family:var(--serif);font-style:italic;font-size:clamp(24px,4vw,56px);line-height:1.25;color:var(--ivory);max-width:800px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.trans-quote em{color:var(--proj)}
+
+/* from here: cream bg */
+body.light-mode-start{background:var(--cream)}
+
+/* ─── CONCEPT ─── */
+#concept{padding:120px 56px;background:var(--cream);color:var(--ink);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.section-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:56px}
+.section-label::before{content:'';width:40px;height:1px;background:var(--accent);display:block}
+.concept-heading{font-family:var(--display);font-size:clamp(52px,7vw,112px);line-height:.88;color:var(--ink);margin-bottom:36px;letter-spacing:-.005em}
+.concept-heading em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+.concept-body{font-size:13px;line-height:1.9;color:var(--ink-soft);margin-bottom:20px;max-width:460px}
+.concept-img{width:100%;object-fit:contain;display:block;background:var(--proj-dark)}
+.concept-ph{width:100%;aspect-ratio:3/4;background:var(--proj-dark);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(36px,6vw,96px);color:var(--proj);letter-spacing:.04em;opacity:.8}
+
+/* ─── LOGO SYSTEM ─── */
+#logo-system{padding:120px 56px;background:var(--ivory);color:var(--ink)}
+.logo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);margin-top:64px}
+.logo-cell{background:var(--ivory);padding:56px 40px;display:flex;align-items:center;justify-content:center;aspect-ratio:1;transition:background .4s}
+.logo-cell:hover{background:var(--cream-deep)}
+.logo-cell.dark{background:var(--proj-dark)}
+.logo-cell.dark:hover{background:#1a1a0a}
+.logo-cell.lime{background:var(--proj)}
+.logo-cell.lime:hover{background:#96c234}
+.logo-mark{font-family:var(--display);letter-spacing:-.01em;text-align:center;line-height:.9}
+.lm-sm{font-size:clamp(18px,3vw,48px)}
+.lm-md{font-size:clamp(28px,5vw,72px)}
+.lm-lg{font-size:clamp(36px,6.5vw,100px)}
+.on-cream{color:var(--ink)}
+.on-dark{color:var(--ivory)}
+.on-lime{color:var(--proj-dark)}
+
+/* ─── APPLICATIONS: FESTIVAL GRID ─── */
+#applications{padding:0;background:var(--cream-deep);overflow:hidden}
+.app-header{padding:80px 56px 0}
+.app-masonry{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:auto;gap:12px;padding:56px 56px 80px;margin-top:0}
+.app-tile{background:var(--sand);overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+.app-tile img{width:100%;height:100%;object-fit:contain;display:block;transition:transform 1.2s cubic-bezier(.16,1,.3,1)}
+.app-tile:hover img{transform:scale(1.04)}
+.tile-ph{font-family:var(--display);letter-spacing:.04em;text-align:center;padding:20px}
+.t1{grid-column:span 8;aspect-ratio:16/9;background:var(--proj-dark)}
+.t1 .tile-ph{font-size:clamp(32px,5vw,88px);color:var(--proj)}
+.t2{grid-column:span 4;aspect-ratio:1;background:var(--proj)}
+.t2 .tile-ph{font-size:clamp(20px,3vw,48px);color:var(--proj-dark)}
+.t3{grid-column:span 4;aspect-ratio:4/3}
+.t3 .tile-ph{font-size:clamp(16px,2.5vw,36px);color:rgba(42,38,34,.15)}
+.t4{grid-column:span 4;aspect-ratio:4/3;background:var(--ink)}
+.t4 .tile-ph{font-size:clamp(16px,2.5vw,36px);color:rgba(245,241,234,.08)}
+.t5{grid-column:span 4;aspect-ratio:4/3;background:var(--accent-warm)}
+.t5 .tile-ph{font-size:clamp(16px,2.5vw,36px);color:rgba(42,38,34,.2)}
+
+/* ─── MERCH GALLERY ─── */
+#merch-gallery{padding:120px 56px;background:var(--proj-dark);color:var(--ivory)}
+.merch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:64px}
+.merch-item{background:#111;overflow:hidden;aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative}
+.merch-item img{width:100%;height:100%;object-fit:contain;display:block;transition:transform 1s cubic-bezier(.16,1,.3,1)}
+.merch-item:hover img{transform:scale(1.06)}
+.merch-item-ph{font-family:var(--display);font-size:36px;color:rgba(168,214,60,.15);letter-spacing:.04em}
+@media(max-width:900px){#merch-gallery{padding:80px 24px}.merch-grid{grid-template-columns:1fr 1fr}}
+
+/* ─── ENERGY BLOCK ─── */
+#energy{background:var(--proj);padding:96px 56px;text-align:center;position:relative;overflow:hidden}
+.energy-text{font-family:var(--display);font-size:clamp(80px,16vw,280px);color:var(--proj-dark);line-height:.85;letter-spacing:-.01em;position:relative;z-index:1}
+.energy-sub{font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.5vw,32px);color:rgba(13,13,13,.5);margin-top:20px;position:relative;z-index:1}
+
+/* ─── NEXT ─── */
+.next-wrap{display:flex;text-decoration:none;background:var(--ink);color:var(--cream);padding:96px 56px;justify-content:space-between;align-items:center;position:relative;overflow:hidden;transition:background .4s}
+.next-wrap:hover{background:#0d0d0d}
+.next-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-warm);margin-bottom:16px}
+.next-title{font-family:var(--display);font-size:clamp(44px,8vw,124px);line-height:.88;letter-spacing:-.005em}
+.next-title em{font-family:var(--serif);font-style:italic;color:var(--accent-warm)}
+.next-arrow{font-size:clamp(56px,9vw,140px);color:var(--cream);opacity:.25;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .3s;flex-shrink:0}
+.next-wrap:hover .next-arrow{transform:translateX(18px);opacity:.6}
+.next-bg{position:absolute;bottom:-60px;right:0;font-family:var(--display);font-size:clamp(100px,20vw,340px);color:transparent;-webkit-text-stroke:1px rgba(245,241,234,.04);line-height:1;pointer-events:none}
+footer{background:var(--cream);padding:40px 56px;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid var(--line-soft)}
+.foot-logo{font-family:var(--display);font-size:20px;color:var(--ink);letter-spacing:.14em;text-decoration:none}
+.foot-copy{font-size:9.5px;letter-spacing:.18em;color:var(--ink-soft);opacity:.6;text-transform:uppercase}
+.foot-link{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:10px;transition:color .3s}
+.foot-link:hover{color:var(--ink)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+@media(max-width:900px){
+  body{cursor:auto}#cursor,#cursor-trail{display:none}
+  nav{padding:20px 24px}
+  #hero{padding:0 24px 56px}
+  .hero-sub{flex-direction:column;gap:24px;align-items:flex-start}
+  .pulse-ring{top:24px;right:24px}
+  .info-band{flex-wrap:wrap;gap:20px;padding:24px;justify-content:center}
+  #transition{padding:80px 24px}
+  #concept{grid-template-columns:1fr;gap:40px;padding:80px 24px}
+  #logo-system{padding:80px 24px}
+  .logo-grid{grid-template-columns:1fr 1fr}
+  .app-header{padding:64px 24px 0}
+  .app-masonry{padding:40px 24px 64px;grid-template-columns:1fr 1fr}
+  .t1,.t2,.t3,.t4,.t5{grid-column:span 1;aspect-ratio:1}
+  #energy{padding:64px 24px}
+  .next-wrap{padding:64px 24px;flex-direction:column;align-items:flex-start;gap:28px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 24px}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-trail"></div><div id="grain"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">CJ</a>
+  <a class="nav-back" href="../index.html">← Back to Work</a>
+  <span class="nav-count">07 / 08</span>
+</nav>
+
+<!-- HERO: DARK -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-img-bg">
+    <img src="../assets/05-music-and-beats/music%20and%20beats%20.png" alt="Music & Beats" onerror="this.style.display='none'">
+  </div>
+  <div class="hero-vignette"></div>
+  <div class="pulse-ring"><div class="pulse-dot"></div></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Branding · Identity · Festival · 2024</div>
+    <h1 class="hero-title">MUSIC<br><span class="amp">&</span><br>BEATS</h1>
+    <div class="hero-sub">
+      <div class="hero-tagline">Festival de Música Electrónica</div>
+      <div class="hero-tags">
+        <span class="hero-tag">Branding</span>
+        <span class="hero-tag">Identity</span>
+        <span class="hero-tag">Motion</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INFO BAND -->
+<div class="info-band">
+  <div class="info-item"><div class="i-label">Year</div><div class="i-val">2024</div></div>
+  <div class="info-item"><div class="i-label">Type</div><div class="i-val">BRANDING</div></div>
+  <div class="info-item"><div class="i-label">Event</div><div class="i-val">FESTIVAL</div></div>
+  <div class="info-item"><div class="i-label">Scope</div><div class="i-val">FULL ID</div></div>
+  <div class="info-item"><div class="i-label">Role</div><div class="i-val">DESIGNER</div></div>
+</div>
+
+<!-- TRANSITION -->
+<section id="transition">
+  <blockquote class="trans-quote reveal">
+    "A festival brand must live in <em>two worlds</em> — the anticipation before, and the memory after."
+  </blockquote>
+</section>
+
+<!-- CONCEPT -->
+<section id="concept">
+  <div>
+    <div class="section-label reveal">Concept</div>
+    <h2 class="concept-heading reveal d1">RHYTHM<br><em>Visualized</em></h2>
+    <p class="concept-body reveal d2">Music & Beats is an electronic music festival that needed a visual identity as energetic and uncompromising as the music itself. The challenge was to create a brand that reads in both digital darkness and festival daylight.</p>
+    <p class="concept-body reveal d2">The identity is built around contrast — electric lime against deep black. Typography as loud as the bassline. A system that works from a 3×3cm ticket barcode to a 10-meter festival banner.</p>
+  </div>
+  <div class="reveal d1" style="background:var(--proj-dark);padding:56px;display:flex;align-items:center;justify-content:center;min-height:400px">
+    <img src="../assets/05-music-and-beats/logo%20music%20and%20beatd.png" alt="Music & Beats Logo" style="width:100%;max-width:420px;object-fit:contain;display:block">
+  </div>
+</section>
+
+<!-- LOGO SYSTEM -->
+<section id="logo-system">
+  <div class="section-label reveal">Logo System</div>
+  <div class="logo-grid">
+    <div class="logo-cell dark reveal"><img src="../assets/05-music-and-beats/logo.png" alt="Logo" style="max-width:80%;object-fit:contain;display:block"></div>
+    <div class="logo-cell reveal d1" style="background:#C9D400"><img src="../assets/05-music-and-beats/logo2.png" alt="Logo 2" style="max-width:80%;object-fit:contain;display:block"></div>
+    <div class="logo-cell reveal d2" style="background:var(--proj-dark)"><img src="../assets/05-music-and-beats/logo3.png" alt="Logo 3" style="max-width:80%;object-fit:contain;display:block"></div>
+  </div>
+
+  <div style="margin-top:64px;border-top:0.5px solid var(--line);padding-top:64px">
+    <div class="section-label reveal" style="margin-bottom:40px">Color System</div>
+    <div class="reveal d1" style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px">
+      <div style="background:#C9D400;padding:48px 40px;display:flex;flex-direction:column;justify-content:flex-end;min-height:240px">
+        <div style="font-family:var(--display);font-size:clamp(32px,4vw,64px);color:rgba(0,0,0,.18);line-height:1">LIME</div>
+        <div style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(0,0,0,.45);margin-top:14px">#C9D400</div>
+        <div style="font-size:9px;letter-spacing:.18em;color:rgba(0,0,0,.3);margin-top:4px">R 201 · G 212 · B 0</div>
+      </div>
+      <div style="background:#313130;padding:48px 40px;display:flex;flex-direction:column;justify-content:flex-end;min-height:240px">
+        <div style="font-family:var(--display);font-size:clamp(32px,4vw,64px);color:rgba(255,255,255,.08);line-height:1">DARK</div>
+        <div style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:14px">#313130</div>
+        <div style="font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.25);margin-top:4px">R 49 · G 49 · B 48</div>
+      </div>
+      <div style="background:#3A55A2;padding:48px 40px;display:flex;flex-direction:column;justify-content:flex-end;min-height:240px">
+        <div style="font-family:var(--display);font-size:clamp(32px,4vw,64px);color:rgba(255,255,255,.08);line-height:1">BLUE</div>
+        <div style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:14px">#3A55A2</div>
+        <div style="font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.25);margin-top:4px">R 58 · G 85 · B 162</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLICATIONS -->
+<section id="applications">
+  <div class="app-header">
+    <div class="section-label reveal">Applications</div>
+    <h2 class="reveal d1" style="font-family:var(--display);font-size:clamp(44px,7vw,108px);color:var(--ink);line-height:.9">FESTIVAL<br><span style="font-family:var(--serif);font-style:italic;color:var(--accent)">Materials</span></h2>
+  </div>
+  <div class="app-masonry">
+    <div class="app-tile reveal" style="grid-column:span 6;aspect-ratio:2/3;background:var(--proj-dark);position:relative"><img src="../assets/05-music-and-beats/poster.png" alt="Poster"><div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(transparent,rgba(0,0,0,.65));font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.7)">Poster</div></div>
+    <div class="app-tile reveal d1" style="grid-column:span 6;aspect-ratio:2/3;background:var(--proj-dark);position:relative"><img src="../assets/05-music-and-beats/program.png" alt="Program"><div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(transparent,rgba(0,0,0,.65));font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.7)">Program</div></div>
+    <div class="app-tile reveal" style="grid-column:span 12;background:var(--proj-dark);position:relative"><img src="../assets/05-music-and-beats/billboard.png" alt="Billboard"><div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(transparent,rgba(0,0,0,.65));font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.7)">Billboard</div></div>
+    <div style="grid-column:span 12;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(42,38,34,.45);padding:4px 0">Instagram</div>
+    <div style="grid-column:span 12;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      <img src="../assets/05-music-and-beats/post1.png" style="width:100%;aspect-ratio:1;object-fit:contain;display:block;background:var(--proj-dark)">
+      <img src="../assets/05-music-and-beats/post2.png" style="width:100%;aspect-ratio:1;object-fit:contain;display:block;background:var(--proj-dark)">
+      <img src="../assets/05-music-and-beats/post3.png" style="width:100%;aspect-ratio:1;object-fit:contain;display:block;background:var(--proj-dark)">
+      <img src="../assets/05-music-and-beats/post6.png" style="width:100%;aspect-ratio:1;object-fit:contain;display:block;background:var(--proj-dark)">
+      <img src="../assets/05-music-and-beats/post7.png" style="width:100%;aspect-ratio:1;object-fit:contain;display:block;background:var(--proj-dark)">
+      <img src="../assets/05-music-and-beats/post8.png" style="width:100%;aspect-ratio:1;object-fit:contain;display:block;background:var(--proj-dark)">
+    </div>
+  </div>
+</section>
+
+<!-- MERCH GALLERY -->
+<section id="merch-gallery">
+  <div class="section-label reveal">Merchandise</div>
+  <h2 class="reveal d1" style="font-family:var(--display);font-size:clamp(44px,7vw,108px);line-height:.9">BRAND<br><span style="font-family:var(--serif);font-style:italic;color:var(--proj)">Objects</span></h2>
+  <div class="merch-grid">
+    <div class="merch-item reveal"><img src="../assets/05-music-and-beats/merch2.png" alt="Merch 2"></div>
+    <div class="merch-item reveal d1"><img src="../assets/05-music-and-beats/merch4.png" alt="Merch 4"></div>
+    <div class="merch-item reveal d2"><img src="../assets/05-music-and-beats/merch5.png" alt="Merch 5"></div>
+    <div class="merch-item reveal"><img src="../assets/05-music-and-beats/merch7.png" alt="Merch 7"></div>
+    <div class="merch-item reveal d1"><img src="../assets/05-music-and-beats/merch8.png" alt="Merch 8"></div>
+    <div class="merch-item reveal d2"><img src="../assets/05-music-and-beats/merch9.png" alt="Merch 9"></div>
+  </div>
+</section>
+
+<!-- ENERGY BLOCK -->
+<section id="energy">
+  <div class="energy-text reveal">FEEL<br>THE<br>BEAT</div>
+  <div class="energy-sub reveal d1">Electronic Music Festival — Buenos Aires 2024</div>
+</section>
+
+<!-- NEXT -->
+<a class="next-wrap" href="08-gauchadas.html">
+  <div>
+    <div class="next-lbl">Next Project — 08 / 08</div>
+    <div class="next-title">GAUCHADAS<br><em>Web</em></div>
+  </div>
+  <div class="next-arrow">↗</div>
+  <div class="next-bg">GACH</div>
+</a>
+
+<footer>
+  <a class="foot-logo" href="../index.html">CJ</a>
+  <div class="foot-copy">© 2026 Candela Jalil</div>
+  <a class="foot-link" href="../index.html">← All Projects</a>
+</footer>
+
+<script>
+const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function anim(){tx+=(mx-tx)*.08;ty+=(my-ty)*.08;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.logo-cell,.app-tile').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
+});
+const nav=document.querySelector('nav');
+window.addEventListener('scroll',()=>{
+  const past=window.scrollY>window.innerHeight*.8;
+  if(past){
+    nav.style.background='rgba(245,241,234,.88)';
+    nav.style.backdropFilter='blur(16px)';
+    nav.style.borderColor='rgba(42,38,34,.08)';
+    nav.querySelector('.nav-logo').style.color='var(--ink)';
+    nav.querySelector('.nav-back').style.color='var(--ink)';
+    nav.querySelector('.nav-count').style.color='var(--accent)';
+  } else {
+    nav.style.background='transparent';
+    nav.style.backdropFilter='none';
+    nav.style.borderColor='transparent';
+    nav.querySelector('.nav-logo').style.color='var(--ivory)';
+    nav.querySelector('.nav-back').style.color='var(--ivory)';
+    nav.querySelector('.nav-count').style.color='var(--proj)';
+  }
+},{passive:true});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soriano Stand — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#2a2622;--ink-soft:#4a423a;--cream:#f5f1ea;--cream-deep:#ede5d6;
+  --ivory:#faf7f0;--sand:#e8dfcc;--line:rgba(42,38,34,.12);--line-soft:rgba(42,38,34,.06);
+  --accent:#8a8769;--accent-warm:#b9a584;
+  --serif:'DM Serif Display',serif;--mono:'Space Mono',monospace;--display:'Bebas Neue',sans-serif;
+  --proj:#c41e3a;--proj-dark:#7a0f22;
+}
+html{scroll-behavior:smooth;background:var(--cream)}
+body{background:var(--cream);color:var(--ink);font-family:var(--mono);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+::selection{background:var(--proj);color:var(--ivory)}
+#cursor{position:fixed;width:10px;height:10px;background:var(--ink);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .35s ease,height .35s ease,background .35s ease}
+#cursor.hover{width:52px;height:52px;background:var(--proj);opacity:.55}
+#cursor-trail{position:fixed;width:36px;height:36px;border:0.5px solid rgba(42,38,34,.25);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .5s ease,top .5s ease}
+#grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.025;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:28px 56px;transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:0.5px solid transparent}
+.nav-logo{font-family:var(--display);font-size:18px;letter-spacing:.14em;color:var(--ivory);text-decoration:none}
+.nav-back{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ivory);text-decoration:none;opacity:.65;transition:opacity .3s}
+.nav-back:hover{opacity:1}
+.nav-count{font-size:10px;letter-spacing:.2em;color:rgba(245,241,234,.5);text-transform:uppercase}
+
+/* ─── HERO: PANORAMIC FULL BLEED ─── */
+#hero{
+  height:100vh;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 56px 72px;
+}
+.hero-img-bg{position:absolute;inset:0;background:var(--ink)}
+.hero-img-bg img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.85);transition:transform 10s ease}
+.hero-img-ph{width:100%;height:100%;background:linear-gradient(160deg,#3a1a20,var(--ink));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(60px,12vw,200px);color:rgba(196,30,58,.15);letter-spacing:.06em}
+.hero-vignette{position:absolute;inset:0;background:linear-gradient(to top,rgba(42,38,34,.75) 0%,rgba(42,38,34,.2) 50%,rgba(42,38,34,.35) 100%);z-index:1}
+.hero-content{position:relative;z-index:2;color:var(--ivory)}
+.hero-eyebrow{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(245,241,234,.6);margin-bottom:24px;opacity:0;animation:slideUp .9s .7s forwards}
+.hero-title{font-family:var(--display);font-size:clamp(72px,12vw,200px);line-height:.88;letter-spacing:-.005em;opacity:0;animation:slideUp .9s .4s forwards}
+.hero-title em{font-family:var(--serif);font-style:italic;color:var(--proj);font-weight:400;font-size:.65em}
+.hero-sub{display:flex;justify-content:space-between;align-items:flex-end;margin-top:32px;opacity:0;animation:slideUp .8s .9s forwards}
+.hero-desc{font-size:13px;line-height:1.75;color:rgba(245,241,234,.65);max-width:380px}
+.hero-tags{display:flex;gap:10px;flex-wrap:wrap}
+.hero-tag{font-size:9px;letter-spacing:.2em;text-transform:uppercase;border:0.5px solid rgba(245,241,234,.2);padding:5px 14px;border-radius:100px;color:rgba(245,241,234,.7);background:rgba(42,38,34,.3);backdrop-filter:blur(4px)}
+.scroll-hint{position:absolute;right:56px;bottom:72px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(245,241,234,.4)}
+.scroll-line{width:1px;height:56px;background:linear-gradient(rgba(245,241,234,.5),transparent);animation:scrollPulse 2.4s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.25}50%{opacity:.7}}
+
+/* ─── INFO BAND ─── */
+.info-band{background:var(--proj);color:var(--ivory);padding:20px 56px;display:flex;justify-content:space-between;align-items:center}
+.info-item .i-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px}
+.info-item .i-val{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+
+/* ─── CONTEXT: EDITORIAL SPLIT ─── */
+#context{padding:120px 56px;background:var(--ivory);display:grid;grid-template-columns:5fr 7fr;gap:80px;align-items:start}
+.section-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:56px}
+.section-label::before{content:'';width:40px;height:1px;background:var(--accent);display:block}
+.ctx-quote{font-family:var(--serif);font-style:italic;font-size:clamp(22px,3vw,38px);line-height:1.35;color:var(--ink);margin-bottom:36px;position:relative;padding-left:28px}
+.ctx-quote::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:2px;background:var(--proj)}
+.ctx-body{font-size:13px;line-height:1.9;color:var(--ink-soft);margin-bottom:20px;max-width:460px}
+.ctx-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--sand)}
+.ctx-img-ph{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,var(--proj),var(--proj-dark));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(40px,6vw,96px);color:rgba(255,255,255,.1);letter-spacing:.04em}
+.ctx-caption{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-top:14px}
+
+/* ─── SPATIAL SEQUENCE: 3-UP EDITORIAL ─── */
+#spatial{padding:80px 56px;background:var(--cream-deep)}
+.seq-header{margin-bottom:64px}
+.seq-grid{display:grid;grid-template-columns:7fr 5fr;grid-template-rows:auto auto;gap:16px}
+.seq-main{grid-row:span 2;background:var(--sand);overflow:hidden;position:relative}
+.seq-main img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.3s cubic-bezier(.16,1,.3,1)}
+.seq-main:hover img{transform:scale(1.03)}
+.seq-ph{width:100%;height:100%;min-height:500px;background:linear-gradient(160deg,var(--proj),var(--proj-dark));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(36px,6vw,96px);color:rgba(255,255,255,.1);letter-spacing:.04em}
+.seq-side{background:var(--sand);overflow:hidden;aspect-ratio:4/3;position:relative}
+.seq-side img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.3s cubic-bezier(.16,1,.3,1)}
+.seq-side:hover img{transform:scale(1.04)}
+.seq-side-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(24px,4vw,64px);letter-spacing:.04em}
+.sp1{background:var(--ink);color:rgba(245,241,234,.08)}
+.sp2{background:var(--cream);color:rgba(42,38,34,.08)}
+
+/* ─── MATERIALS / DETAIL ─── */
+#materials{padding:120px 56px;background:var(--cream);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.mat-heading{font-family:var(--display);font-size:clamp(52px,8vw,128px);line-height:.88;color:var(--ink);letter-spacing:-.005em;margin-bottom:36px}
+.mat-heading em{font-family:var(--serif);font-style:italic;color:var(--proj)}
+.mat-body{font-size:13px;line-height:1.9;color:var(--ink-soft);margin-bottom:24px;max-width:460px}
+.mat-list{margin-top:40px;border-top:0.5px solid var(--line)}
+.mat-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:0.5px solid var(--line);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase}
+.mat-row span:last-child{color:var(--accent)}
+.mat-visual{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mat-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(18px,2.5vw,36px);letter-spacing:.04em;overflow:hidden}
+.mat-cell img{width:100%;height:100%;object-fit:cover;display:block}
+.mc1{background:var(--proj);color:rgba(255,255,255,.2)}
+.mc2{background:var(--ink);color:rgba(245,241,234,.1)}
+.mc3{background:var(--cream-deep);color:rgba(42,38,34,.15)}
+.mc4{background:var(--accent-warm);color:rgba(42,38,34,.2)}
+
+/* ─── NEXT ─── */
+.next-wrap{display:flex;text-decoration:none;background:var(--ink);color:var(--cream);padding:96px 56px;justify-content:space-between;align-items:center;position:relative;overflow:hidden;transition:background .4s}
+.next-wrap:hover{background:#1a1208}
+.next-lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-warm);margin-bottom:16px}
+.next-title{font-family:var(--display);font-size:clamp(44px,8vw,124px);line-height:.88;letter-spacing:-.005em}
+.next-title em{font-family:var(--serif);font-style:italic;color:var(--accent-warm)}
+.next-arrow{font-size:clamp(56px,9vw,140px);color:var(--cream);opacity:.25;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .3s;flex-shrink:0}
+.next-wrap:hover .next-arrow{transform:translateX(18px);opacity:.6}
+.next-bg{position:absolute;bottom:-60px;right:0;font-family:var(--display);font-size:clamp(100px,20vw,340px);color:transparent;-webkit-text-stroke:1px rgba(245,241,234,.04);line-height:1;pointer-events:none}
+footer{background:var(--cream);padding:40px 56px;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid var(--line-soft)}
+.foot-logo{font-family:var(--display);font-size:20px;color:var(--ink);letter-spacing:.14em;text-decoration:none}
+.foot-copy{font-size:9.5px;letter-spacing:.18em;color:var(--ink-soft);opacity:.6;text-transform:uppercase}
+.foot-link{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:10px;transition:color .3s}
+.foot-link:hover{color:var(--ink)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+@media(max-width:900px){
+  body{cursor:auto}#cursor,#cursor-trail{display:none}
+  nav{padding:20px 24px}
+  #hero{padding:0 24px 56px}
+  .hero-sub{flex-direction:column;gap:24px;align-items:flex-start}
+  .scroll-hint{display:none}
+  .info-band{flex-wrap:wrap;gap:20px;padding:24px;justify-content:center}
+  #context{grid-template-columns:1fr;gap:40px;padding:80px 24px}
+  #spatial{padding:64px 24px}
+  .seq-grid{grid-template-columns:1fr;grid-template-rows:auto}
+  .seq-main{grid-row:span 1}.seq-ph{min-height:280px}
+  #materials{grid-template-columns:1fr;gap:48px;padding:80px 24px}
+  .next-wrap{padding:64px 24px;flex-direction:column;align-items:flex-start;gap:28px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 24px}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-trail"></div><div id="grain"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">CJ</a>
+  <a class="nav-back" href="../index.html">← Back to Work</a>
+  <span class="nav-count">06 / 08</span>
+</nav>
+
+<!-- HERO: PANORAMIC -->
+<section id="hero">
+  <div class="hero-img-bg">
+    <img src="../assets/03-stan-soriano/stan%20expo.jpeg" alt="Soriano Stand">
+  </div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Exhibition Design · 3D · 2025</div>
+    <h1 class="hero-title">SORIANO<br><em>Stand</em></h1>
+    <div class="hero-sub">
+      <p class="hero-desc">Three-dimensional brand expression through material, form, and light — built for Expo Retail Saludable.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">Exhibition Design</span>
+        <span class="hero-tag">Spatial</span>
+        <span class="hero-tag">3D</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div><span>Scroll</span></div>
+</section>
+
+<!-- INFO BAND -->
+<div class="info-band">
+  <div class="info-item"><div class="i-label">Year</div><div class="i-val">2025</div></div>
+  <div class="info-item"><div class="i-label">Event</div><div class="i-val">EXPO RETAIL</div></div>
+  <div class="info-item"><div class="i-label">Type</div><div class="i-val">SPATIAL</div></div>
+  <div class="info-item"><div class="i-label">Scale</div><div class="i-val">48 m²</div></div>
+  <div class="info-item"><div class="i-label">Role</div><div class="i-val">DESIGNER</div></div>
+</div>
+
+<!-- CONTEXT -->
+<section id="context">
+  <div>
+    <div class="section-label reveal">Context</div>
+    <blockquote class="ctx-quote reveal d1">"Space is the brand made physical — every material choice is a brand decision."</blockquote>
+    <p class="ctx-body reveal d2">Soriano needed to establish a strong physical presence at Expo Retail Saludable — one of Argentina's leading health food trade events. The challenge was to translate a visual identity into three-dimensional space without losing its warmth or commercial clarity.</p>
+    <p class="ctx-body reveal d2">The stand had to work at multiple scales simultaneously: readable from 20 meters, engaging up close, and memorable in photographs.</p>
+  </div>
+  <div>
+    <img class="ctx-img reveal d1" src="../assets/03-stan-soriano/stan%20expo2.jpeg" alt="Exhibition Stand">
+    <div class="ctx-caption reveal d2">Exhibition Stand — Expo Retail Saludable, Buenos Aires 2025</div>
+  </div>
+</section>
+
+<!-- SPATIAL SEQUENCE -->
+<section id="spatial">
+  <div class="seq-header">
+    <div class="section-label reveal">Spatial Sequence</div>
+    <h2 class="reveal d1" style="font-family:var(--display);font-size:clamp(44px,7vw,108px);color:var(--ink);line-height:.9">FORM<br><span style="font-family:var(--serif);font-style:italic;color:var(--proj)">& Light</span></h2>
+  </div>
+  <div class="seq-grid">
+    <div class="seq-main reveal">
+      <img src="../assets/03-stan-soriano/render%201.jpg" alt="Soriano Stand — Main Render">
+    </div>
+    <div class="seq-side reveal d1">
+      <img src="../assets/03-stan-soriano/render%203.jpg" alt="Soriano Stand — Detail">
+    </div>
+    <div class="seq-side reveal d2">
+      <img src="../assets/03-stan-soriano/stan%20expo3.jpeg" alt="Soriano Stand — Expo">
+    </div>
+  </div>
+</section>
+
+<!-- MATERIALS -->
+<section id="materials">
+  <div>
+    <div class="section-label reveal">Materials & Identity</div>
+    <h2 class="mat-heading reveal d1">SPACE AS<br><em>Message</em></h2>
+    <p class="mat-body reveal d2">Every material was chosen to reinforce the Soriano brand values: natural, honest, premium. Warm wood tones against clean whites, brand red used as architectural punctuation rather than wallpaper.</p>
+    <div class="mat-list reveal d3">
+      <div class="mat-row"><span>Primary Structure</span><span>White Lacquered MDF</span></div>
+      <div class="mat-row"><span>Flooring</span><span>Parquet Warm Oak</span></div>
+      <div class="mat-row"><span>Brand Color</span><span>Soriano Red #C41E3A</span></div>
+      <div class="mat-row"><span>Typography</span><span>Soriano Identity System</span></div>
+      <div class="mat-row"><span>Lighting</span><span>Warm 3000K LED</span></div>
+    </div>
+  </div>
+  <div>
+    <div class="mat-visual reveal d1">
+      <div class="mat-cell"><img src="../assets/03-stan-soriano/render%201.jpg" alt="Render 1"></div>
+      <div class="mat-cell"><img src="../assets/03-stan-soriano/render2.jpg" alt="Render 2"></div>
+      <div class="mat-cell"><img src="../assets/03-stan-soriano/render%203.jpg" alt="Render 3"></div>
+      <div class="mat-cell"><img src="../assets/03-stan-soriano/render4%20.jpg" alt="Render 4"></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEXT -->
+<a class="next-wrap" href="07-music-and-beats.html">
+  <div>
+    <div class="next-lbl">Next Project — 07 / 08</div>
+    <div class="next-title">MUSIC &<br><em>Beats</em></div>
+  </div>
+  <div class="next-arrow">↗</div>
+  <div class="next-bg">M&B</div>
+</a>
+
+<footer>
+  <a class="foot-logo" href="../index.html">CJ</a>
+  <div class="foot-copy">© 2026 Candela Jalil</div>
+  <a class="foot-link" href="../index.html">← All Projects</a>
+</footer>
+
+<script>
+const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+(function anim(){tx+=(mx-tx)*.08;ty+=(my-ty)*.08;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.seq-main,.seq-side,.mat-cell').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
+});
+const nav=document.querySelector('nav');
+let navDark=true;
+window.addEventListener('scroll',()=>{
+  const past=window.scrollY>window.innerHeight*.7;
+  if(past!==!navDark){
+    navDark=!past;
+    nav.querySelectorAll('.nav-logo,.nav-back,.nav-count').forEach(el=>el.style.color=past?'':'var(--ivory)');
+  }
+  if(window.scrollY>80){
+    nav.style.background='rgba(245,241,234,.88)';
+    nav.style.backdropFilter='blur(16px)';
+    nav.style.borderColor='rgba(42,38,34,.08)';
+    nav.querySelectorAll('.nav-logo,.nav-back').forEach(el=>el.style.color='var(--ink)');
+    nav.querySelector('.nav-count').style.color='var(--accent)';
+  } else {
+    nav.style.background='transparent';
+    nav.style.backdropFilter='none';
+    nav.style.borderColor='transparent';
+    nav.querySelectorAll('.nav-logo,.nav-back').forEach(el=>el.style.color='var(--ivory)');
+    nav.querySelector('.nav-count').style.color='rgba(245,241,234,.5)';
+  }
+},{passive:true});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const heroBg=document.querySelector('.hero-img-bg img');
+window.addEventListener('scroll',()=>{if(heroBg&&window.scrollY<window.innerHeight)heroBg.style.transform=`scale(1.06) translateY(${window.scrollY*.06}px)`},{passive:true});
+</script>
+</body>
+</html>

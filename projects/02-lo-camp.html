@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lo Camp — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel+Decorative:wght@400;700&family=DM+Serif+Display:ital@0;1&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a1a;
+  --cream:#f5f0e8;
+  --ivory:#faf8f3;
+  --sand:#e8e2d4;
+  --proj:#9b1fa8;
+  --proj-yellow:#f5d000;
+  --proj-pink:#f03e8a;
+  --proj-teal:#00bfad;
+  --proj-red:#e8323c;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--ink);color:#fff;font-family:'Space Mono',monospace;cursor:none;overflow-x:hidden}
+
+/* CURSOR */
+#cursor{position:fixed;width:14px;height:14px;background:var(--proj-yellow);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s var(--ease),background .3s;mix-blend-mode:difference}
+#cursor-trail{position:fixed;width:40px;height:40px;border:1.5px solid var(--proj-yellow);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .45s var(--ease),opacity .3s;opacity:.5;mix-blend-mode:difference}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.5rem 3rem;transition:background .4s,backdrop-filter .4s}
+nav.scrolled{background:rgba(26,26,26,.92);backdrop-filter:blur(16px)}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.12em;color:#fff;text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:rgba(255,255,255,.6);transition:color .3s}
+.nav-links a:hover{color:var(--proj-yellow)}
+
+/* GRAIN */
+.grain{position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.04;mix-blend-mode:screen}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(48px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.visible{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.22s}.d3{transition-delay:.36s}.d4{transition-delay:.52s}
+
+/* HERO — theatrical chaos, controlled */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+  padding:8rem 3rem 6rem;
+  text-align:center;
+}
+
+/* Diagonal color slashes behind hero */
+.hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(135deg,
+      transparent 0%,
+      transparent 35%,
+      var(--proj) 35%,
+      var(--proj) 42%,
+      transparent 42%,
+      transparent 55%,
+      var(--proj-pink) 55%,
+      var(--proj-pink) 60%,
+      transparent 60%
+    );
+  opacity:.25;
+}
+.hero::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(45deg,
+      transparent 0%,
+      transparent 60%,
+      var(--proj-yellow) 60%,
+      var(--proj-yellow) 68%,
+      transparent 68%
+    );
+  opacity:.18;
+}
+
+.hero-eyebrow{
+  position:relative;
+  z-index:2;
+  font-size:.65rem;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--proj-yellow);
+  margin-bottom:2rem;
+}
+.hero-title{
+  position:relative;
+  z-index:2;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(8rem,20vw,20rem);
+  line-height:.85;
+  letter-spacing:-.02em;
+}
+.hero-title .word-lo{
+  display:block;
+  color:var(--proj-yellow);
+  -webkit-text-stroke:0px transparent;
+}
+.hero-title .word-camp{
+  display:block;
+  color:transparent;
+  -webkit-text-stroke:2px #fff;
+}
+.hero-title .word-camp.filled{
+  color:#fff;
+  -webkit-text-stroke:0;
+}
+
+.hero-sub{
+  position:relative;
+  z-index:2;
+  margin-top:2.5rem;
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:clamp(1.2rem,3vw,2rem);
+  color:var(--proj-pink);
+  max-width:600px;
+}
+.hero-meta-strip{
+  position:relative;
+  z-index:2;
+  margin-top:4rem;
+  display:flex;
+  gap:4rem;
+  justify-content:center;
+  border-top:1px solid rgba(255,255,255,.1);
+  padding-top:2rem;
+}
+.hm-item{}
+.hm-label{font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.4rem}
+.hm-val{font-size:.75rem;color:rgba(255,255,255,.8)}
+
+/* CAMP MANIFESTO */
+.manifesto-section{
+  padding:10rem 3rem;
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:8rem;
+  max-width:1400px;
+  margin:0 auto;
+  position:relative;
+}
+.manifesto-section::before{
+  content:'';
+  position:absolute;
+  left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,var(--proj),var(--proj-pink),var(--proj-yellow),var(--proj-teal));
+}
+.manifesto-label{
+  font-size:.65rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--proj-yellow);
+  padding-top:.5rem;
+}
+.manifesto-body{}
+.manifesto-body h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,6vw,5.5rem);
+  line-height:.95;
+  margin-bottom:2.5rem;
+  letter-spacing:-.01em;
+}
+.manifesto-body h2 em{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  color:var(--proj-pink);
+  font-size:.85em;
+}
+.manifesto-body p{
+  font-size:.85rem;
+  line-height:2;
+  color:rgba(255,255,255,.7);
+  max-width:600px;
+}
+.manifesto-body p+p{margin-top:1.2rem}
+
+/* QUOTE BIG */
+.big-quote{
+  background:var(--proj-yellow);
+  color:var(--ink);
+  padding:8rem 3rem;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.big-quote-bg{
+  position:absolute;
+  inset:0;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(10rem,25vw,22rem);
+  opacity:.08;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  letter-spacing:-.04em;
+  color:var(--ink);
+  line-height:.85;
+}
+.big-quote-inner{position:relative;z-index:1}
+.bq-text{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:clamp(1.8rem,4vw,3.2rem);
+  max-width:800px;
+  margin:0 auto 2rem;
+  line-height:1.3;
+  color:var(--ink);
+}
+.bq-attr{
+  font-size:.65rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:rgba(26,26,26,.55);
+}
+
+/* COLOR SPECTRUM */
+.spectrum{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  height:280px;
+}
+.spec-col{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:1.5rem 1.2rem;
+  position:relative;
+  transition:flex-grow .5s var(--ease);
+}
+.spec-col:hover{flex-grow:2}
+.spec-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.2rem;
+  letter-spacing:.05em;
+}
+.spec-hex{
+  font-family:'Space Mono',monospace;
+  font-size:.55rem;
+  opacity:.6;
+  margin-top:.2rem;
+}
+.spec-role{
+  font-size:.55rem;
+  opacity:.45;
+  margin-top:.1rem;
+  line-height:1.4;
+}
+
+/* BOOK SPREADS */
+.spreads-section{
+  padding:8rem 3rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.spreads-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2rem,4vw,3.5rem);
+  margin-bottom:5rem;
+  display:flex;
+  align-items:baseline;
+  gap:2rem;
+}
+.spreads-title span{
+  font-size:.65rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.3);
+  font-family:'Space Mono',monospace;
+}
+
+.spread{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4px;
+  margin-bottom:4px;
+}
+.spread-page{
+  min-height:62vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:3.5rem;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Per-spread colors */
+.sp-purple{background:var(--proj)}
+.sp-yellow{background:var(--proj-yellow);color:var(--ink)}
+.sp-pink{background:var(--proj-pink)}
+.sp-teal{background:var(--proj-teal);color:var(--ink)}
+.sp-red{background:var(--proj-red)}
+.sp-dark{background:#111}
+
+.spread-ghost{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(6rem,14vw,13rem);
+  opacity:.1;
+  pointer-events:none;
+  white-space:nowrap;
+  letter-spacing:-.03em;
+}
+.spread-page-num{
+  position:absolute;
+  top:2rem;right:2rem;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:5rem;
+  opacity:.1;
+  line-height:1;
+}
+.spread-tag{
+  position:absolute;
+  top:2rem;left:2rem;
+  font-size:.55rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  opacity:.5;
+  font-family:'Space Mono',monospace;
+}
+.spread-content{position:relative;z-index:1}
+.sp-heading{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,5vw,4rem);
+  line-height:.95;
+  margin-bottom:1rem;
+}
+.sp-body{
+  font-size:.75rem;
+  line-height:1.9;
+  max-width:380px;
+  opacity:.8;
+}
+.sp-quote{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:clamp(1.2rem,3vw,2rem);
+  line-height:1.3;
+  max-width:380px;
+  margin-bottom:.8rem;
+}
+
+/* TYPE SYSTEM */
+.type-system{
+  padding:0 3rem 8rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.type-sys-header{
+  display:flex;
+  align-items:baseline;
+  gap:2rem;
+  padding-bottom:1.5rem;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  margin-bottom:5rem;
+}
+.type-sys-num{
+  font-family:'Space Mono',monospace;
+  font-size:.65rem;
+  color:var(--proj-pink);
+  letter-spacing:.15em;
+}
+.type-sys-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2rem,4vw,3.5rem);
+}
+
+.type-stack{display:flex;flex-direction:column;gap:2px}
+.type-row{
+  display:grid;
+  grid-template-columns:200px 1fr;
+  gap:3rem;
+  align-items:center;
+  padding:2rem 2.5rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.tr-meta{}
+.tr-role{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.4rem}
+.tr-name{font-size:.75rem;color:rgba(255,255,255,.7)}
+.tr-size{font-size:.6rem;color:rgba(255,255,255,.25);margin-top:.3rem;font-family:'Space Mono',monospace}
+.tr-specimen{}
+
+/* CHAPTERS */
+.chapters{
+  padding:0 3rem 10rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.chapters-header{
+  display:flex;
+  align-items:baseline;
+  gap:2rem;
+  padding-bottom:1.5rem;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  margin-bottom:5rem;
+}
+.ch-num{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--proj-teal);letter-spacing:.15em}
+.ch-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3.5rem)}
+
+.chapter-list{display:flex;flex-direction:column;gap:2px}
+.chapter-item{
+  display:grid;
+  grid-template-columns:80px 1fr 200px;
+  gap:3rem;
+  align-items:center;
+  padding:2.5rem;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  transition:background .3s,border-color .3s;
+  cursor:default;
+}
+.chapter-item:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+.ci-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:3rem;
+  color:rgba(255,255,255,.12);
+  line-height:1;
+}
+.ci-content{}
+.ci-name{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:1.4rem;
+  color:#fff;
+  margin-bottom:.4rem;
+}
+.ci-desc{font-size:.7rem;line-height:1.7;color:rgba(255,255,255,.5)}
+.ci-color{
+  width:100%;
+  height:4px;
+  border-radius:2px;
+}
+
+/* CLOSING RAINBOW */
+.closing{
+  position:relative;
+  min-height:70vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:8rem 3rem;
+  overflow:hidden;
+}
+.closing-stripes{
+  position:absolute;
+  inset:0;
+  display:flex;
+}
+.closing-stripes div{flex:1}
+
+.closing-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(26,26,26,.72);
+}
+.closing-inner{position:relative;z-index:1}
+.closing-headline{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,8vw,8rem);
+  line-height:.9;
+  letter-spacing:-.02em;
+  margin-bottom:2rem;
+}
+.closing-headline .yellow{color:var(--proj-yellow)}
+.closing-headline .pink{color:var(--proj-pink)}
+.closing-sub{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:clamp(1rem,2.5vw,1.8rem);
+  color:rgba(255,255,255,.75);
+  max-width:550px;
+  line-height:1.5;
+}
+
+/* NEXT */
+.next-project{
+  background:var(--proj-pink);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  min-height:50vh;
+  text-decoration:none;
+  transition:opacity .3s;
+  position:relative;
+  overflow:hidden;
+}
+.next-project:hover .next-arrow{transform:translateX(12px)}
+.next-left{
+  padding:5rem;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  border-right:1px solid rgba(255,255,255,.2);
+}
+.next-label{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:1.5rem}
+.next-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);line-height:.95;letter-spacing:-.01em;color:#fff}
+.next-right{display:flex;align-items:center;justify-content:center}
+.next-arrow{font-size:5rem;color:#fff;transition:transform .5s var(--ease)}
+
+@media(max-width:900px){
+  nav{padding:1.2rem 1.5rem}
+  .manifesto-section{grid-template-columns:1fr;gap:3rem}
+  .spectrum{grid-template-columns:repeat(3,1fr)}
+  .spread{grid-template-columns:1fr}
+  .type-row{grid-template-columns:1fr}
+  .chapter-item{grid-template-columns:60px 1fr}
+  .ci-color{display:none}
+  .next-project{grid-template-columns:1fr}
+  .next-right{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<svg class="grain" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
+  <filter id="gr"><feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="4" stitchTiles="stitch"/></filter>
+  <rect width="300" height="300" filter="url(#gr)" opacity="1"/>
+</svg>
+
+<nav id="nav">
+  <a href="../index.html" class="nav-logo">CJ</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Index</a></li>
+    <li><a href="../index.html#work">Work</a></li>
+    <li><a href="../index.html#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow reveal">02 / 08 — Editorial Book · Editorial Design · 2025</div>
+  <h1 class="hero-title reveal d1">
+    <span class="word-lo">LO</span>
+    <span class="word-camp filled">CAMP</span>
+  </h1>
+  <p class="hero-sub reveal d2">A book about artifice, exaggeration and the beauty of excess</p>
+  <div class="hero-meta-strip reveal d3">
+    <div class="hm-item">
+      <div class="hm-label">Type</div>
+      <div class="hm-val">Editorial Book</div>
+    </div>
+    <div class="hm-item">
+      <div class="hm-label">Theme</div>
+      <div class="hm-val">Camp Aesthetic</div>
+    </div>
+    <div class="hm-item">
+      <div class="hm-label">Tools</div>
+      <div class="hm-val">InDesign · Illustrator</div>
+    </div>
+    <div class="hm-item">
+      <div class="hm-label">Format</div>
+      <div class="hm-val">240 × 280 mm · 120 pp.</div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto-section">
+  <div class="manifesto-label reveal">About the Project</div>
+  <div class="manifesto-body">
+    <h2 class="reveal d1">Designing about what <em>exceeds</em></h2>
+    <p class="reveal d2">Lo Camp is an editorial book exploring the eponymous aesthetic: a system of sensibility that privileges artifice over nature, exaggeration over restraint, theatricality over seriousness. The book translates this philosophy into every design decision — typography, colour, composition and structure.</p>
+    <p class="reveal d3">The central challenge was this: how to design a book about excess without falling into chaos? The answer was to build a rigorous grid system and then deliberately break it at key moments. Order as the foundation of elegant disorder.</p>
+  </div>
+</section>
+
+<!-- BIG QUOTE -->
+<div class="big-quote">
+  <div class="big-quote-bg">CAMP</div>
+  <div class="big-quote-inner reveal">
+    <p class="bq-text">"Camp is the sensibility of artifice, of stylization.<br>It is the love of the unnatural."</p>
+    <div class="bq-attr">Susan Sontag · Notes on Camp · 1964</div>
+  </div>
+</div>
+
+<!-- COLOR SPECTRUM -->
+<div class="spectrum reveal">
+  <div class="spec-col" style="background:var(--proj);color:#fff">
+    <span class="spec-name">Purple</span>
+    <span class="spec-hex">#9B1FA8</span>
+    <span class="spec-role">Drama, royalty, artifice</span>
+  </div>
+  <div class="spec-col" style="background:var(--proj-yellow);color:var(--ink)">
+    <span class="spec-name">Yellow</span>
+    <span class="spec-hex">#F5D000</span>
+    <span class="spec-role">Scandal, energy, camp</span>
+  </div>
+  <div class="spec-col" style="background:var(--proj-pink);color:#fff">
+    <span class="spec-name">Pink</span>
+    <span class="spec-hex">#F03E8A</span>
+    <span class="spec-role">Kitsch, femininity, excess</span>
+  </div>
+  <div class="spec-col" style="background:var(--proj-teal);color:var(--ink)">
+    <span class="spec-name">Turquoise</span>
+    <span class="spec-hex">#00BFAD</span>
+    <span class="spec-role">Rarity, singularity</span>
+  </div>
+  <div class="spec-col" style="background:var(--proj-red);color:#fff">
+    <span class="spec-name">Red</span>
+    <span class="spec-hex">#E8323C</span>
+    <span class="spec-role">Passion, theatricality</span>
+  </div>
+</div>
+
+<!-- BOOK SPREADS -->
+<section class="spreads-section">
+  <h2 class="spreads-title reveal">
+    Book Spreads <span>Selected pages</span>
+  </h2>
+
+  <img class="reveal" src="../assets/12-lo-camp/portada.png" style="width:100%;display:block;margin-bottom:4px;object-fit:contain">
+  <img class="reveal" src="../assets/12-lo-camp/mockup1.png" style="width:100%;display:block;margin-bottom:4px;object-fit:contain">
+  <img class="reveal" src="../assets/12-lo-camp/mockup2.png" style="width:100%;display:block;margin-bottom:4px;object-fit:contain">
+  <img class="reveal" src="../assets/12-lo-camp/mockup3.png" style="width:100%;display:block;margin-bottom:4px;object-fit:contain">
+  <img class="reveal" src="../assets/12-lo-camp/mockup4.png" style="width:100%;display:block;margin-bottom:4px;object-fit:contain">
+<img class="reveal" src="../assets/12-lo-camp/contratapa.png" style="width:100%;display:block;object-fit:contain">
+</section>
+
+<!-- SPREADS GRID -->
+<section style="padding:0 3rem 2rem;max-width:1400px;margin:0 auto">
+  <h2 class="spreads-title reveal" style="margin-bottom:3rem">Interior Spreads <span>flat view</span></h2>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_002.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_003.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_004.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_005.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_006.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_007.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_008.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_009.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_010.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_011.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_012.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_013.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_014.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_015.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_016.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_017.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_018.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_019.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_020.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_021.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_022.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_023.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_024.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_025.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_026.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_027.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_028.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_029.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_030.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_031.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal" src="../assets/12-lo-camp/pages/page_032.jpg" style="width:100%;display:block;object-fit:contain">
+    <img class="reveal d1" src="../assets/12-lo-camp/pages/page_033.jpg" style="width:100%;display:block;object-fit:contain">
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="type-system">
+  <div class="type-sys-header reveal">
+    <span class="type-sys-num">03 —</span>
+    <h2 class="type-sys-title">Typographic System</h2>
+  </div>
+  <div class="type-stack reveal d1">
+    <div class="type-row">
+      <div class="tr-meta">
+        <div class="tr-role">Titles / cover</div>
+        <div class="tr-name">Cinzel Decorative Bold</div>
+        <div class="tr-size">Bold · All caps · Tracking normal</div>
+      </div>
+      <div class="tr-specimen">
+        <div style="font-family:'Cinzel Decorative',serif;font-weight:700;font-size:clamp(2rem,6vw,5rem);color:var(--proj-yellow);line-height:1;letter-spacing:.04em">LO CAMP</div>
+      </div>
+    </div>
+    <div class="type-row">
+      <div class="tr-meta">
+        <div class="tr-role">Subheadings / sections</div>
+        <div class="tr-name">Cinzel Decorative Regular</div>
+        <div class="tr-size">Regular · All caps · Tracking normal</div>
+      </div>
+      <div class="tr-specimen">
+        <div style="font-family:'Cinzel Decorative',serif;font-weight:400;font-size:clamp(1.2rem,3.5vw,2.8rem);color:var(--proj-pink);line-height:1.1;letter-spacing:.04em">Artifice As Language</div>
+      </div>
+    </div>
+    <div class="type-row">
+      <div class="tr-meta">
+        <div class="tr-role">Quotes / editorial body</div>
+        <div class="tr-name">Playfair Display Italic</div>
+        <div class="tr-size">Italic · Normal tracking · Leading 150%</div>
+      </div>
+      <div class="tr-specimen">
+        <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.2rem,3vw,2.2rem);color:rgba(255,255,255,.8);line-height:1.45">"Camp is the sensibility of artifice, of stylization."</div>
+      </div>
+    </div>
+    <div class="type-row">
+      <div class="tr-meta">
+        <div class="tr-role">Body text</div>
+        <div class="tr-name">Playfair Display Regular</div>
+        <div class="tr-size">Regular · 10–12pt · Leading 170%</div>
+      </div>
+      <div class="tr-specimen">
+        <div style="font-family:'Playfair Display',serif;font-size:.9rem;line-height:1.85;color:rgba(255,255,255,.6);max-width:500px">Camp is not a way of doing but a way of seeing. Any object can be camp, depending on the angle from which we perceive it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section class="chapters">
+  <div class="chapters-header reveal">
+    <span class="ch-num">04 —</span>
+    <h2 class="ch-title">Sources</h2>
+  </div>
+  <div class="chapter-list reveal d1">
+    <div class="chapter-item">
+      <div class="ci-num">01</div>
+      <div class="ci-content">
+        <div class="ci-name">Notes on Camp</div>
+        <p class="ci-desc">Susan Sontag · 1964</p>
+      </div>
+      <div class="ci-color" style="background:linear-gradient(90deg,var(--proj),var(--proj-pink))"></div>
+    </div>
+    <div class="chapter-item">
+      <div class="ci-num">02</div>
+      <div class="ci-content">
+        <div class="ci-name">Against Interpretation</div>
+        <p class="ci-desc">Susan Sontag · 1964</p>
+      </div>
+      <div class="ci-color" style="background:linear-gradient(90deg,var(--proj-yellow),var(--proj-teal))"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="closing-stripes">
+    <div style="background:var(--proj)"></div>
+    <div style="background:var(--proj-yellow)"></div>
+    <div style="background:var(--proj-pink)"></div>
+    <div style="background:var(--proj-teal)"></div>
+    <div style="background:var(--proj-red)"></div>
+    <div style="background:var(--proj)"></div>
+    <div style="background:var(--proj-pink)"></div>
+  </div>
+  <div class="closing-overlay"></div>
+  <div class="closing-inner reveal">
+    <div class="closing-headline">
+      <span class="yellow">MORE</span><br>
+      <span class="pink">IS MORE</span>
+    </div>
+    <p class="closing-sub">A book that practises what it preaches: excess with awareness, theatricality with rigour, artifice as a form of truth.</p>
+  </div>
+</section>
+
+<!-- NEXT PROJECT -->
+<a href="03-una-gota-mas.html" class="next-project">
+  <div class="next-left">
+    <div class="next-label">Next Project · 03 / 08</div>
+    <div class="next-title">Una Gota<br>Más —</div>
+  </div>
+  <div class="next-right">
+    <div class="next-arrow">→</div>
+  </div>
+</a>
+
+<script>
+const cur=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){tx+=(mx-tx)*.12;ty+=(my-ty)*.12;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2.5)';trail.style.opacity='0'});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';trail.style.opacity='.5'});
+});
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>80));
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

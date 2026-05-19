@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Una Gota Más — Candela Jalil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a1a;
+  --cream:#f5f0e8;
+  --ivory:#faf8f3;
+  --sand:#e8e2d4;
+  --proj:#29ABE2;
+  --proj-dark:#0d6fa0;
+  --proj-deep:#0a3d5c;
+  --proj-pale:#d0eef9;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--proj-deep);color:#fff;font-family:'Space Mono',monospace;cursor:none;overflow-x:hidden}
+
+/* CURSOR */
+#cursor{position:fixed;width:12px;height:12px;background:var(--proj);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s var(--ease),background .3s;mix-blend-mode:screen}
+#cursor-trail{position:fixed;width:36px;height:36px;border:1.5px solid var(--proj);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .45s var(--ease),opacity .3s;opacity:.5;mix-blend-mode:screen}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.5rem 3rem;transition:background .4s,backdrop-filter .4s}
+nav.scrolled{background:rgba(10,61,92,.92);backdrop-filter:blur(16px)}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.12em;color:#fff;text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:rgba(255,255,255,.55);transition:color .3s}
+.nav-links a:hover{color:var(--proj)}
+
+/* GRAIN */
+.grain{position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.03;mix-blend-mode:screen}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(48px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.visible{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.22s}.d3{transition-delay:.36s}.d4{transition-delay:.52s}
+
+/* HERO — full bleed, water-deep */
+.hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-rows:1fr auto;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Animated water-wave bg */
+.hero-bg{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 80%, rgba(41,171,226,.35) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(13,111,160,.4) 0%, transparent 55%),
+    var(--proj-deep);
+}
+.hero-bg::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:50%;
+  background:linear-gradient(to top, rgba(10,61,92,1) 0%, transparent 100%);
+}
+
+/* Water ripple rings */
+.hero-rings{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+}
+.ring{
+  position:absolute;
+  border-radius:50%;
+  border:1px solid rgba(41,171,226,.2);
+  animation:ripple 6s ease-in-out infinite;
+}
+.ring:nth-child(1){width:200px;height:200px;animation-delay:0s}
+.ring:nth-child(2){width:450px;height:450px;animation-delay:1.2s}
+.ring:nth-child(3){width:700px;height:700px;animation-delay:2.4s}
+.ring:nth-child(4){width:950px;height:950px;animation-delay:3.6s;border-color:rgba(41,171,226,.07)}
+@keyframes ripple{
+  0%,100%{transform:scale(1);opacity:.4}
+  50%{transform:scale(1.05);opacity:.15}
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:10rem 3rem 4rem;
+  text-align:center;
+  min-height:85vh;
+}
+
+.hero-label{
+  font-size:.65rem;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--proj);
+  margin-bottom:2rem;
+  opacity:.9;
+}
+.hero-drop{
+  width:60px;
+  height:80px;
+  margin:0 auto 2rem;
+  position:relative;
+}
+.hero-drop svg{width:100%;height:100%}
+
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(5rem,14vw,14rem);
+  line-height:.88;
+  letter-spacing:-.02em;
+  margin-bottom:1rem;
+}
+.hero-title .una{display:block;color:rgba(255,255,255,.9)}
+.hero-title .gota{display:block;color:var(--proj)}
+.hero-title .mas{
+  display:block;
+  color:transparent;
+  -webkit-text-stroke:2px rgba(255,255,255,.4);
+}
+
+.hero-tagline{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:clamp(1rem,2.5vw,1.6rem);
+  color:rgba(255,255,255,.7);
+  max-width:500px;
+  margin:1.5rem auto 0;
+  line-height:1.5;
+}
+
+.hero-partners{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:3rem;
+  padding:2rem 3rem;
+  border-top:1px solid rgba(255,255,255,.1);
+}
+.partner-badge{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.5rem;
+}
+.partner-badge-label{
+  font-size:.55rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.3);
+}
+.partner-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.1rem;
+  letter-spacing:.1em;
+  color:rgba(255,255,255,.7);
+}
+
+/* URGENCY STRIP */
+.urgency-strip{
+  background:var(--proj);
+  color:var(--proj-deep);
+  padding:2rem 3rem;
+  display:flex;
+  align-items:center;
+  gap:3rem;
+  overflow:hidden;
+  position:relative;
+}
+.urgency-strip::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(90deg,transparent,transparent 119px,rgba(255,255,255,.1) 120px);
+}
+.urgency-stat{
+  display:flex;
+  align-items:baseline;
+  gap:.8rem;
+  flex-shrink:0;
+}
+.us-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.5rem;
+  line-height:1;
+}
+.us-label{
+  font-size:.65rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  opacity:.75;
+  max-width:140px;
+  line-height:1.4;
+}
+.urgency-divider{
+  width:1px;
+  height:40px;
+  background:rgba(10,61,92,.3);
+  flex-shrink:0;
+}
+
+/* INTRO */
+.intro{
+  padding:10rem 3rem;
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:8rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.intro-col-label{
+  font-size:.65rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--proj);
+  padding-top:.5rem;
+}
+.intro-col-body h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  line-height:.95;
+  margin-bottom:2.5rem;
+  letter-spacing:-.01em;
+}
+.intro-col-body p{
+  font-size:.85rem;
+  line-height:2;
+  color:rgba(255,255,255,.7);
+  max-width:600px;
+}
+.intro-col-body p+p{margin-top:1.2rem}
+
+/* STAT GRID */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:2px;
+  margin-bottom:2px;
+}
+.stat-cell{
+  padding:4rem 3rem;
+  position:relative;
+  overflow:hidden;
+}
+.stat-cell::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+  background:var(--proj);
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .6s var(--ease);
+}
+.stat-cell.visible::before{transform:scaleX(1)}
+.stat-bg-a{background:rgba(41,171,226,.08)}
+.stat-bg-b{background:rgba(41,171,226,.14)}
+.stat-bg-c{background:rgba(41,171,226,.05)}
+.stat-bg-d{background:rgba(41,171,226,.11)}
+.stat-number{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,7vw,6rem);
+  color:var(--proj);
+  line-height:1;
+  margin-bottom:.8rem;
+}
+.stat-desc{
+  font-size:.72rem;
+  line-height:1.8;
+  color:rgba(255,255,255,.6);
+}
+
+/* CAMPAIGN CONCEPT */
+.concept{
+  background:var(--proj);
+  color:var(--proj-deep);
+  padding:10rem 3rem;
+  position:relative;
+  overflow:hidden;
+}
+.concept-bg{
+  position:absolute;
+  inset:0;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(12rem,30vw,28rem);
+  line-height:.8;
+  opacity:.08;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  letter-spacing:-.05em;
+}
+.concept-inner{
+  max-width:1400px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+.concept-label{
+  font-size:.65rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--proj-deep);
+  opacity:.55;
+  margin-bottom:3rem;
+}
+.concept-headline{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3.5rem,8vw,8rem);
+  line-height:.9;
+  letter-spacing:-.02em;
+  margin-bottom:3rem;
+  max-width:900px;
+}
+.concept-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:3rem;
+  margin-top:6rem;
+}
+.concept-card{
+  padding-top:2rem;
+  border-top:2px solid rgba(10,61,92,.2);
+}
+.cc-icon{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.5rem;
+  color:var(--proj-deep);
+  opacity:.55;
+  margin-bottom:1rem;
+}
+.cc-title{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:1.2rem;
+  color:var(--proj-deep);
+  margin-bottom:.8rem;
+}
+.cc-body{
+  font-size:.72rem;
+  line-height:1.8;
+  color:rgba(10,61,92,.7);
+}
+
+/* POSTERS */
+.posters-section{
+  padding:8rem 3rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.posters-header{
+  display:flex;
+  align-items:baseline;
+  gap:2rem;
+  padding-bottom:1.5rem;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  margin-bottom:5rem;
+}
+.posters-num{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--proj);letter-spacing:.15em}
+.posters-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3.5rem)}
+
+.posters-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3rem;
+}
+.poster-card{
+  position:relative;
+  overflow:hidden;
+}
+.poster-image{
+  width:100%;
+  aspect-ratio:2/3;
+  position:relative;
+  overflow:hidden;
+}
+.poster-image img{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+  filter:grayscale(1) contrast(1.1);
+  transition:transform .7s var(--ease);
+}
+.poster-card:hover .poster-image img{transform:scale(1.04)}
+
+/* Poster placeholder */
+.poster-placeholder{
+  width:100%;
+  aspect-ratio:2/3;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+  padding:3rem;
+}
+.poster-placeholder.dark{background:#0d0d0d}
+.poster-placeholder.mid{background:#1a1a1a}
+.pp-headline{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2rem,6vw,4.5rem);
+  line-height:.9;
+  text-align:center;
+  position:relative;
+  z-index:1;
+  margin-bottom:1.5rem;
+}
+.pp-blue{color:var(--proj)}
+.pp-white{color:#fff}
+.pp-stat-big{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,8vw,7rem);
+  color:var(--proj);
+  line-height:1;
+  position:relative;
+  z-index:1;
+}
+.pp-stat-label{
+  font-size:.6rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.45);
+  position:relative;
+  z-index:1;
+  margin-top:.5rem;
+}
+.pp-bg-water{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 30% 70%, rgba(41,171,226,.12) 0%, transparent 60%),
+    radial-gradient(circle at 70% 30%, rgba(13,111,160,.15) 0%, transparent 50%);
+}
+.pp-drop{
+  position:absolute;
+  bottom:2rem;right:2rem;
+  opacity:.15;
+}
+.poster-caption{
+  margin-top:1rem;
+  padding-top:1rem;
+  border-top:1px solid rgba(255,255,255,.1);
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+}
+.pc-title{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:1rem;
+  color:#fff;
+}
+.pc-tag{
+  font-size:.55rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.3);
+}
+
+/* SOCIAL MEDIA */
+.social-section{
+  padding:0 3rem 10rem;
+  max-width:1400px;
+  margin:0 auto;
+}
+.social-header{
+  display:flex;
+  align-items:baseline;
+  gap:2rem;
+  padding-bottom:1.5rem;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  margin-bottom:5rem;
+}
+.soc-num{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--proj);letter-spacing:.15em}
+.soc-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3.5rem)}
+
+.social-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:2px;
+}
+.social-post{
+  aspect-ratio:1;
+  position:relative;
+  overflow:hidden;
+  background:#0d1820;
+}
+.social-post img{
+  width:100%;height:100%;
+  object-fit:cover;display:block;
+  transition:transform .9s cubic-bezier(.16,1,.3,1);
+}
+.social-post:hover img{transform:scale(1.05)}
+.social-post.sp-blue{background:var(--proj)}
+.social-post.sp-deep{background:var(--proj-deep)}
+.social-post.sp-dark{background:#0d1820}
+.social-post.sp-mid{background:rgba(41,171,226,.12)}
+.social-post.sp-water{background:var(--proj-dark)}
+.social-post.sp-pale{background:var(--proj-pale);color:var(--proj-deep)}
+
+.sp-text{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(1.5rem,4vw,3rem);
+  line-height:.95;
+  text-align:center;
+  letter-spacing:-.01em;
+  position:relative;
+  z-index:1;
+}
+.sp-sub{
+  font-size:.6rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  opacity:.6;
+  margin-top:.8rem;
+  text-align:center;
+  position:relative;
+  z-index:1;
+}
+.sp-big-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,8vw,6rem);
+  color:var(--proj);
+  line-height:1;
+  position:relative;
+  z-index:1;
+}
+.sp-big-num.inv{color:#fff}
+
+/* CAMPAIGN STRATEGY */
+.strategy{
+  background:rgba(41,171,226,.06);
+  border:1px solid rgba(41,171,226,.15);
+  padding:8rem 3rem;
+  margin:0 3rem 10rem;
+}
+.strategy-inner{max-width:1300px;margin:0 auto}
+.strategy-header{
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:6rem;
+  margin-bottom:6rem;
+}
+.strategy-label{
+  font-size:.65rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--proj);
+}
+.strategy-headline{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,5vw,4rem);
+  line-height:.95;
+  letter-spacing:-.01em;
+}
+.strategy-phases{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:3rem;
+}
+.phase{
+  padding:2.5rem;
+  border:1px solid rgba(41,171,226,.15);
+  background:rgba(41,171,226,.04);
+  transition:border-color .3s,background .3s;
+}
+.phase:hover{border-color:rgba(41,171,226,.4);background:rgba(41,171,226,.09)}
+.phase-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:3.5rem;
+  color:var(--proj);
+  opacity:.3;
+  line-height:1;
+  margin-bottom:1rem;
+}
+.phase-name{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:1.2rem;
+  margin-bottom:.8rem;
+}
+.phase-body{
+  font-size:.72rem;
+  line-height:1.8;
+  color:rgba(255,255,255,.6);
+}
+
+/* PHOTOS */
+.photos-section{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:2px;
+  margin-bottom:2px;
+}
+.photo-block{
+  position:relative;
+  overflow:hidden;
+  min-height:55vh;
+  display:flex;
+  align-items:flex-end;
+}
+.photo-block img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  filter:grayscale(1) contrast(1.1);
+}
+.photo-block::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(to top, rgba(10,61,92,.85) 0%, transparent 55%);
+}
+.photo-caption{
+  position:relative;
+  z-index:1;
+  padding:2.5rem;
+}
+.photo-caption-tag{
+  font-size:.55rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--proj);
+  margin-bottom:.5rem;
+}
+.photo-caption-text{
+  font-size:.8rem;
+  color:rgba(255,255,255,.75);
+  line-height:1.6;
+}
+.photo-placeholder{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:2rem;gap:1rem;
+}
+.photo-placeholder.dark-water{
+  background:linear-gradient(160deg,#0a1a24 0%,#0d3a52 100%);
+}
+.photo-placeholder.mid-water{
+  background:linear-gradient(160deg,#0d3a52 0%,var(--proj-dark) 100%);
+}
+
+/* IMPACT STATEMENT */
+.impact{
+  background:var(--proj-deep);
+  padding:10rem 3rem;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.impact::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 100%,rgba(41,171,226,.2) 0%,transparent 70%);
+}
+.impact-inner{position:relative;z-index:1}
+.impact-label{
+  font-size:.65rem;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--proj);
+  margin-bottom:3rem;
+}
+.impact-headline{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,10vw,10rem);
+  line-height:.88;
+  letter-spacing:-.02em;
+  margin-bottom:3rem;
+}
+.impact-headline .drop-word{color:var(--proj)}
+.impact-sub{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:clamp(1.1rem,2.5vw,1.8rem);
+  color:rgba(255,255,255,.65);
+  max-width:600px;
+  margin:0 auto;
+  line-height:1.5;
+}
+
+/* CLOSING */
+.closing{
+  background:var(--proj);
+  color:var(--proj-deep);
+  padding:10rem 3rem;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.closing-bg{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(10rem,25vw,22rem);
+  opacity:.09;
+  letter-spacing:-.05em;
+  line-height:.85;
+  pointer-events:none;
+}
+.closing-inner{position:relative;z-index:1}
+.closing-quote{
+  font-family:'DM Serif Display',serif;
+  font-style:italic;
+  font-size:clamp(1.5rem,4vw,2.8rem);
+  max-width:700px;
+  margin:0 auto 2rem;
+  line-height:1.35;
+}
+.closing-attr{
+  font-size:.65rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  opacity:.55;
+}
+
+/* BACK HOME (last project, loops to index) */
+.back-home{
+  background:var(--ink);
+  color:#fff;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  min-height:50vh;
+  text-decoration:none;
+  transition:opacity .3s;
+  position:relative;
+  overflow:hidden;
+}
+.back-home:hover .bh-arrow{transform:translateX(-12px)}
+.bh-left{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.bh-arrow{
+  font-size:5rem;
+  transition:transform .5s var(--ease);
+}
+.bh-right{
+  padding:5rem;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  border-left:1px solid rgba(255,255,255,.1);
+}
+.bh-label{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:1.5rem}
+.bh-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);line-height:.95;letter-spacing:-.01em}
+
+@media(max-width:900px){
+  nav{padding:1.2rem 1.5rem}
+  .urgency-strip{flex-wrap:wrap;gap:1.5rem}
+  .urgency-divider{display:none}
+  .intro{grid-template-columns:1fr;gap:3rem}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .concept-grid,.strategy-phases{grid-template-columns:1fr}
+  .strategy-header{grid-template-columns:1fr;gap:2rem}
+  .posters-grid,.social-grid{grid-template-columns:1fr}
+  .photos-section{grid-template-columns:1fr}
+  .back-home{grid-template-columns:1fr}
+  .bh-left{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<svg class="grain" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
+  <filter id="gr"><feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="4" stitchTiles="stitch"/></filter>
+  <rect width="300" height="300" filter="url(#gr)" opacity="1"/>
+</svg>
+
+<nav id="nav">
+  <a href="../index.html" class="nav-logo">CJ</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Index</a></li>
+    <li><a href="../index.html#work">Work</a></li>
+    <li><a href="../index.html#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-rings">
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-label reveal">03 / 08 — Social Design · Environmental Campaign · 2025</div>
+    <div class="hero-drop reveal d1">
+      <svg viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M30 4 C30 4 6 36 6 52 C6 66 17 76 30 76 C43 76 54 66 54 52 C54 36 30 4 30 4Z" fill="#29ABE2" opacity=".9"/>
+        <path d="M20 58 C22 64 26 68 30 68" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1 class="hero-title reveal d2">
+      <span class="una">UNA</span>
+      <span class="gota">GOTA</span>
+      <span class="mas">MÁS</span>
+    </h1>
+    <p class="hero-tagline reveal d3">Social and environmental design campaign for global change</p>
+  </div>
+  <div class="hero-partners reveal">
+    <div class="partner-badge">
+      <span class="partner-badge-label">Client</span>
+      <span class="partner-name">WaterAid</span>
+    </div>
+    <div style="width:1px;height:30px;background:rgba(255,255,255,.15)"></div>
+    <div class="partner-badge">
+      <span class="partner-badge-label">Campaign</span>
+      <span class="partner-name">Una gota más</span>
+    </div>
+    <div style="width:1px;height:30px;background:rgba(255,255,255,.15)"></div>
+    <div class="partner-badge">
+      <span class="partner-badge-label">Tools</span>
+      <span class="partner-name">Photoshop · Illustrator · InDesign</span>
+    </div>
+  </div>
+</section>
+
+<!-- URGENCY STRIP -->
+<div class="urgency-strip reveal">
+  <div class="urgency-stat">
+    <span class="us-num">2.2B</span>
+    <span class="us-label">people without access to safe drinking water</span>
+  </div>
+  <div class="urgency-divider"></div>
+  <div class="urgency-stat">
+    <span class="us-num">8M</span>
+    <span class="us-label">tonnes of plastic enter the ocean every year</span>
+  </div>
+  <div class="urgency-divider"></div>
+  <div class="urgency-stat">
+    <span class="us-num">+1.5°C</span>
+    <span class="us-label">critical global warming threshold at stake</span>
+  </div>
+  <div class="urgency-divider"></div>
+  <div class="urgency-stat">
+    <span class="us-num">2030</span>
+    <span class="us-label">SDG 6 goal: clean water for everyone</span>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section class="intro">
+  <div class="intro-col-label reveal">Context</div>
+  <div class="intro-col-body">
+    <h2 class="reveal d1">Design in service of what matters</h2>
+    <p class="reveal d2">Una Gota Más is a social design campaign created for WaterAid — an international nonprofit founded in 1981, working in over 30 countries to deliver clean water, decent toilets and good hygiene to the people who need them most. The campaign's central premise: adding even one drop can change the whole.</p>
+    <p class="reveal d3">Graphic design is used as a tool for awareness and collective mobilization. Black-and-white photography, bold typography and hard data combine to create pieces that demand attention. The palette strips back to water blue against monochrome emptiness — color as information, not decoration.</p>
+  </div>
+</section>
+
+<!-- STAT GRID -->
+<div class="stat-grid">
+  <div class="stat-cell stat-bg-a reveal">
+    <div class="stat-number">71%</div>
+    <p class="stat-desc">of Earth's surface is water. Only 3% is fresh. Only 0.5% is available for human consumption.</p>
+  </div>
+  <div class="stat-cell stat-bg-b reveal d1">
+    <div class="stat-number">1 in 3</div>
+    <p class="stat-desc">people worldwide lack access to safely managed drinking water services.</p>
+  </div>
+  <div class="stat-cell stat-bg-c reveal d2">
+    <div class="stat-number">5min</div>
+    <p class="stat-desc">is how long plastic discarded near coastlines takes to reach the ocean. The solution starts before that.</p>
+  </div>
+  <div class="stat-cell stat-bg-d reveal d3">
+    <div class="stat-number">+1</div>
+    <p class="stat-desc">drop makes a difference. The campaign holds that every individual action adds up to collective, systemic change.</p>
+  </div>
+</div>
+
+<!-- CONCEPT -->
+<section class="concept">
+  <div class="concept-bg">H₂O</div>
+  <div class="concept-inner">
+    <div class="concept-label reveal">Core concept</div>
+    <h2 class="concept-headline reveal d1">Water as<br>starting point<br>and destination</h2>
+    <div class="concept-grid reveal d2">
+      <div class="concept-card">
+        <div class="cc-icon">◉</div>
+        <div class="cc-title">The drop as symbol</div>
+        <p class="cc-body">A water drop is universally legible and loaded with meaning. In the campaign it works simultaneously as a sign of scarcity, of value, and of hope.</p>
+      </div>
+      <div class="concept-card">
+        <div class="cc-icon">◎</div>
+        <div class="cc-title">Black & white + blue</div>
+        <p class="cc-body">B&W photography strips reality of the superfluous and forces the eye toward what's essential. Blue #29ABE2 cuts through as urgent data — not decoration.</p>
+      </div>
+      <div class="concept-card">
+        <div class="cc-icon">◈</div>
+        <div class="cc-title">Adding up as action</div>
+        <p class="cc-body">"Una gota más" — one more drop. The campaign name is an invitation, not a plea. Design as both ethical and aesthetic imperative.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POSTERS -->
+<section class="posters-section">
+  <div class="posters-header reveal">
+    <span class="posters-num">02 —</span>
+    <h2 class="posters-title">Campaign posters</h2>
+  </div>
+  <div class="posters-grid reveal d1">
+    <div class="poster-card">
+      <div class="poster-image">
+        <img src="../assets/13-una-gota-mas/afiche2.png" alt="Una Gota Más poster"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder dark" style="display:none">
+          <div class="pp-bg-water"></div>
+          <div class="pp-stat-big">2.2B</div>
+          <div class="pp-stat-label">without safe water</div>
+          <div class="pp-headline" style="margin-top:2rem"><span class="pp-blue">UNA</span><br><span class="pp-white">GOTA<br>MÁS</span></div>
+          <div class="pp-drop">
+            <svg width="50" height="66" viewBox="0 0 60 80" fill="none"><path d="M30 4 C30 4 6 36 6 52 C6 66 17 76 30 76 C43 76 54 66 54 52 C54 36 30 4 30 4Z" fill="#29ABE2" opacity=".3"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="poster-caption">
+        <div class="pc-title">Main poster — Version A</div>
+        <div class="pc-tag">700×1000mm</div>
+      </div>
+    </div>
+    <div class="poster-card">
+      <div class="poster-image">
+        <img src="../assets/13-una-gota-mas/una%20gotaa%20massss-12.png" alt="Statistics poster"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder mid" style="display:none">
+          <div class="pp-bg-water"></div>
+          <div class="pp-headline"><span class="pp-white">THE OCEAN<br>WON'T WAIT.</span></div>
+          <div style="width:60px;height:2px;background:var(--proj);margin:1.5rem auto"></div>
+          <div class="pp-stat-big">8M</div>
+          <div class="pp-stat-label">tonnes of plastic / year</div>
+          <div class="pp-drop">
+            <svg width="50" height="66" viewBox="0 0 60 80" fill="none"><path d="M30 4 C30 4 6 36 6 52 C6 66 17 76 30 76 C43 76 54 66 54 52 C54 36 30 4 30 4Z" fill="#29ABE2" opacity=".2"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="poster-caption">
+        <div class="pc-title">Statistics poster — Version B</div>
+        <div class="pc-tag">700×1000mm</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHOTO BLOCKS -->
+<div class="photos-section reveal" style="grid-template-columns:1fr;min-height:60vh">
+  <div class="photo-block" style="min-height:60vh">
+    <img src="../assets/13-una-gota-mas/street%20billboard.png" alt="Billboard mockup"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="photo-placeholder dark-water" style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:1rem">
+      <svg width="80" height="106" viewBox="0 0 60 80" fill="none"><path d="M30 4 C30 4 6 36 6 52 C6 66 17 76 30 76 C43 76 54 66 54 52 C54 36 30 4 30 4Z" fill="#29ABE2" opacity=".5"/><path d="M20 58 C22 64 26 68 30 68" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <div class="photo-caption" style="position:relative;z-index:2">
+      <div class="photo-caption-tag">Street application</div>
+      <p class="photo-caption-text">Billboard mockup. Black and white forces the eye to the data, not the color.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SOCIAL MEDIA GRID -->
+<section class="social-section">
+  <div class="social-header reveal">
+    <span class="soc-num">03 —</span>
+    <h2 class="soc-title">Social Media</h2>
+  </div>
+  <div class="social-grid reveal d1">
+    <div class="social-post"><img src="../assets/13-una-gota-mas/post1.png" alt="Post 1" onerror="this.style.display='none'"></div>
+    <div class="social-post"><img src="../assets/13-una-gota-mas/post2.png" alt="Post 2" onerror="this.style.display='none'"></div>
+    <div class="social-post"><img src="../assets/13-una-gota-mas/post3.png" alt="Post 3" onerror="this.style.display='none'"></div>
+    <div class="social-post"><img src="../assets/13-una-gota-mas/post4.png" alt="Post 4" onerror="this.style.display='none'"></div>
+    <div class="social-post"><img src="../assets/13-una-gota-mas/post5.png" alt="Post 5" onerror="this.style.display='none'"></div>
+    <div class="social-post"><img src="../assets/13-una-gota-mas/post6.png" alt="Post 6" onerror="this.style.display='none'"></div>
+  </div>
+</section>
+
+<!-- STRATEGY -->
+<section class="strategy reveal">
+  <div class="strategy-inner">
+    <div class="strategy-header">
+      <div class="strategy-label">Campaign strategy</div>
+      <h2 class="strategy-headline">Three phases,<br>one goal</h2>
+    </div>
+    <div class="strategy-phases">
+      <div class="phase">
+        <div class="phase-num">01</div>
+        <div class="phase-name">Awareness</div>
+        <p class="phase-body">Posters and digital pieces led by hard data. The goal is to stop the scroll and force the reader to sit with the number. Black, white and blue only.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-num">02</div>
+        <div class="phase-name">Mobilization</div>
+        <p class="phase-body">Social media content with a specific call to action. Share, tag, commit. Every repost is one more drop added to the collective effort.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-num">03</div>
+        <div class="phase-name">Concrete action</div>
+        <p class="phase-body">Institutional material for WaterAid showing how to get involved: donations, advocacy, supporting universal access to clean water, sanitation and hygiene.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section class="impact">
+  <div class="impact-inner reveal">
+    <div class="impact-label">What design can do</div>
+    <h2 class="impact-headline">
+      EVERY<br>
+      <span class="drop-word">DROP</span><br>
+      COUNTS
+    </h2>
+    <p class="impact-sub">Social design is neither propaganda nor ornament. It is the tool through which a cause finds its image — and with it, its audience.</p>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="closing-bg">H₂O</div>
+  <div class="closing-inner reveal">
+    <p class="closing-quote">"The ocean has no borders. Neither does plastic. Neither should change."</p>
+    <div class="closing-attr">Una Gota Más · WaterAid · 2025</div>
+  </div>
+</section>
+
+<!-- BACK TO HOME (last project) -->
+<a href="04-soriano-packaging.html" class="back-home">
+  <div class="bh-left">
+    <div class="bh-arrow">→</div>
+  </div>
+  <div class="bh-right">
+    <div class="bh-label">Next project · 04 / 08</div>
+    <div class="bh-title">SORIANO<br>Packaging →</div>
+  </div>
+</a>
+
+<script>
+const cur=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){tx+=(mx-tx)*.12;ty+=(my-ty)*.12;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2.5)';trail.style.opacity='0'});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';trail.style.opacity='.5'});
+});
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>80));
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.08});
+document.querySelectorAll('.reveal,.stat-cell').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
